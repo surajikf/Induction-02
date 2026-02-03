@@ -20,6 +20,9 @@ window.AppNavigation = {
             const hash = window.location.hash.substring(1);
             if (hash) self.navigateTo(hash, true);
         });
+
+        // Initialize Employees Data
+        this.initEmployees();
     },
 
     /**
@@ -141,38 +144,69 @@ window.AppNavigation = {
         if (!grid) return;
 
         grid.innerHTML = list.map((emp, index) => `
-            <div class="employee-card premium-card bg-white p-6 text-center group cursor-pointer hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-slate-50 relative overflow-hidden" 
+            <div class="employee-card group relative bg-white rounded-[2.5rem] p-6 hover:-translate-y-2 transition-all duration-500 overflow-visible z-10 hover:z-20"
                  onclick="AppNavigation.showLeaderModal('${emp.id === 'ashish' || emp.id === 'jayraj' || emp.id === 'anuja' ? emp.id : 'leadership'}', '${emp.name}', '${emp.role}')"
-                 style="animation: fadeInUp 0.5s ease backwards ${index * 50}ms">
+                 style="animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) backwards ${index * 60}ms">
                 
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-ikf-blue to-ikf-yellow opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <!-- Glow Effect Behind Card -->
+                <div class="absolute inset-4 bg-ikf-blue/20 rounded-[2rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
                 
-                <div class="relative mb-5 mx-auto w-24 h-24">
-                    <div class="absolute inset-0 bg-gradient-to-br from-ikf-blue/10 to-ikf-yellow/10 rounded-full transform rotate-6 group-hover:rotate-12 transition-transform"></div>
-                    <img src="${emp.img}" class="relative w-full h-full object-cover rounded-full shadow-md border-2 border-white group-hover:border-ikf-blue/20 transition-colors" alt="${emp.name}">
-                    <div class="absolute bottom-0 right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full shadow-sm" title="Online"></div>
-                </div>
-                
-                <h4 class="text-lg font-black text-slate-800 group-hover:text-ikf-blue transition-colors mb-0.5">${emp.name}</h4>
-                <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-4">${emp.role}</p>
-                
-                <!-- Smart Skills Tags -->
-                <div class="flex flex-wrap justify-center gap-1.5 mb-4 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
-                    ${(emp.skills || []).slice(0, 2).map(skill =>
-            `<span class="px-2 py-0.5 bg-slate-50 text-[8px] font-bold text-slate-500 rounded-full border border-slate-100">${skill}</span>`
-        ).join('')}
-                </div>
+                <!-- Card Body -->
+                <div class="relative bg-white border border-slate-100 rounded-[2.5rem] p-6 h-full flex flex-col shadow-sm group-hover:shadow-2xl transition-all duration-300 overflow-hidden">
+                    
+                    <!-- Top Gradient Decoration -->
+                    <div class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-slate-50 to-transparent opacity-50"></div>
+                    <div class="absolute top-4 right-4 text-[10px] font-black uppercase text-slate-300 tracking-widest group-hover:text-ikf-blue transition-colors">IKF-ID-${Math.floor(Math.random() * 9000) + 1000}</div>
 
-                <span class="inline-block px-3 py-1 bg-slate-50 rounded-lg text-[9px] font-bold text-slate-400 border border-slate-100 group-hover:bg-ikf-blue group-hover:text-white group-hover:border-ikf-blue transition-all w-full">${emp.dept}</span>
+                    <!-- Avatar Section -->
+                    <div class="relative mb-6 mx-auto w-28 h-28 transform transition-transform duration-500 group-hover:scale-105">
+                        <!-- Rotating Ring -->
+                        <div class="absolute -inset-2 rounded-full border border-dashed border-ikf-blue/30 opacity-0 group-hover:opacity-100 animate-spin-slow transition-opacity"></div>
+                        
+                        <div class="w-full h-full rounded-full p-1 bg-white shadow-lg relative z-10">
+                            <img src="${emp.img}" class="w-full h-full object-cover rounded-full" alt="${emp.name}">
+                        </div>
+                        
+                        <!-- Status Dot -->
+                        <div class="absolute bottom-2 right-2 w-5 h-5 bg-white rounded-full flex items-center justify-center z-20 shadow-sm">
+                            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="text-center relative z-10 flex-1 flex flex-col">
+                        <h4 class="text-xl font-black text-slate-800 mb-1 group-hover:text-ikf-blue transition-colors">${emp.name}</h4>
+                        <div class="inline-block mx-auto px-3 py-1 rounded-full bg-slate-50 border border-slate-100 mb-4 group-hover:bg-ikf-yellow/10 group-hover:border-ikf-yellow/20 transition-colors">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 group-hover:text-ikf-yellow transition-colors">${emp.role}</p>
+                        </div>
+
+                        <!-- Skills Chips -->
+                        <div class="flex flex-wrap justify-center gap-2 mt-auto">
+                            ${(emp.skills || []).slice(0, 3).map(skill =>
+            `<span class="px-2.5 py-1 bg-slate-50 text-[9px] font-bold text-slate-500 rounded-md border border-slate-100 hover:bg-ikf-blue hover:text-white hover:border-ikf-blue transition-colors cursor-default">${skill}</span>`
+        ).join('')}
+                        </div>
+                    </div>
+
+                    <!-- View Profile Slide-up Overlay -->
+                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ikf-blue via-ikf-blue/95 to-transparent pt-12 pb-6 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center z-20">
+                        <span class="text-white font-black uppercase text-xs tracking-[0.2em] flex items-center gap-2">
+                            View Profile <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
             </div>
         `).join('') + `
-            <div class="premium-card bg-slate-50 p-6 text-center group border-2 border-dashed border-slate-200 opacity-60 hover:opacity-100 transition-opacity cursor-pointer hover:bg-white hover:border-ikf-yellow/50 hover:shadow-lg flex flex-col justify-center items-center h-full min-h-[300px]">
-                <div class="relative mb-5 w-20 h-20 flex items-center justify-center bg-white rounded-full shadow-sm text-slate-300 group-hover:text-ikf-yellow transition-colors">
-                    <i class="fas fa-user-plus text-2xl"></i>
+            <!-- 'Join Us' Card (Creative) -->
+            <div class="group relative bg-slate-50 rounded-[2.5rem] p-1 h-full min-h-[360px] cursor-pointer hover:-translate-y-2 transition-transform duration-500 z-0">
+                <div class="absolute inset-0 border-2 border-dashed border-slate-200 rounded-[2.5rem] group-hover:border-ikf-yellow transition-colors duration-500"></div>
+                <div class="h-full flex flex-col items-center justify-center p-8 relative z-10">
+                    <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-6 group-hover:scale-110 transition-transform duration-500 group-hover:rotate-6 group-hover:shadow-xl">
+                        <i class="fas fa-plus text-3xl text-slate-300 group-hover:text-ikf-yellow transition-colors"></i>
+                    </div>
+                    <h4 class="text-xl font-black text-slate-400 group-hover:text-slate-800 transition-colors mb-2">You?</h4>
+                    <p class="text-xs text-slate-400 font-medium text-center max-w-[150px] leading-relaxed">We are always looking for the next visionary.</p>
                 </div>
-                <h4 class="text-lg font-black text-slate-500 group-hover:text-ikf-blue transition-colors mb-0.5">Join the Team</h4>
-                <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-3">Open Positions</p>
-                <span class="inline-block px-3 py-1 bg-transparent rounded-lg text-[9px] font-bold text-slate-400 border border-slate-300 group-hover:border-ikf-yellow group-hover:text-ikf-yellow transition-all">Apply Now</span>
             </div>
         `;
     },
@@ -267,156 +301,275 @@ window.AppNavigation = {
         switch (sectionId) {
             case 'intro':
                 return `
-                    <div class="max-w-6xl mx-auto py-10 fade-in">
-                        <div class="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
-                            <div>
-                                <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Onboarding Portal v2.0</span>
-                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tighter leading-none">
-                                    Welcome to <br/><span class="text-ikf-yellow italic">I Knowledge Factory.</span>
+                    <div class="max-w-7xl mx-auto py-8 fade-in">
+                        <!-- Hero Header -->
+                        <div class="mb-16 flex flex-col md:flex-row items-end justify-between gap-8 border-b border-slate-100 pb-12">
+                            <div class="max-w-3xl">
+                                <span class="text-ikf-yellow font-bold uppercase tracking-[0.2em] text-xs mb-4 block">Onboarding Portal</span>
+                                <h1 class="text-4xl md:text-6xl font-extrabold text-slate-800 tracking-tight leading-tight mb-6">
+                                    Welcome to <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">I Knowledge Factory.</span>
                                 </h1>
-                            </div>
-                            <div class="flex gap-4">
-                                <div class="px-6 py-4 bg-white rounded-3xl premium-card text-center min-w-[120px]">
-                                    <p class="text-2xl font-bold text-ikf-blue">25+</p>
-                                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Years Exp</p>
-                                </div>
-                                <div class="px-6 py-4 bg-white rounded-3xl premium-card text-center min-w-[120px]">
-                                    <p class="text-2xl font-bold text-ikf-blue">1500+</p>
-                                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Clients</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-16">
-                            <div class="lg:col-span-7 bg-white p-12 rounded-[2.5rem] premium-card relative overflow-hidden group">
-                                <div class="absolute top-0 right-0 w-64 h-64 bg-ikf-blue/5 rounded-full -mr-32 -mt-32 transition-transform group-hover:scale-110"></div>
-                                <h3 class="text-2xl font-extrabold text-ikf-blue mb-6">Mission Briefing</h3>
-                                <p class="text-slate-500 leading-relaxed mb-8 text-lg">
-                                    IKF is a multidisciplinary agency that blends strategy, design, and performance marketing to help brands thrive across digital ecosystems. We've stayed relevant for over 25 years by moving with internet shifts and user behavior.
+                                <p class="text-slate-500 text-lg md:text-xl font-medium leading-relaxed max-w-2xl">
+                                    Where strategy meets digital craftsmanship. We've been shaping the internet since 2000.
                                 </p>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                    <div class="flex items-start gap-4">
-                                        <div class="w-10 h-10 rounded-xl bg-ikf-blue/5 flex items-center justify-center text-ikf-blue"><i class="fas fa-rocket"></i></div>
-                                        <div><p class="font-bold text-sm text-ikf-blue uppercase">800+</p><p class="text-xs text-slate-400 leading-relaxed">Strategies Delivered Successfully.</p></div>
-                                    </div>
-                                    <div class="flex items-start gap-4">
-                                        <div class="w-10 h-10 rounded-xl bg-ikf-yellow/10 flex items-center justify-center text-ikf-yellow"><i class="fas fa-desktop"></i></div>
-                                        <div><p class="font-bold text-sm text-ikf-blue uppercase">750+</p><p class="text-xs text-slate-400 leading-relaxed">Websites Launched and Optimized.</p></div>
-                                    </div>
-                                </div>
                             </div>
-                            <div class="lg:col-span-5 h-[400px] lg:h-auto overflow-hidden rounded-[2.5rem] premium-card group relative">
-                                <img src="https://www.ikf.co.in/wp-content/uploads/About-IKF-Img.jpg" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="IKF Office">
-                                <div class="absolute inset-0 bg-ikf-blue/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-12 text-center">
-                                    <p class="text-white font-bold leading-relaxed">"We don't believe in overengineering, but in working in tune with the market and the moment."</p>
+                            <div class="hidden md:block">
+                                <!-- Subtle decorative logo or element -->
+                                <div class="w-16 h-16 rounded-2xl bg-ikf-blue/5 text-ikf-blue flex items-center justify-center text-2xl">
+                                    <i class="fas fa-building"></i>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="bg-gradient-to-r from-ikf-blue to-primary-light p-10 md:p-14 rounded-[3rem] text-white flex flex-col md:flex-row items-center justify-between gap-10 relative overflow-hidden">
-                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
-                            <div class="z-10 flex-1">
-                                <h3 class="text-3xl font-extrabold mb-3">Begin the Journey</h3>
-                                <p class="text-blue-200/80 max-w-md">Your induction covers the DNA of IKF. Meet the visionary leadership team leading our 50+ experts.</p>
+                        <!-- Content Grid -->
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
+                            
+                            <!-- Left: Mission & Vision Card -->
+                            <div class="lg:col-span-8">
+                                <div class="bg-white rounded-[2rem] p-10 shadow-sm border border-slate-100 h-full relative overflow-hidden group hover:shadow-md transition-shadow duration-300">
+                                    <div class="absolute top-0 right-0 w-64 h-64 bg-ikf-blue/5 rounded-full -mr-20 -mt-20 transition-transform group-hover:scale-105 duration-700"></div>
+                                    
+                                    <h3 class="text-2xl font-bold text-slate-800 mb-6 relative z-10">The Mission</h3>
+                                    <p class="text-slate-500 leading-relaxed mb-8 relative z-10 text-lg">
+                                        IKF is a multidisciplinary agency that blends strategy, design, and performance marketing to help brands thrive across digital ecosystems. We survive market shifts by staying true to our core: <span class="text-ikf-blue font-bold">Human Intelligence.</span>
+                                    </p>
+
+                                    <div class="flex flex-wrap gap-4 relative z-10">
+                                        <div class="px-5 py-3 rounded-xl bg-slate-50 border border-slate-100 text-sm font-bold text-slate-600">
+                                            <i class="fas fa-check text-ikf-yellow mr-2"></i> 25+ Years
+                                        </div>
+                                        <div class="px-5 py-3 rounded-xl bg-slate-50 border border-slate-100 text-sm font-bold text-slate-600">
+                                            <i class="fas fa-check text-ikf-yellow mr-2"></i> 360° Digital
+                                        </div>
+                                        <div class="px-5 py-3 rounded-xl bg-slate-50 border border-slate-100 text-sm font-bold text-slate-600">
+                                            <i class="fas fa-check text-ikf-yellow mr-2"></i> Pune HQ
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <button onclick="AppNavigation.navigateTo('management')" 
-                                class="z-10 group bg-ikf-yellow hover:white text-white px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-white hover:text-ikf-blue transition-all shadow-xl shadow-black/20 flex items-center gap-4">
-                                Launch Induction <i class="fas fa-arrow-right animate-bounce-x"></i>
-                            </button>
+
+                            <!-- Right: Key Stats -->
+                            <div class="lg:col-span-4 flex flex-col gap-6">
+                                <!-- Stat Card 1 -->
+                                <div class="bg-ikf-blue p-8 rounded-[2rem] text-white relative overflow-hidden flex-1 group">
+                                    <div class="absolute -right-4 -bottom-4 text-white/10 text-9xl">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <div class="relative z-10">
+                                        <p class="text-ikf-yellow font-bold uppercase tracking-wider text-xs mb-2">Strategies</p>
+                                        <h4 class="text-5xl font-extrabold mb-1">800+</h4>
+                                        <p class="text-blue-200 text-sm">Deployed Successfully</p>
+                                    </div>
+                                </div>
+
+                                <!-- Stat Card 2 -->
+                                <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden flex-1 group hover:border-ikf-blue/30 transition-colors">
+                                    <div class="relative z-10">
+                                        <p class="text-slate-400 font-bold uppercase tracking-wider text-xs mb-2">Global Presence</p>
+                                        <h4 class="text-5xl font-extrabold text-slate-800 mb-1">1.5k+</h4>
+                                        <p class="text-slate-500 text-sm">Happy Clients</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Note (Subtle) -->
+                        <div class="flex items-center gap-2 text-slate-400 text-xs font-medium pl-2">
+                            <i class="fas fa-info-circle"></i>
+                            <p>Explore the sidebar to begin your induction journey.</p>
                         </div>
                     </div>`;
 
             case 'management':
                 return `
-                    <div class="max-w-6xl mx-auto py-10 fade-in">
-                        <div class="mb-16">
-                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Leadership Core</span>
-                            <h1 class="text-4xl md:text-5xl font-extrabold text-ikf-blue tracking-tight">Meet the Visionaries</h1>
+                    <div class="max-w-7xl mx-auto py-6 fade-in">
+                        <div class="mb-16 text-center">
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">System Architects</span>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tighter leading-none mb-6">
+                                The <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Visionaries</span>
+                            </h1>
+                            <p class="text-slate-400 max-w-2xl mx-auto text-sm font-medium leading-relaxed">
+                                Guiding the IKF mainframes with over <span class="text-ikf-blue font-bold">75 years</span> of combined digital intelligence.
+                            </p>
                         </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-20">
-                            <!-- Card 1 -->
-                            <div class="group cursor-pointer" onclick="AppNavigation.showLeaderModal('ashish', 'Ashish Dalia', 'CEO')">
-                                <div class="premium-card bg-white p-8 group-hover:bg-ikf-blue transition-all duration-500">
-                                    <div class="relative mb-8 overflow-hidden rounded-2xl">
-                                        <img src="images/avatars/ashish_real.jpg" class="aspect-square w-full object-cover bg-slate-50 transition-transform duration-700 group-hover:scale-110" alt="Ashish Dalia">
-                                        <div class="absolute inset-0 bg-gradient-to-t from-ikf-blue/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                                            <p class="text-[10px] text-white/70 uppercase font-black tracking-widest">View Profile</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+                            <!-- Leader 1: Ashish Dalia -->
+                            <div class="group relative perspective-1000" onclick="AppNavigation.showLeaderModal('ashish', 'Ashish Dalia', 'CEO')">
+                                <div class="bg-white rounded-[3rem] p-4 relative z-10 transition-all duration-500 transform preserve-3d group-hover:rotate-y-6 group-hover:shadow-2xl border border-slate-100 h-full flex flex-col">
+                                    <div class="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-6 bg-slate-100">
+                                        <img src="images/avatars/ashish_real.jpg" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Ashish Dalia">
+                                        
+                                        <!-- Smart Overlay -->
+                                        <div class="absolute inset-0 bg-gradient-to-t from-ikf-blue via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
+                                        
+                                        <!-- Data Overlay (Normally Hidden, shows on hover) -->
+                                        <div class="absolute inset-x-0 bottom-0 p-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                                            <div class="flex items-center justify-between text-white mb-2">
+                                                <span class="text-[10px] font-bold uppercase tracking-widest">Strategy</span>
+                                                <span class="text-[10px] font-bold">98%</span>
+                                            </div>
+                                            <div class="w-full h-1 bg-white/20 rounded-full overflow-hidden mb-4">
+                                                <div class="h-full bg-ikf-yellow w-[98%] shadow-[0_0_10px_rgba(255,255,255,0.5)]"></div>
+                                            </div>
+                                            <div class="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-widest border border-white/30 rounded-full px-3 py-1 bg-white/10 backdrop-blur-md w-max">
+                                                <i class="fas fa-fingerprint text-ikf-yellow"></i> Access Profile
+                                            </div>
                                         </div>
                                     </div>
-                                    <h3 class="text-2xl font-extrabold text-ikf-blue group-hover:text-white transition-colors mb-1">Ashish Dalia</h3>
-                                    <p class="text-ikf-yellow text-[11px] font-black uppercase tracking-widest mb-4">Chief Executive Officer</p>
-                                    <p class="text-slate-500 group-hover:text-blue-100 text-sm leading-relaxed mb-6">A visionary leader with 25+ years of experience in digital transformation...</p>
-                                    <div class="w-10 h-10 rounded-full bg-slate-50 group-hover:bg-white/10 flex items-center justify-center text-ikf-blue group-hover:text-white transition-all">
-                                        <i class="fas fa-chevron-right text-xs"></i>
+                                    
+                                    <div class="px-4 pb-4 text-center">
+                                        <h3 class="text-2xl font-black text-slate-800 group-hover:text-ikf-blue transition-colors mb-1">Ashish Dalia</h3>
+                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">The Architect (CEO)</p>
+                                        
+                                        <!-- Decorative Tech Elements -->
+                                        <div class="flex justify-center gap-1 opacity-20 group-hover:opacity-100 transition-opacity duration-700">
+                                            <div class="w-1 h-1 bg-ikf-blue rounded-full"></div>
+                                            <div class="w-1 h-1 bg-ikf-blue rounded-full"></div>
+                                            <div class="w-8 h-1 bg-ikf-blue rounded-full"></div>
+                                        </div>
                                     </div>
                                 </div>
+                                <!-- 3D Glow Backing -->
+                                <div class="absolute inset-4 bg-ikf-yellow/30 rounded-[3rem] blur-2xl -z-10 group-hover:blur-3xl transition-all opacity-0 group-hover:opacity-70"></div>
                             </div>
-                            <!-- Card 2 -->
-                            <div class="group cursor-pointer" onclick="AppNavigation.showLeaderModal('jayraj', 'Jayraj Mehta', 'Director')">
-                                <div class="premium-card bg-white p-8 group-hover:bg-ikf-blue transition-all duration-500">
-                                    <div class="relative mb-8 overflow-hidden rounded-2xl">
-                                        <img src="images/avatars/jayraj.png" class="aspect-square w-full object-cover bg-slate-50 transition-transform duration-700 group-hover:scale-110" alt="Jayraj Mehta">
-                                        <div class="absolute inset-0 bg-gradient-to-t from-ikf-blue/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                                            <p class="text-[10px] text-white/70 uppercase font-black tracking-widest">View Profile</p>
+
+                            <!-- Leader 2: Jayraj Mehta -->
+                            <div class="group relative perspective-1000" onclick="AppNavigation.showLeaderModal('jayraj', 'Jayraj Mehta', 'Director')">
+                                <div class="bg-white rounded-[3rem] p-4 relative z-10 transition-all duration-500 transform preserve-3d group-hover:rotate-y-6 group-hover:shadow-2xl border border-slate-100 h-full flex flex-col">
+                                    <div class="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-6 bg-slate-100">
+                                        <img src="images/avatars/jayraj.png" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Jayraj Mehta">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-ikf-blue via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
+                                        
+                                        <div class="absolute inset-x-0 bottom-0 p-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                                            <div class="flex items-center justify-between text-white mb-2">
+                                                <span class="text-[10px] font-bold uppercase tracking-widest">Operations</span>
+                                                <span class="text-[10px] font-bold">99%</span>
+                                            </div>
+                                            <div class="w-full h-1 bg-white/20 rounded-full overflow-hidden mb-4">
+                                                <div class="h-full bg-cyan-400 w-[99%] shadow-[0_0_10px_rgba(255,255,255,0.5)]"></div>
+                                            </div>
+                                            <div class="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-widest border border-white/30 rounded-full px-3 py-1 bg-white/10 backdrop-blur-md w-max">
+                                                <i class="fas fa-fingerprint text-cyan-400"></i> Access Profile
+                                            </div>
                                         </div>
                                     </div>
-                                    <h3 class="text-2xl font-extrabold text-ikf-blue group-hover:text-white transition-colors mb-1">Jayraj Mehta</h3>
-                                    <p class="text-ikf-yellow text-[11px] font-black uppercase tracking-widest mb-4">Director</p>
-                                    <p class="text-slate-500 group-hover:text-blue-100 text-sm leading-relaxed mb-6">Jayraj oversees strategic operations and technological integration...</p>
-                                    <div class="w-10 h-10 rounded-full bg-slate-50 group-hover:bg-white/10 flex items-center justify-center text-ikf-blue group-hover:text-white transition-all">
-                                        <i class="fas fa-chevron-right text-xs"></i>
+                                    
+                                    <div class="px-4 pb-4 text-center">
+                                        <h3 class="text-2xl font-black text-slate-800 group-hover:text-ikf-blue transition-colors mb-1">Jayraj Mehta</h3>
+                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">The Engine (Director)</p>
+                                        
+                                        <div class="flex justify-center gap-1 opacity-20 group-hover:opacity-100 transition-opacity duration-700">
+                                            <div class="w-1 h-1 bg-cyan-500 rounded-full"></div>
+                                            <div class="w-1 h-1 bg-cyan-500 rounded-full"></div>
+                                            <div class="w-8 h-1 bg-cyan-500 rounded-full"></div>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="absolute inset-4 bg-cyan-500/30 rounded-[3rem] blur-2xl -z-10 group-hover:blur-3xl transition-all opacity-0 group-hover:opacity-70"></div>
                             </div>
-                            <!-- Card 3 -->
-                            <div class="group cursor-pointer" onclick="AppNavigation.showLeaderModal('anuja', 'Anuja Kapoor', 'Director')">
-                                <div class="premium-card bg-white p-8 group-hover:bg-ikf-blue transition-all duration-500">
-                                    <div class="relative mb-8 overflow-hidden rounded-2xl">
-                                        <img src="images/avatars/anuja.png" class="aspect-square w-full object-cover bg-slate-50 transition-transform duration-700 group-hover:scale-110" alt="Anuja Kapoor">
-                                        <div class="absolute inset-0 bg-gradient-to-t from-ikf-blue/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                                            <p class="text-[10px] text-white/70 uppercase font-black tracking-widest">View Profile</p>
+
+                            <!-- Leader 3: Anuja Kapoor -->
+                            <div class="group relative perspective-1000" onclick="AppNavigation.showLeaderModal('anuja', 'Anuja Kapoor', 'Director')">
+                                <div class="bg-white rounded-[3rem] p-4 relative z-10 transition-all duration-500 transform preserve-3d group-hover:rotate-y-6 group-hover:shadow-2xl border border-slate-100 h-full flex flex-col">
+                                    <div class="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-6 bg-slate-100">
+                                        <img src="images/avatars/anuja.png" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Anuja Kapoor">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-ikf-blue via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
+                                        
+                                        <div class="absolute inset-x-0 bottom-0 p-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                                            <div class="flex items-center justify-between text-white mb-2">
+                                                <span class="text-[10px] font-bold uppercase tracking-widest">Creativity</span>
+                                                <span class="text-[10px] font-bold">100%</span>
+                                            </div>
+                                            <div class="w-full h-1 bg-white/20 rounded-full overflow-hidden mb-4">
+                                                <div class="h-full bg-pink-500 w-full shadow-[0_0_10px_rgba(255,255,255,0.5)]"></div>
+                                            </div>
+                                            <div class="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-widest border border-white/30 rounded-full px-3 py-1 bg-white/10 backdrop-blur-md w-max">
+                                                <i class="fas fa-fingerprint text-pink-500"></i> Access Profile
+                                            </div>
                                         </div>
                                     </div>
-                                    <h3 class="text-2xl font-extrabold text-ikf-blue group-hover:text-white transition-colors mb-1">Anuja Kapoor</h3>
-                                    <p class="text-ikf-yellow text-[11px] font-black uppercase tracking-widest mb-4">Director</p>
-                                    <p class="text-slate-500 group-hover:text-blue-100 text-sm leading-relaxed mb-6">Anuja leads the creative and brand strategy units...</p>
-                                    <div class="w-10 h-10 rounded-full bg-slate-50 group-hover:bg-white/10 flex items-center justify-center text-ikf-blue group-hover:text-white transition-all">
-                                        <i class="fas fa-chevron-right text-xs"></i>
+                                    
+                                    <div class="px-4 pb-4 text-center">
+                                        <h3 class="text-2xl font-black text-slate-800 group-hover:text-ikf-blue transition-colors mb-1">Anuja Kapoor</h3>
+                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">The Soul (Director)</p>
+                                        
+                                        <div class="flex justify-center gap-1 opacity-20 group-hover:opacity-100 transition-opacity duration-700">
+                                            <div class="w-1 h-1 bg-pink-500 rounded-full"></div>
+                                            <div class="w-1 h-1 bg-pink-500 rounded-full"></div>
+                                            <div class="w-8 h-1 bg-pink-500 rounded-full"></div>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="absolute inset-4 bg-pink-500/30 rounded-[3rem] blur-2xl -z-10 group-hover:blur-3xl transition-all opacity-0 group-hover:opacity-70"></div>
                             </div>
                         </div>
 
-                        <!-- Leader Modal -->
-                        <div id="leader-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-                            <div class="absolute inset-0 bg-ikf-blue/90 backdrop-blur-xl" onclick="AppNavigation.hideModal()"></div>
-                            <div class="bg-white w-full max-w-4xl rounded-[3rem] overflow-hidden relative shadow-2xl scale-95 opacity-0 transition-all duration-500 border border-white/20" id="modal-content">
-                                <button class="absolute top-8 right-8 w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-ikf-blue hover:text-white transition-all z-10" onclick="AppNavigation.hideModal()"><i class="fas fa-times text-xl"></i></button>
-                                <div class="flex flex-col md:flex-row">
-                                    <div class="md:w-2/5 p-12 bg-slate-50 flex flex-col justify-center items-center text-center">
-                                        <div class="w-48 h-48 bg-white rounded-[2.5rem] mb-8 shadow-2xl ring-8 ring-white overflow-hidden flex items-center justify-center">
-                                            <i class="fas fa-user-tie text-7xl text-slate-100"></i>
+                        <!--Enhanced Leader Modal-- >
+                    <div id="leader-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+                        <div class="absolute inset-0 bg-slate-900/90 backdrop-blur-2xl" onclick="AppNavigation.hideModal()">
+                            <!-- Matrix Rain / Cyber Overlay can be added here -->
+                            <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/circuit-board.png')]"></div>
+                        </div>
+                        <div class="bg-white w-full max-w-5xl rounded-[3rem] overflow-hidden relative shadow-2xl scale-95 opacity-0 transition-all duration-500 border border-white/20 flex flex-col md:flex-row" id="modal-content">
+
+                            <button class="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-slate-400 hover:bg-red-500 hover:text-white transition-all z-50 border border-white/20" onclick="AppNavigation.hideModal()"><i class="fas fa-times text-xl"></i></button>
+
+                            <!-- Left Panel: Avatar & Stats -->
+                            <div class="md:w-2/5 relative bg-slate-100 overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-br from-ikf-blue to-slate-900 opacity-90"></div>
+                                <div class="relative z-10 h-full flex flex-col items-center justify-center p-12 text-center text-white">
+                                    <div class="w-40 h-40 rounded-[2.5rem] p-1 bg-gradient-to-br from-ikf-yellow to-transparent mb-6 shadow-2xl">
+                                        <div class="w-full h-full rounded-[2.3rem] overflow-hidden bg-slate-800">
+                                            <!-- Dynamic Avatar injection could happen here, simpler to just use icons or text for now -->
+                                            <i class="fas fa-user-astronaut text-6xl mt-10 text-white/50"></i>
                                         </div>
-                                        <h4 id="modal-leader-name" class="text-3xl font-black text-ikf-blue mb-2"></h4>
-                                        <p id="modal-leader-role" class="text-ikf-yellow font-black uppercase tracking-[0.2em] text-[10px]"></p>
                                     </div>
-                                    <div class="md:w-3/5 p-12 lg:p-16 flex flex-col justify-center">
-                                        <i class="fas fa-quote-left text-5xl text-ikf-yellow/20 mb-6"></i>
-                                        <h3 class="text-3xl font-extrabold text-ikf-blue mb-8 leading-tight">Driving the future <br/>of digital growth.</h3>
-                                        <div id="modal-leader-note" class="text-slate-500 text-lg leading-relaxed space-y-6"></div>
+                                    <h4 id="modal-leader-name" class="text-3xl font-black mb-2 leading-none"></h4>
+                                    <p id="modal-leader-role" class="text-ikf-yellow font-bold uppercase tracking-widest text-xs mb-8"></p>
+
+                                    <div class="grid grid-cols-2 gap-4 w-full">
+                                        <div class="bg-white/10 rounded-2xl p-4 backdrop-blur-sm">
+                                            <p class="text-2xl font-black">25+</p>
+                                            <p class="text-[9px] uppercase tracking-widest opacity-60">Years</p>
+                                        </div>
+                                        <div class="bg-white/10 rounded-2xl p-4 backdrop-blur-sm">
+                                            <p class="text-2xl font-black">TOP</p>
+                                            <p class="text-[9px] uppercase tracking-widest opacity-60">Tier</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Right Panel: Content -->
+                            <div class="md:w-3/5 p-12 lg:p-16 bg-white relative">
+                                <i class="fas fa-quote-left text-6xl text-slate-100 absolute top-10 left-10 -z-0"></i>
+                                <div class="relative z-10">
+                                    <h3 class="text-2xl font-black text-slate-900 mb-8 uppercase tracking-wide flex items-center gap-3">
+                                        <span class="w-2 h-2 bg-ikf-blue rounded-full"></span>
+                                        Vision Archive
+                                    </h3>
+                                    <div id="modal-leader-note" class="text-slate-500 text-lg leading-relaxed space-y-6 font-medium"></div>
+
+                                    <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                                        <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div> Status: Online
+                                        </div>
+                                        <button onclick="AppNavigation.hideModal()" class="text-ikf-blue font-black text-xs uppercase tracking-widest hover:text-ikf-yellow transition-colors">Close Terminal <i class="fas fa-arrow-right ml-1"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
+                    </div>
                     </div>`;
 
             case 'org-chart':
                 return `
-                    <div class="max-w-7xl mx-auto py-10 fade-in">
+                    <div class="max-w-7xl mx-auto py-6 fade-in">
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">System Architecture</span>
-                            <h1 class="text-4xl md:text-5xl font-extrabold text-ikf-blue tracking-tight">The Ecosystem Hierarchy</h1>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">The Ecosystem <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Hierarchy</span></h1>
                         </div>
                         
                         <div class="bg-white p-12 lg:p-12 rounded-[3.5rem] premium-card overflow-x-auto min-h-[700px] flex justify-center">
@@ -522,25 +675,14 @@ window.AppNavigation = {
                                 </div>
                             </div>
                         </div>
-
-                        <div class="mt-20 bg-slate-900 p-12 lg:p-16 rounded-[4rem] text-white flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden premium-card">
-                            <div class="absolute top-0 right-0 w-96 h-96 bg-ikf-yellow/10 rounded-full -mr-48 -mt-48 blur-[100px]"></div>
-                            <div class="z-10 flex-1">
-                                <h3 class="text-3xl font-extrabold mb-4">Functional Deep-Dive</h3>
-                                <p class="text-slate-400 max-w-lg">Now that you've seen the hierarchy, let's explore the specialized toolsets and responsibilities of each department.</p>
-                            </div>
-                            <button onclick="AppNavigation.navigateTo('departments')" class="z-10 group bg-ikf-yellow text-white px-10 py-5 rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-white hover:text-ikf-blue transition-all flex items-center gap-4">
-                                Explorer Departments <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
                     </div>`;
 
             case 'departments':
                 return `
-                    <div class="max-w-7xl mx-auto py-10 fade-in">
+                    <div class="max-w-7xl mx-auto py-6 fade-in">
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Execution Engine</span>
-                            <h1 class="text-4xl md:text-5xl font-extrabold text-ikf-blue tracking-tight">Our Specialized Units</h1>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">Our Specialized <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Units</span></h1>
                             <p class="mt-4 text-slate-400 max-w-2xl">Explore our four pillars of digital excellence. Click on any specialized service to visit its dedicated page on our main website.</p>
                         </div>
                         
@@ -678,15 +820,6 @@ window.AppNavigation = {
                             </div>
                         </div>
 
-                        <div class="bg-ikf-blue p-12 lg:p-16 rounded-[4rem] text-white flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden premium-card">
-                            <div class="absolute bottom-0 right-0 w-64 h-64 bg-white/5 rounded-full -mb-32 -mr-32 animate-pulse"></div>
-                            <div class="z-10 flex-1">
-                                <h3 class="text-3xl font-extrabold mb-4">The Human Capital</h3>
-                                <p class="text-blue-100 max-w-lg">Every great unit is powered by exceptional talent. Meet the individuals who form the backbone of IKF.</p>
-                            </div>
-                            <button onclick="AppNavigation.navigateTo('directory')" class="z-10 group bg-ikf-yellow text-white px-10 py-5 rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-white hover:text-ikf-blue transition-all flex items-center gap-4 shadow-lg shadow-ikf-yellow/20">
-                                Browse Directory <i class="fas fa-people-group group-hover:scale-110 transition-transform"></i>
-                            </button>
                         </div>
                     </div>`;
 
@@ -697,66 +830,89 @@ window.AppNavigation = {
                 }
 
                 return `
-                    <div class="max-w-7xl mx-auto py-10 fade-in">
-                        <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
-                            <div>
-                                <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Team Matrix</span>
-                                <h1 class="text-4xl md:text-5xl font-extrabold text-ikf-blue tracking-tight">The Minds of IKF</h1>
+                    <div class="max-w-7xl mx-auto py-6 fade-in">
+                        <!--Creative Header / Dashboard-->
+                        <div class="mb-16">
+                            <div class="flex flex-col md:flex-row items-end justify-between gap-8 mb-10">
+                                <div>
+                                    <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block animate-pulse">Live Neural Network</span>
+                                    <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tighter leading-none mb-2">
+                                        The <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Collective.</span>
+                                    </h1>
+                                    <p class="text-slate-400 font-medium max-w-xl text-sm">Accessing biosignatures of ${this.employees ? this.employees.length : '60+'} active agents operating across the IKF ecosystem.</p>
+                                </div>
+                                
+                                <!-- Live Stats Ticker -->
+                                <div class="flex gap-4">
+                                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-lg text-center min-w-[100px] hover:-translate-y-1 transition-transform">
+                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Active</p>
+                                        <p class="text-2xl font-black text-ikf-blue">100<span class="text-sm align-top">%</span></p>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-lg text-center min-w-[100px] hover:-translate-y-1 transition-transform">
+                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Depts</p>
+                                        <p class="text-2xl font-black text-ikf-yellow">05</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="flex flex-col sm:flex-row gap-4">
-                                <div class="relative group z-20">
-                                    <i class="fas fa-filter absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-hover:text-ikf-blue transition-colors text-xs"></i>
-                                    <select id="dept-filter" class="pl-10 pr-10 py-3.5 bg-white border border-slate-100 rounded-2xl text-xs font-bold text-slate-500 focus:ring-4 focus:ring-ikf-blue/5 outline-none appearance-none cursor-pointer premium-card shadow-sm hover:shadow-md transition-all w-full sm:w-48" onchange="AppNavigation.filterDirectory()">
+
+                            <!-- Floating Search & Filter Bar -->
+                            <div class="bg-white p-4 rounded-[2rem] shadow-xl shadow-ikf-blue/5 border border-slate-50 flex flex-col lg:flex-row gap-4 items-center relative z-30">
+                                <!-- Search -->
+                                <div class="relative flex-1 w-full group">
+                                    <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                                        <i class="fas fa-fingerprint text-slate-300 group-focus-within:text-ikf-blue transition-colors text-lg"></i>
+                                    </div>
+                                    <input type="text" id="directory-search" 
+                                        class="block w-full pl-14 pr-6 py-4 bg-slate-50 border-2 border-transparent rounded-3xl text-sm font-bold text-slate-700 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-ikf-blue/20 focus:ring-4 focus:ring-ikf-blue/5 transition-all" 
+                                        placeholder="Scan for agent name or clearance level..." 
+                                        oninput="AppNavigation.filterDirectory()">
+                                    <div class="absolute inset-y-0 right-4 flex items-center">
+                                        <span class="px-2 py-1 bg-white rounded-lg text-[10px] font-bold text-slate-300 border border-slate-100 shadow-sm">CTRL + K</span>
+                                    </div>
+                                </div>
+
+                                <!-- Destroyer Line (Mobile) -->
+                                <div class="w-full h-px bg-slate-100 lg:w-px lg:h-12"></div>
+
+                                <!-- Filter Dropdown -->
+                                <div class="relative min-w-[200px] w-full lg:w-auto group">
+                                    <i class="fas fa-layer-group absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-hover:text-ikf-yellow transition-colors"></i>
+                                    <select id="dept-filter" class="w-full pl-12 pr-10 py-4 bg-slate-50 border-2 border-transparent rounded-3xl text-sm font-bold text-slate-600 focus:outline-none focus:bg-white focus:border-ikf-yellow/30 cursor-pointer hover:bg-white transition-colors appearance-none" onchange="AppNavigation.filterDirectory()">
                                         <option value="all">All Ecosystems</option>
-                                        <option value="Management">Management</option>
+                                        <option value="Management">Management Core</option>
                                         <option value="Web Development">Web Development</option>
                                         <option value="Digital Marketing">Digital Marketing</option>
-                                        <option value="Branding">Branding</option>
+                                        <option value="Branding">Branding Unit</option>
                                         <option value="App Development">App Development</option>
                                     </select>
-                                    <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] pointer-events-none"></i>
-                                </div>
-                                <div class="relative group z-20">
-                                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-ikf-blue transition-colors text-xs"></i>
-                                    <input type="text" id="directory-search" placeholder="Search by name or role..." class="pl-10 pr-6 py-3.5 bg-white border border-slate-100 rounded-2xl text-xs font-bold text-slate-500 w-full sm:w-64 focus:ring-4 focus:ring-ikf-blue/5 outline-none premium-card shadow-sm hover:shadow-md transition-all" oninput="AppNavigation.filterDirectory()">
+                                    <i class="fas fa-chevron-down absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 text-xs pointer-events-none"></i>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Quick Filters -->
-                        <div class="flex flex-wrap gap-2 mb-10">
-                            <button onclick="AppNavigation.quickFilter('all')" class="px-4 py-2 bg-ikf-blue text-white rounded-xl text-[10px] font-bold shadow-lg shadow-ikf-blue/20 hover:scale-105 transition-transform">All</button>
-                            <button onclick="AppNavigation.quickFilter('Web Development')" class="px-4 py-2 bg-white text-slate-500 hover:text-ikf-blue rounded-xl text-[10px] font-bold border border-slate-100 hover:border-ikf-blue/30 transition-all">Web Dev</button>
-                            <button onclick="AppNavigation.quickFilter('Digital Marketing')" class="px-4 py-2 bg-white text-slate-500 hover:text-ikf-blue rounded-xl text-[10px] font-bold border border-slate-100 hover:border-ikf-blue/30 transition-all">Marketing</button>
-                            <button onclick="AppNavigation.quickFilter('Branding')" class="px-4 py-2 bg-white text-slate-500 hover:text-ikf-blue rounded-xl text-[10px] font-bold border border-slate-100 hover:border-ikf-blue/30 transition-all">Branding</button>
-                            <button onclick="AppNavigation.quickFilter('App Development')" class="px-4 py-2 bg-white text-slate-500 hover:text-ikf-blue rounded-xl text-[10px] font-bold border border-slate-100 hover:border-ikf-blue/30 transition-all">App Dev</button>
+                        <!--Quick Filters Pills(Visual Only)-->
+                        <div class="flex flex-wrap justify-center gap-3 mb-12 opacity-60 hover:opacity-100 transition-opacity">
+                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-300 py-2">Quick Access:</span>
+                            <button onclick="AppNavigation.quickFilter('Web Development')" class="px-4 py-1.5 bg-white/50 hover:bg-white text-slate-400 hover:text-ikf-blue rounded-full text-[10px] font-bold border border-transparent hover:border-ikf-blue/20 transition-all hover:shadow-lg">Web Dev</button>
+                            <button onclick="AppNavigation.quickFilter('Digital Marketing')" class="px-4 py-1.5 bg-white/50 hover:bg-white text-slate-400 hover:text-ikf-blue rounded-full text-[10px] font-bold border border-transparent hover:border-ikf-blue/20 transition-all hover:shadow-lg">Marketing</button>
+                            <button onclick="AppNavigation.quickFilter('Branding')" class="px-4 py-1.5 bg-white/50 hover:bg-white text-slate-400 hover:text-ikf-blue rounded-full text-[10px] font-bold border border-transparent hover:border-ikf-blue/20 transition-all hover:shadow-lg">Branding</button>
                         </div>
 
-                        <!-- Dynamic Grid -->
-                        <div id="directory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-20 fade-in-up">
-                            <!-- Content will be injected by renderDirectory() -->
-                        </div>
-
-                        <div class="bg-gradient-to-br from-ikf-yellow to-orange-500 p-12 lg:p-16 rounded-[4rem] text-white flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden premium-card">
-                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                            <div class="z-10 flex-1">
-                                <h3 class="text-3xl font-extrabold mb-4">Foundational DNA</h3>
-                                <p class="text-white/80 max-w-lg">What does I-K-F actually stand for? Dive into the core philosophy that drives our daily operations.</p>
-                            </div>
-                            <button onclick="AppNavigation.navigateTo('philosophy')" class="z-10 group bg-white text-ikf-blue px-10 py-5 rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all flex items-center gap-4">
-                                Discover Philosophy <i class="fas fa-microchip"></i>
-                            </button>
-                        </div>
+                        <!--Dynamic Grid-->
+                    <div id="directory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 px-4 sm:px-0">
+                        <!-- Content will be injected by renderDirectory() -->
                     </div>
-                `;
+
+                        </div>
+                    </div>`;
 
             case 'philosophy':
                 return `
-                    <div class="max-w-6xl mx-auto py-10 fade-in">
+                    <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Core Directives</span>
                             <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tighter leading-none mb-4">
-                                I • K • F <br/><span class="text-slate-400 text-2xl md:text-3xl font-light">The DNA of Our Identity</span>
+                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">I • K • F</span> <br/><span class="text-slate-400 text-2xl md:text-3xl font-light">The DNA of Our Identity</span>
                             </h1>
                         </div>
 
@@ -796,24 +952,15 @@ window.AppNavigation = {
                             </div>
                         </div>
 
-                        <div class="bg-slate-900 p-12 lg:p-16 rounded-[4rem] text-white flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden premium-card">
-                            <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,rgba(14,0,87,0.5),transparent)]"></div>
-                            <div class="z-10 flex-1">
-                                <h3 class="text-3xl font-extrabold mb-4">The Horizon</h3>
-                                <p class="text-slate-400 max-w-lg">Our philosophy is anchored in our Mission & Vision. Explore how we translate values into global impact.</p>
-                            </div>
-                            <button onclick="AppNavigation.navigateTo('mission')" class="z-10 group bg-ikf-yellow text-white px-10 py-5 rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-white hover:text-ikf-blue transition-all flex items-center gap-4">
-                                Target: Mission <i class="fas fa-bullseye"></i>
-                            </button>
                         </div>
                     </div>`;
 
             case 'mission':
                 return `
-                    <div class="max-w-6xl mx-auto py-10 fade-in">
+                    <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Strategic Compass</span>
-                            <h1 class="text-4xl md:text-5xl font-extrabold text-ikf-blue tracking-tight">Mission & Vision</h1>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">Mission & <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Vision</span></h1>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20">
@@ -882,28 +1029,19 @@ window.AppNavigation = {
                             </div>
                         </div>
 
-                        <button onclick="AppNavigation.navigateTo('culture')" class="w-full bg-slate-900 p-8 rounded-[2.5rem] flex items-center justify-between text-white premium-card group hover:bg-ikf-blue transition-all">
-                            <div class="flex items-center gap-6">
-                                <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center"><i class="fas fa-heart text-ikf-yellow"></i></div>
-                                <div class="text-left">
-                                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-ikf-yellow mb-1">Next Evolution</p>
-                                    <p class="text-xl font-bold">Immerse in Our Culture</p>
-                                </div>
-                            </div>
-                            <i class="fas fa-arrow-right text-2xl opacity-30 group-hover:opacity-100 group-hover:translate-x-2 transition-all"></i>
-                        </button>
+                        </div>
                     </div>`;
 
             case 'culture':
                 return `
-                    <div class="max-w-7xl mx-auto py-10 fade-in">
+                    <div class="max-w-7xl mx-auto py-6 fade-in">
                         <div class="mb-16 text-center">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">System Core</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">The IKF Culture Code</h1>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">The IKF Culture <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Code</span></h1>
                             <p class="text-slate-400 mt-4 max-w-2xl mx-auto text-sm font-medium">Running on version 4.0. Optimized for high performance, creativity, and human-centric processing.</p>
                         </div>
 
-                        <!-- Culture Stats Grid -->
+                        <!--Culture Stats Grid-->
                         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                             <div class="p-8 bg-white rounded-[2.5rem] shadow-lg hover:shadow-xl transition-all border border-slate-50 text-center group cursor-pointer hover:-translate-y-2">
                                 <div class="w-16 h-16 rounded-2xl bg-blue-50 text-ikf-blue flex items-center justify-center mx-auto mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-laugh-beam"></i></div>
@@ -927,71 +1065,71 @@ window.AppNavigation = {
                             </div>
                         </div>
 
-                        <!-- Main Culture Modules -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 h-[600px] md:h-auto">
-                            <!-- Left: Smart Values -->
-                            <div class="md:col-span-2 space-y-6">
-                                <div class="bg-gradient-to-br from-ikf-blue to-slate-900 rounded-[3rem] p-10 md:p-14 text-white relative overflow-hidden group">
-                                    <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-ikf-yellow/20 transition-colors duration-700"></div>
-                                    <div class="relative z-10">
-                                        <div class="flex items-center gap-4 mb-8">
-                                            <span class="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-mono border border-white/20">values.json</span>
-                                            <div class="h-[1px] flex-1 bg-white/10"></div>
-                                        </div>
-                                        <h3 class="text-3xl md:text-5xl font-black mb-6 leading-tight">We Debug <br/><span class="text-ikf-yellow">Problems</span>, Not People.</h3>
-                                        <p class="text-slate-300 max-w-lg text-sm leading-relaxed mb-8">In a high-pressure agency environment, we prioritize psychological safety. Mistakes are compile errors, not fatal crashes. We fix them together.</p>
-                                        <div class="flex gap-4">
-                                            <div class="flex -space-x-4">
-                                                <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-700"></div>
-                                                <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-600"></div>
-                                                <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-500 flex items-center justify-center text-[10px] font-bold">+</div>
-                                            </div>
-                                            <div class="flex items-center gap-2 text-xs font-bold text-ikf-yellow">
-                                                <i class="fas fa-check-circle"></i>
-                                                <span>Collaboration Mode: Active</span>
-                                            </div>
-                                        </div>
+                        <!--Main Culture Modules-->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 h-[600px] md:h-auto">
+                        <!-- Left: Smart Values -->
+                        <div class="md:col-span-2 space-y-6">
+                            <div class="bg-gradient-to-br from-ikf-blue to-slate-900 rounded-[3rem] p-10 md:p-14 text-white relative overflow-hidden group">
+                                <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-ikf-yellow/20 transition-colors duration-700"></div>
+                                <div class="relative z-10">
+                                    <div class="flex items-center gap-4 mb-8">
+                                        <span class="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-mono border border-white/20">values.json</span>
+                                        <div class="h-[1px] flex-1 bg-white/10"></div>
                                     </div>
-                                </div>
-
-                                <div class="grid grid-cols-2 gap-6">
-                                    <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group">
-                                        <i class="fas fa-rocket text-3xl text-ikf-blue mb-4 group-hover:scale-110 transition-transform block"></i>
-                                        <h4 class="font-black text-lg mb-2">Growth Mindset</h4>
-                                        <p class="text-xs text-slate-400">Fail fast, learn faster.</p>
-                                    </div>
-                                    <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group">
-                                        <i class="fas fa-coffee text-3xl text-ikf-yellow mb-4 group-hover:scale-110 transition-transform block"></i>
-                                        <h4 class="font-black text-lg mb-2">Fuel Creativity</h4>
-                                        <p class="text-xs text-slate-400">Caffeine & Ideas.</p>
+                                    <h3 class="text-3xl md:text-5xl font-black mb-6 leading-tight">We Debug <br /><span class="text-ikf-yellow">Problems</span>, Not People.</h3>
+                                    <p class="text-slate-300 max-w-lg text-sm leading-relaxed mb-8">In a high-pressure agency environment, we prioritize psychological safety. Mistakes are compile errors, not fatal crashes. We fix them together.</p>
+                                    <div class="flex gap-4">
+                                        <div class="flex -space-x-4">
+                                            <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-700"></div>
+                                            <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-600"></div>
+                                            <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-500 flex items-center justify-center text-[10px] font-bold">+</div>
+                                        </div>
+                                        <div class="flex items-center gap-2 text-xs font-bold text-ikf-yellow">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Collaboration Mode: Active</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Right: Life Gallery (Smart Vertical) -->
-                            <div class="bg-slate-50 rounded-[3rem] p-4 flex flex-col gap-4 overflow-hidden relative border border-slate-100">
-                                <div class="absolute top-8 left-8 z-10 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-black shadow-sm">
-                                    <i class="fas fa-camera text-ikf-blue mr-2"></i> Life @ IKF
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+                                    <i class="fas fa-rocket text-3xl text-ikf-blue mb-4 group-hover:scale-110 transition-transform block"></i>
+                                    <h4 class="font-black text-lg mb-2">Growth Mindset</h4>
+                                    <p class="text-xs text-slate-400">Fail fast, learn faster.</p>
                                 </div>
-                                <div class="flex-1 rounded-[2.5rem] bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
-                                <div class="h-40 rounded-[2.5rem] bg-ikf-yellow/10 flex items-center justify-center relative overflow-hidden group cursor-pointer">
-                                    <div class="absolute inset-0 bg-ikf-yellow/80 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center">
-                                        <span class="text-white font-black uppercase text-xs tracking-widest">View Gallery</span>
-                                    </div>
-                                    <span class="text-ikf-blue/30 font-black text-xl rotate-12 group-hover:rotate-0 transition-transform">#TeamBonding</span>
+                                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+                                    <i class="fas fa-coffee text-3xl text-ikf-yellow mb-4 group-hover:scale-110 transition-transform block"></i>
+                                    <h4 class="font-black text-lg mb-2">Fuel Creativity</h4>
+                                    <p class="text-xs text-slate-400">Caffeine & Ideas.</p>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Right: Life Gallery (Smart Vertical) -->
+                        <div class="bg-slate-50 rounded-[3rem] p-4 flex flex-col gap-4 overflow-hidden relative border border-slate-100">
+                            <div class="absolute top-8 left-8 z-10 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-black shadow-sm">
+                                <i class="fas fa-camera text-ikf-blue mr-2"></i> Life @ IKF
+                            </div>
+                            <div class="flex-1 rounded-[2.5rem] bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                            <div class="h-40 rounded-[2.5rem] bg-ikf-yellow/10 flex items-center justify-center relative overflow-hidden group cursor-pointer">
+                                <div class="absolute inset-0 bg-ikf-yellow/80 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center">
+                                    <span class="text-white font-black uppercase text-xs tracking-widest">View Gallery</span>
+                                </div>
+                                <span class="text-ikf-blue/30 font-black text-xl rotate-12 group-hover:rotate-0 transition-transform">#TeamBonding</span>
+                            </div>
+                        </div>
                     </div>
-                `;
+                    </div >
+                    `;
 
             case 'social':
                 return `
-                    <div class="max-w-7xl mx-auto py-10 fade-in">
+                    <div class="max-w-7xl mx-auto py-6 fade-in">
                         <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
                             <div>
                                 <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Digital Command Center</span>
-                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">The Ecosystem</h1>
+                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">The <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Ecosystem</span></h1>
                             </div>
                             <div class="flex items-center gap-2 text-green-500 font-bold text-xs bg-green-50 px-4 py-2 rounded-full border border-green-100 animate-pulse">
                                 <div class="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -999,7 +1137,7 @@ window.AppNavigation = {
                             </div>
                         </div>
 
-                        <!-- Live Stats Grid -->
+                        <!--Live Stats Grid-->
                         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
                             <!-- LinkedIn -->
                             <a href="https://www.linkedin.com/company/i-knowledge-factory-pvt.-ltd./" target="_blank" class="group bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all relative overflow-hidden">
@@ -1054,77 +1192,68 @@ window.AppNavigation = {
                             </a>
                         </div>
 
-                        <!-- Recent Transmissions (Feed Simulation) -->
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20 md:h-96">
-                            <!-- Featured Post -->
-                            <div class="lg:col-span-2 bg-gradient-to-br from-slate-900 to-ikf-blue rounded-[3rem] p-10 text-white relative overflow-hidden group">
-                                <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80')] bg-cover bg-center opacity-20 group-hover:scale-105 transition-transform duration-700"></div>
-                                <div class="absolute top-8 right-8 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/20">
-                                    Latest Transmission
-                                </div>
-                                <div class="relative z-10 h-full flex flex-col justify-end">
-                                    <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-6">
-                                        <i class="fas fa-play text-white ml-1"></i>
-                                    </div>
-                                    <h3 class="text-2xl md:text-4xl font-black leading-tight mb-4">"The Future of AI in Marketing"</h3>
-                                    <p class="text-blue-100 max-w-lg text-sm leading-relaxed mb-8 line-clamp-2">Our Director, Ashish Dalia, breaks down how generative AI is reshaping the agency landscape. Watch the full keynote now.</p>
-                                    <a href="https://www.youtube.com/c/IKFDigital" target="_blank" class="inline-flex items-center gap-3 text-xs font-bold uppercase tracking-widest hover:text-ikf-yellow transition-colors">
-                                        Watch Video <i class="fas fa-arrow-right"></i>
-                                    </a>
-                                </div>
+                        <!--Recent Transmissions(Feed Simulation)-->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20 md:h-96">
+                        <!-- Featured Post -->
+                        <div class="lg:col-span-2 bg-gradient-to-br from-slate-900 to-ikf-blue rounded-[3rem] p-10 text-white relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80')] bg-cover bg-center opacity-20 group-hover:scale-105 transition-transform duration-700"></div>
+                            <div class="absolute top-8 right-8 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/20">
+                                Latest Transmission
                             </div>
+                            <div class="relative z-10 h-full flex flex-col justify-end">
+                                <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-6">
+                                    <i class="fas fa-play text-white ml-1"></i>
+                                </div>
+                                <h3 class="text-2xl md:text-4xl font-black leading-tight mb-4">"The Future of AI in Marketing"</h3>
+                                <p class="text-blue-100 max-w-lg text-sm leading-relaxed mb-8 line-clamp-2">Our Director, Ashish Dalia, breaks down how generative AI is reshaping the agency landscape. Watch the full keynote now.</p>
+                                <a href="https://www.youtube.com/c/IKFDigital" target="_blank" class="inline-flex items-center gap-3 text-xs font-bold uppercase tracking-widest hover:text-ikf-yellow transition-colors">
+                                    Watch Video <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
 
-                            <!-- Feed List -->
-                            <div class="bg-white rounded-[3rem] p-8 border border-slate-100 shadow-sm flex flex-col">
-                                <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6">Recent Activity</h4>
-                                <div class="flex-1 space-y-6 overflow-hidden">
-                                    <div class="flex gap-4 group cursor-pointer">
-                                        <div class="w-12 h-12 rounded-xl bg-slate-100 flex-shrink-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80')"></div>
-                                        <div>
-                                            <p class="text-xs font-bold text-slate-700 leading-tight mb-1 group-hover:text-ikf-blue transition-colors">IKF celebrates 23 years of excellence! 🎉</p>
-                                            <p class="text-[10px] text-slate-400">2 hours ago • Instagram</p>
-                                        </div>
+                        <!-- Feed List -->
+                        <div class="bg-white rounded-[3rem] p-8 border border-slate-100 shadow-sm flex flex-col">
+                            <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6">Recent Activity</h4>
+                            <div class="flex-1 space-y-6 overflow-hidden">
+                                <div class="flex gap-4 group cursor-pointer">
+                                    <div class="w-12 h-12 rounded-xl bg-slate-100 flex-shrink-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80')"></div>
+                                    <div>
+                                        <p class="text-xs font-bold text-slate-700 leading-tight mb-1 group-hover:text-ikf-blue transition-colors">IKF celebrates 23 years of excellence! 🎉</p>
+                                        <p class="text-[10px] text-slate-400">2 hours ago • Instagram</p>
                                     </div>
-                                    <div class="flex gap-4 group cursor-pointer">
-                                        <div class="w-12 h-12 rounded-xl bg-slate-100 flex-shrink-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80')"></div>
-                                        <div>
-                                            <p class="text-xs font-bold text-slate-700 leading-tight mb-1 group-hover:text-ikf-blue transition-colors">We are hiring! Join our creative team. 🚀</p>
-                                            <p class="text-[10px] text-slate-400">5 hours ago • LinkedIn</p>
-                                        </div>
+                                </div>
+                                <div class="flex gap-4 group cursor-pointer">
+                                    <div class="w-12 h-12 rounded-xl bg-slate-100 flex-shrink-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80')"></div>
+                                    <div>
+                                        <p class="text-xs font-bold text-slate-700 leading-tight mb-1 group-hover:text-ikf-blue transition-colors">We are hiring! Join our creative team. 🚀</p>
+                                        <p class="text-[10px] text-slate-400">5 hours ago • LinkedIn</p>
                                     </div>
-                                    <div class="flex gap-4 group cursor-pointer">
-                                        <div class="w-12 h-12 rounded-xl bg-slate-100 flex-shrink-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80')"></div>
-                                        <div>
-                                            <p class="text-xs font-bold text-slate-700 leading-tight mb-1 group-hover:text-ikf-blue transition-colors">New case study: Rebranding a tech giant.</p>
-                                            <p class="text-[10px] text-slate-400">1 day ago • Behance</p>
-                                        </div>
+                                </div>
+                                <div class="flex gap-4 group cursor-pointer">
+                                    <div class="w-12 h-12 rounded-xl bg-slate-100 flex-shrink-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80')"></div>
+                                    <div>
+                                        <p class="text-xs font-bold text-slate-700 leading-tight mb-1 group-hover:text-ikf-blue transition-colors">New case study: Rebranding a tech giant.</p>
+                                        <p class="text-[10px] text-slate-400">1 day ago • Behance</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="bg-indigo-900 p-12 lg:p-16 rounded-[4rem] text-white flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden premium-card">
-                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10"></div>
-                            <div class="z-10 text-left">
-                                <h3 class="text-3xl font-extrabold mb-4">Grow the Family</h3>
-                                <p class="text-indigo-200 max-w-lg">Identify talent and earn rewards through our official Referral Program.</p>
-                            </div>
-                            <button onclick="AppNavigation.navigateTo('referral')" class="z-10 group bg-white text-indigo-900 px-10 py-5 rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-ikf-yellow hover:text-white transition-all flex items-center gap-4">
-                                Referral Policy <i class="fas fa-user-plus"></i>
-                            </button>
                         </div>
                     </div>`;
 
             case 'referral':
                 return `
-                    <div class="max-w-6xl mx-auto py-10 fade-in">
+                    <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16 text-center">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Talent Acquisition Protocol</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">The Bounty Board</h1>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">The Bounty <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Board</span></h1>
                             <p class="text-slate-400 mt-4 max-w-lg mx-auto text-sm font-medium">Earn rewards by expanding our intelligence network. Quality over quantity.</p>
                         </div>
 
-                        <!-- Bounty Tiers -->
+                        <!--Bounty Tiers-->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 px-4">
                             <!-- Tier 1 -->
                             <div class="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-xl hover:-translate-y-2 transition-transform duration-500 relative overflow-hidden group">
@@ -1186,52 +1315,52 @@ window.AppNavigation = {
                             </div>
                         </div>
 
-                        <!-- Process Flow "Smart Path" -->
-                        <div class="bg-slate-50 rounded-[4rem] p-12 lg:p-16 relative overflow-hidden">
-                            <div class="absolute left-1/2 top-0 bottom-0 w-[1px] bg-slate-200 -translate-x-1/2 hidden md:block"></div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
-                                <div class="text-right pr-0 md:pr-12 md:pt-12">
-                                    <div class="inline-block p-6 bg-white rounded-[2rem] shadow-lg mb-4 hover:scale-105 transition-transform">
-                                        <i class="fas fa-fingerprint text-3xl text-ikf-blue"></i>
-                                    </div>
-                                    <h3 class="text-xl font-black text-slate-800">1. Identify</h3>
-                                    <p class="text-xs text-slate-500 mt-2 font-medium">Locate a candidate matching our cultural code.</p>
+                        <!--Process Flow "Smart Path" -->
+                    <div class="bg-slate-50 rounded-[4rem] p-12 lg:p-16 relative overflow-hidden">
+                        <div class="absolute left-1/2 top-0 bottom-0 w-[1px] bg-slate-200 -translate-x-1/2 hidden md:block"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
+                            <div class="text-right pr-0 md:pr-12 md:pt-12">
+                                <div class="inline-block p-6 bg-white rounded-[2rem] shadow-lg mb-4 hover:scale-105 transition-transform">
+                                    <i class="fas fa-fingerprint text-3xl text-ikf-blue"></i>
                                 </div>
-                                <div class="text-left pl-0 md:pl-12"></div>
-
-                                <div class="text-right pr-0 md:pr-12"></div>
-                                <div class="text-left pl-0 md:pl-12 md:pt-4">
-                                    <div class="inline-block p-6 bg-white rounded-[2rem] shadow-lg mb-4 hover:scale-105 transition-transform">
-                                        <i class="fas fa-file-export text-3xl text-ikf-yellow"></i>
-                                    </div>
-                                    <h3 class="text-xl font-black text-slate-800">2. Submit</h3>
-                                    <p class="text-xs text-slate-500 mt-2 font-medium">Forward coordinates (CV) to HR via secure channel.</p>
-                                </div>
-
-                                <div class="text-right pr-0 md:pr-12 md:pb-12">
-                                    <div class="inline-block p-6 bg-white rounded-[2rem] shadow-lg mb-4 hover:scale-105 transition-transform">
-                                        <i class="fas fa-wallet text-3xl text-green-500"></i>
-                                    </div>
-                                    <h3 class="text-xl font-black text-slate-800">3. Reward</h3>
-                                    <p class="text-xs text-slate-500 mt-2 font-medium">Payment released upon 3-month survival confirmation.</p>
-                                </div>
-                                <div class="text-left pl-0 md:pl-12"></div>
+                                <h3 class="text-xl font-black text-slate-800">1. Identify</h3>
+                                <p class="text-xs text-slate-500 mt-2 font-medium">Locate a candidate matching our cultural code.</p>
                             </div>
-                            
-                            <!-- Central Node -->
-                            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-ikf-blue rounded-full border-4 border-white shadow-xl hidden md:block"></div>
-                            <div class="absolute left-1/2 top-[20%] -translate-x-1/2 w-4 h-4 bg-slate-300 rounded-full border-2 border-white hidden md:block"></div>
-                            <div class="absolute left-1/2 bottom-[20%] -translate-x-1/2 w-4 h-4 bg-slate-300 rounded-full border-2 border-white hidden md:block"></div>
+                            <div class="text-left pl-0 md:pl-12"></div>
+
+                            <div class="text-right pr-0 md:pr-12"></div>
+                            <div class="text-left pl-0 md:pl-12 md:pt-4">
+                                <div class="inline-block p-6 bg-white rounded-[2rem] shadow-lg mb-4 hover:scale-105 transition-transform">
+                                    <i class="fas fa-file-export text-3xl text-ikf-yellow"></i>
+                                </div>
+                                <h3 class="text-xl font-black text-slate-800">2. Submit</h3>
+                                <p class="text-xs text-slate-500 mt-2 font-medium">Forward coordinates (CV) to HR via secure channel.</p>
+                            </div>
+
+                            <div class="text-right pr-0 md:pr-12 md:pb-12">
+                                <div class="inline-block p-6 bg-white rounded-[2rem] shadow-lg mb-4 hover:scale-105 transition-transform">
+                                    <i class="fas fa-wallet text-3xl text-green-500"></i>
+                                </div>
+                                <h3 class="text-xl font-black text-slate-800">3. Reward</h3>
+                                <p class="text-xs text-slate-500 mt-2 font-medium">Payment released upon 3-month survival confirmation.</p>
+                            </div>
+                            <div class="text-left pl-0 md:pl-12"></div>
                         </div>
-                    </div>`;
+
+                        <!-- Central Node -->
+                        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-ikf-blue rounded-full border-4 border-white shadow-xl hidden md:block"></div>
+                        <div class="absolute left-1/2 top-[20%] -translate-x-1/2 w-4 h-4 bg-slate-300 rounded-full border-2 border-white hidden md:block"></div>
+                        <div class="absolute left-1/2 bottom-[20%] -translate-x-1/2 w-4 h-4 bg-slate-300 rounded-full border-2 border-white hidden md:block"></div>
+                    </div>
+                    </div > `;
 
             case 'anniversary':
                 return `
-                    <div class="max-w-7xl mx-auto py-10 fade-in">
+                    <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16 flex flex-col md:flex-row items-center justify-between gap-8">
                             <div>
                                 <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Legacy System</span>
-                                <h1 class="text-4xl md:text-5xl font-extrabold text-ikf-blue tracking-tight">Hall of Fame</h1>
+                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">Hall of <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Fame</span></h1>
                             </div>
                             <div class="bg-slate-900 text-white px-8 py-4 rounded-[2rem] flex items-center gap-4 shadow-xl">
                                 <div class="text-right">
@@ -1242,111 +1371,102 @@ window.AppNavigation = {
                             </div>
                         </div>
 
-                        <!-- Milestone Track -->
-                        <div class="space-y-8 relative">
-                            <div class="absolute left-8 top-0 bottom-0 w-[2px] bg-gradient-to-b from-ikf-blue via-ikf-yellow to-slate-200 hidden md:block"></div>
+                        <!--Milestone Track-->
+                    <div class="space-y-8 relative">
+                        <div class="absolute left-8 top-0 bottom-0 w-[2px] bg-gradient-to-b from-ikf-blue via-ikf-yellow to-slate-200 hidden md:block"></div>
 
-                            <!-- 10 Years -->
-                            <div class="ml-0 md:ml-16 bg-white rounded-[2.5rem] p-8 md:p-10 shadow-lg border-l-8 border-slate-900 group hover:-translate-x-2 transition-transform duration-500">
-                                <div class="flex flex-col md:flex-row items-start md:items-center gap-8">
-                                    <div class="w-24 h-24 bg-slate-900 rounded-full flex items-center justify-center flex-shrink-0 text-white shadow-xl relative">
-                                        <div class="absolute inset-0 border-4 border-slate-100 rounded-full animate-ping opacity-20"></div>
-                                        <span class="text-2xl font-black">10+</span>
-                                        <p class="absolute -bottom-6 text-[10px] font-bold text-slate-900 uppercase tracking-widest">Titan</p>
-                                    </div>
-                                    <div class="flex-1">
-                                        <h3 class="text-xl font-black text-slate-800 mb-4">The Founding Pillars</h3>
-                                        <div class="flex flex-wrap gap-4">
-                                            <div class="flex items-center gap-3 bg-slate-50 pl-2 pr-5 py-2 rounded-full border border-slate-100 hover:bg-slate-900 hover:text-white transition-colors group/pill">
-                                                <img src="images/avatars/ashish_real.jpg" class="w-8 h-8 rounded-full object-cover">
+                        <!-- 10 Years -->
+                        <div class="ml-0 md:ml-16 bg-white rounded-[2.5rem] p-8 md:p-10 shadow-lg border-l-8 border-slate-900 group hover:-translate-x-2 transition-transform duration-500">
+                            <div class="flex flex-col md:flex-row items-start md:items-center gap-8">
+                                <div class="w-24 h-24 bg-slate-900 rounded-full flex items-center justify-center flex-shrink-0 text-white shadow-xl relative">
+                                    <div class="absolute inset-0 border-4 border-slate-100 rounded-full animate-ping opacity-20"></div>
+                                    <span class="text-2xl font-black">10+</span>
+                                    <p class="absolute -bottom-6 text-[10px] font-bold text-slate-900 uppercase tracking-widest">Titan</p>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-black text-slate-800 mb-4">The Founding Pillars</h3>
+                                    <div class="flex flex-wrap gap-4">
+                                        <div class="flex items-center gap-3 bg-slate-50 pl-2 pr-5 py-2 rounded-full border border-slate-100 hover:bg-slate-900 hover:text-white transition-colors group/pill">
+                                            <img src="images/avatars/ashish_real.jpg" class="w-8 h-8 rounded-full object-cover">
                                                 <div class="text-left">
                                                     <p class="text-xs font-bold">Ashish Dalia</p>
                                                     <p class="text-[9px] text-slate-400 group-hover/pill:text-slate-500">Founder</p>
                                                 </div>
-                                            </div>
-                                            <div class="flex items-center gap-3 bg-slate-50 pl-2 pr-5 py-2 rounded-full border border-slate-100 hover:bg-slate-900 hover:text-white transition-colors group/pill">
-                                                <img src="images/avatars/jayraj.png" class="w-8 h-8 rounded-full object-cover">
+                                        </div>
+                                        <div class="flex items-center gap-3 bg-slate-50 pl-2 pr-5 py-2 rounded-full border border-slate-100 hover:bg-slate-900 hover:text-white transition-colors group/pill">
+                                            <img src="images/avatars/jayraj.png" class="w-8 h-8 rounded-full object-cover">
                                                 <div class="text-left">
                                                     <p class="text-xs font-bold">Jayraj Mehta</p>
                                                     <p class="text-[9px] text-slate-400 group-hover/pill:text-slate-500">Director</p>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 5 Years -->
-                            <div class="ml-0 md:ml-16 bg-white rounded-[2.5rem] p-8 md:p-10 shadow-lg border-l-8 border-ikf-blue group hover:-translate-x-2 transition-transform duration-500">
-                                <div class="flex flex-col md:flex-row items-start md:items-center gap-8">
-                                    <div class="w-20 h-20 bg-ikf-blue rounded-full flex items-center justify-center flex-shrink-0 text-white shadow-xl">
-                                        <span class="text-xl font-black">5+</span>
-                                        <p class="absolute -bottom-6 text-[10px] font-bold text-ikf-blue uppercase tracking-widest">Core</p>
-                                    </div>
-                                    <div class="flex-1">
-                                        <h3 class="text-xl font-black text-slate-800 mb-4">The Architects</h3>
-                                        <div class="flex flex-wrap gap-4">
-                                            <div class="flex items-center gap-3 bg-slate-50 pl-2 pr-5 py-2 rounded-full border border-slate-100 hover:bg-ikf-blue hover:text-white transition-colors group/pill">
-                                                <img src="images/avatars/avatar_marketing_male.png" class="w-8 h-8 rounded-full object-cover">
-                                                <div class="text-left">
-                                                    <p class="text-xs font-bold">Vikram Singh</p>
-                                                    <p class="text-[9px] text-slate-400 group-hover/pill:text-blue-100">Sr. Strategist</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 1 Year -->
-                            <div class="ml-0 md:ml-16 bg-white rounded-[2.5rem] p-8 md:p-10 shadow-lg border-l-8 border-ikf-yellow group hover:-translate-x-2 transition-transform duration-500">
-                                <div class="flex flex-col md:flex-row items-start md:items-center gap-8">
-                                    <div class="w-16 h-16 bg-ikf-yellow rounded-full flex items-center justify-center flex-shrink-0 text-white shadow-xl">
-                                        <span class="text-lg font-black">1+</span>
-                                        <p class="absolute -bottom-6 text-[10px] font-bold text-ikf-yellow uppercase tracking-widest">Rising</p>
-                                    </div>
-                                    <div class="flex-1">
-                                        <h3 class="text-xl font-black text-slate-800 mb-4">The Rising Stars</h3>
-                                        <div class="flex flex-wrap gap-4">
-                                            <div class="flex items-center gap-3 bg-slate-50 pl-2 pr-5 py-2 rounded-full border border-slate-100 hover:bg-ikf-yellow hover:text-white transition-colors group/pill">
-                                                <img src="images/avatars/avatar_creative_female.png" class="w-8 h-8 rounded-full object-cover">
-                                                <div class="text-left">
-                                                    <p class="text-xs font-bold">Sneha Patel</p>
-                                                    <p class="text-[9px] text-slate-400 group-hover/pill:text-white">Designer</p>
-                                                </div>
-                                            </div>
-                                            <div class="flex items-center gap-3 bg-slate-50 pl-2 pr-5 py-2 rounded-full border border-slate-100 hover:bg-ikf-yellow hover:text-white transition-colors group/pill">
-                                                <img src="images/avatars/avatar_dev_male.png" class="w-8 h-8 rounded-full object-cover">
-                                                <div class="text-left">
-                                                    <p class="text-xs font-bold">Rahul Verma</p>
-                                                    <p class="text-[9px] text-slate-400 group-hover/pill:text-white">Tech Lead</p>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <button onclick="AppNavigation.navigateTo('birthdays')" class="mt-20 w-full bg-slate-900 p-8 rounded-[2.5rem] flex items-center justify-between text-white premium-card group hover:bg-ikf-blue transition-all">
-                            <div class="flex items-center gap-6">
-                                <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center"><i class="fas fa-cake-candles text-ikf-yellow"></i></div>
-                                <div class="text-left">
-                                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-ikf-yellow mb-1">Celebrations</p>
-                                    <p class="text-xl font-bold">Upcoming Birthdays</p>
+                        <!-- 5 Years -->
+                        <div class="ml-0 md:ml-16 bg-white rounded-[2.5rem] p-8 md:p-10 shadow-lg border-l-8 border-ikf-blue group hover:-translate-x-2 transition-transform duration-500">
+                            <div class="flex flex-col md:flex-row items-start md:items-center gap-8">
+                                <div class="w-20 h-20 bg-ikf-blue rounded-full flex items-center justify-center flex-shrink-0 text-white shadow-xl">
+                                    <span class="text-xl font-black">5+</span>
+                                    <p class="absolute -bottom-6 text-[10px] font-bold text-ikf-blue uppercase tracking-widest">Core</p>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-black text-slate-800 mb-4">The Architects</h3>
+                                    <div class="flex flex-wrap gap-4">
+                                        <div class="flex items-center gap-3 bg-slate-50 pl-2 pr-5 py-2 rounded-full border border-slate-100 hover:bg-ikf-blue hover:text-white transition-colors group/pill">
+                                            <img src="images/avatars/avatar_marketing_male.png" class="w-8 h-8 rounded-full object-cover">
+                                                <div class="text-left">
+                                                    <p class="text-xs font-bold">Vikram Singh</p>
+                                                    <p class="text-[9px] text-slate-400 group-hover/pill:text-blue-100">Sr. Strategist</p>
+                                                </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <i class="fas fa-arrow-right text-2xl opacity-30 group-hover:opacity-100 group-hover:translate-x-2 transition-all"></i>
-                        </button>
+                        </div>
+
+                        <!-- 1 Year -->
+                        <div class="ml-0 md:ml-16 bg-white rounded-[2.5rem] p-8 md:p-10 shadow-lg border-l-8 border-ikf-yellow group hover:-translate-x-2 transition-transform duration-500">
+                            <div class="flex flex-col md:flex-row items-start md:items-center gap-8">
+                                <div class="w-16 h-16 bg-ikf-yellow rounded-full flex items-center justify-center flex-shrink-0 text-white shadow-xl">
+                                    <span class="text-lg font-black">1+</span>
+                                    <p class="absolute -bottom-6 text-[10px] font-bold text-ikf-yellow uppercase tracking-widest">Rising</p>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-black text-slate-800 mb-4">The Rising Stars</h3>
+                                    <div class="flex flex-wrap gap-4">
+                                        <div class="flex items-center gap-3 bg-slate-50 pl-2 pr-5 py-2 rounded-full border border-slate-100 hover:bg-ikf-yellow hover:text-white transition-colors group/pill">
+                                            <img src="images/avatars/avatar_creative_female.png" class="w-8 h-8 rounded-full object-cover">
+                                                <div class="text-left">
+                                                    <p class="text-xs font-bold">Sneha Patel</p>
+                                                    <p class="text-[9px] text-slate-400 group-hover/pill:text-white">Designer</p>
+                                                </div>
+                                        </div>
+                                        <div class="flex items-center gap-3 bg-slate-50 pl-2 pr-5 py-2 rounded-full border border-slate-100 hover:bg-ikf-yellow hover:text-white transition-colors group/pill">
+                                            <img src="images/avatars/avatar_dev_male.png" class="w-8 h-8 rounded-full object-cover">
+                                                <div class="text-left">
+                                                    <p class="text-xs font-bold">Rahul Verma</p>
+                                                    <p class="text-[9px] text-slate-400 group-hover/pill:text-white">Tech Lead</p>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                        </div>
                     </div>`;
 
             case 'birthdays':
                 return `
-                    <div class="max-w-6xl mx-auto py-10 fade-in">
+                    <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-12 flex items-end justify-between">
                             <div>
                                 <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Solar Returns</span>
-                                <h1 class="text-4xl md:text-5xl font-extrabold text-ikf-blue tracking-tight">Party Protocol</h1>
+                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">Party <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Protocol</span></h1>
                             </div>
                             <div class="hidden md:block">
                                 <div class="px-6 py-2 bg-white rounded-full border border-slate-100 shadow-sm text-xs font-bold text-slate-500">
@@ -1355,7 +1475,7 @@ window.AppNavigation = {
                             </div>
                         </div>
 
-                        <!-- Upcoming Birthdays Horizontal Scroll -->
+                        <!--Upcoming Birthdays Horizontal Scroll-->
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
                             <!-- Card 1 -->
                             <div class="bg-white rounded-[3rem] p-2 pr-8 shadow-lg border border-slate-50 flex items-center gap-6 group hover:-translate-y-1 transition-transform cursor-default">
@@ -1409,33 +1529,25 @@ window.AppNavigation = {
                             </div>
                         </div>
                         
-                        <!-- Celebration CTA -->
-                        <div class="bg-gradient-to-r from-pink-500 to-purple-600 rounded-[3rem] p-12 text-center text-white relative overflow-hidden group cursor-pointer" onclick="alert('Wishing everyone a fantastic year ahead! 🎉')">
-                             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                             <div class="relative z-10">
-                                <i class="fas fa-birthday-cake text-5xl mb-6 block animate-bounce"></i>
-                                <h3 class="text-3xl font-black mb-2">Send Group Wish</h3>
-                                <p class="text-pink-100 text-sm font-medium">Click to confetti blast the office channel.</p>
-                             </div>
+                        <!--Celebration CTA-->
+                    <div class="bg-gradient-to-r from-pink-500 to-purple-600 rounded-[3rem] p-12 text-center text-white relative overflow-hidden group cursor-pointer" onclick="alert('Wishing everyone a fantastic year ahead! 🎉')">
+                        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                        <div class="relative z-10">
+                            <i class="fas fa-birthday-cake text-5xl mb-6 block animate-bounce"></i>
+                            <h3 class="text-3xl font-black mb-2">Send Group Wish</h3>
+                            <p class="text-pink-100 text-sm font-medium">Click to confetti blast the office channel.</p>
                         </div>
+                    </div>
 
-                        <div class="mt-20 bg-ikf-blue p-12 lg:p-16 rounded-[4rem] text-white flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden premium-card">
-                            <div class="z-10 flex-1">
-                                <h3 class="text-3xl font-extrabold mb-4">When do we break?</h3>
-                                <p class="text-blue-100 max-w-lg">Check out our official holiday calendar for the current year.</p>
-                            </div>
-                            <button onclick="AppNavigation.navigateTo('holidays')" class="z-10 group bg-ikf-yellow text-white px-10 py-5 rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-white hover:text-ikf-blue transition-all flex items-center gap-4">
-                                Global Holidays <i class="fas fa-calendar-check"></i>
-                            </button>
                         </div>
                     </div>`;
 
             case 'holidays':
                 return `
-                    <div class="max-w-6xl mx-auto py-10 fade-in">
+                    <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Global Calendar</span>
-                            <h1 class="text-4xl md:text-5xl font-extrabold text-ikf-blue tracking-tight">Holidays 2025-26</h1>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">Holidays <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">2025-26</span></h1>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20">
@@ -1475,24 +1587,15 @@ window.AppNavigation = {
                             </div>
                         </div>
 
-                        <button onclick="AppNavigation.navigateTo('attendance')" class="w-full bg-ikf-blue p-8 rounded-[2.5rem] flex items-center justify-between text-white premium-card group hover:bg-slate-900 transition-all">
-                            <div class="flex items-center gap-6">
-                                <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center"><i class="fas fa-clock text-ikf-yellow"></i></div>
-                                <div class="text-left">
-                                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-ikf-yellow mb-1">Operational Flow</p>
-                                    <p class="text-xl font-bold">Attendance & Schedule</p>
-                                </div>
-                            </div>
-                            <i class="fas fa-arrow-right text-2xl opacity-30 group-hover:opacity-100 group-hover:translate-x-2 transition-all"></i>
-                        </button>
+                        </div>
                     </div>`;
 
             case 'attendance':
                 return `
-                    <div class="max-w-6xl mx-auto py-10 fade-in">
+                    <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Operation Hours</span>
-                            <h1 class="text-4xl md:text-5xl font-extrabold text-ikf-blue tracking-tight">Sync & Flow</h1>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">Sync & <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Flow</span></h1>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
@@ -1542,24 +1645,17 @@ window.AppNavigation = {
                             <div class="w-full md:w-96 aspect-square bg-white/5 backdrop-blur-3xl rounded-[3rem] border-4 border-white/5 z-10 shadow-2xl flex items-center justify-center text-white/20 text-4xl font-black italic">PORTAL</div>
                         </div>
 
-                        <button onclick="AppNavigation.navigateTo('policies')" class="mt-16 w-full bg-ikf-yellow p-8 rounded-[2.5rem] flex items-center justify-between text-white premium-card group hover:bg-white hover:text-ikf-blue transition-all">
-                            <div class="flex items-center gap-6">
-                                <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center"><i class="fas fa-shield-halved text-white"></i></div>
-                                <div class="text-left">
-                                    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-white mb-1">Final Integration</p>
-                                    <p class="text-xl font-bold">HR Policies & Acknowledgement</p>
-                                </div>
-                            </div>
-                            <i class="fas fa-arrow-right text-2xl opacity-30 group-hover:opacity-100 group-hover:translate-x-2 transition-all"></i>
-                        </button>
+                        </div>
                     </div>`;
+
+
 
             case 'policies':
                 return `
-                    <div class="max-w-6xl mx-auto py-10 fade-in">
+                    <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Legal Framework</span>
-                            <h1 class="text-4xl md:text-5xl font-extrabold text-ikf-blue tracking-tight">The Commitment</h1>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">The <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Commitment</span></h1>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-20">
@@ -1618,7 +1714,7 @@ window.AppNavigation = {
                                 </div>
                             </div>
                         </div>
-                    </div>`;
+                    </div > `;
 
             default:
                 return `
@@ -1627,7 +1723,7 @@ window.AppNavigation = {
                         <h2 class="text-2xl font-bold text-ikf-blue">Module Under Construction</h2>
                         <p class="text-slate-500 mt-2 text-lg">We are building high-quality content for <span class="font-bold text-ikf-yellow italic">${sectionId}</span>.</p>
                         <button onclick="AppNavigation.navigateTo('intro')" class="mt-8 text-ikf-blue font-bold hover:underline"><i class="fas fa-arrow-left mr-2"></i> Back to Intro</button>
-                    </div>`;
+                    </div > `;
         }
     }
 };
