@@ -1372,86 +1372,94 @@ window.AppNavigation = {
                         </div>
 
                         <!--Milestone Track-->
-                    <div class="space-y-8 relative">
-                        <div class="absolute left-8 top-0 bottom-0 w-[2px] bg-gradient-to-b from-ikf-blue via-ikf-yellow to-slate-200 hidden md:block"></div>
-
-                        <!-- 10 Years -->
-                        <div class="ml-0 md:ml-16 bg-white rounded-[2.5rem] p-8 md:p-10 shadow-lg border-l-8 border-slate-900 group hover:-translate-x-2 transition-transform duration-500">
-                            <div class="flex flex-col md:flex-row items-start md:items-center gap-8">
-                                <div class="w-24 h-24 bg-slate-900 rounded-full flex items-center justify-center flex-shrink-0 text-white shadow-xl relative">
-                                    <div class="absolute inset-0 border-4 border-slate-100 rounded-full animate-ping opacity-20"></div>
-                                    <span class="text-2xl font-black">10+</span>
-                                    <p class="absolute -bottom-6 text-[10px] font-bold text-slate-900 uppercase tracking-widest">Titan</p>
+                        <!--Smart Milestone Grid-->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+                            <!-- 10 Years -->
+                            <div class="p-8 bg-white rounded-[2.5rem] border border-slate-50 shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all group flex flex-col items-center text-center relative overflow-hidden">
+                                <div class="absolute inset-x-0 top-0 h-2 bg-slate-900"></div>
+                                <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6 text-slate-900 border-4 border-slate-900 relative">
+                                    <span class="text-3xl font-black">10+</span>
+                                    <div class="absolute -bottom-3 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Titan</div>
                                 </div>
-                                <div class="flex-1">
-                                    <h3 class="text-xl font-black text-slate-800 mb-4">The Founding Pillars</h3>
-                                    <div class="flex flex-wrap gap-4">
-                                        <div class="flex items-center gap-3 bg-slate-50 pl-2 pr-5 py-2 rounded-full border border-slate-100 hover:bg-slate-900 hover:text-white transition-colors group/pill">
-                                            <img src="images/avatars/ashish_real.jpg" class="w-8 h-8 rounded-full object-cover">
-                                                <div class="text-left">
-                                                    <p class="text-xs font-bold">Ashish Dalia</p>
-                                                    <p class="text-[9px] text-slate-400 group-hover/pill:text-slate-500">Founder</p>
-                                                </div>
+                                <h3 class="text-xl font-black text-slate-800 mb-4">Founding Pillars</h3>
+                                <div class="space-y-3 w-full">
+                                    <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
+                                        <img src="images/avatars/ashish_real.jpg" class="w-10 h-10 rounded-xl object-cover">
+                                        <div class="text-left">
+                                            <p class="text-xs font-bold">Ashish Dalia</p>
+                                            <p class="text-[9px] text-slate-400">Founder</p>
                                         </div>
-                                        <div class="flex items-center gap-3 bg-slate-50 pl-2 pr-5 py-2 rounded-full border border-slate-100 hover:bg-slate-900 hover:text-white transition-colors group/pill">
-                                            <img src="images/avatars/jayraj.png" class="w-8 h-8 rounded-full object-cover">
-                                                <div class="text-left">
-                                                    <p class="text-xs font-bold">Jayraj Mehta</p>
-                                                    <p class="text-[9px] text-slate-400 group-hover/pill:text-slate-500">Director</p>
-                                                </div>
+                                    </div>
+                                    <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
+                                        <img src="images/avatars/jayraj.png" class="w-10 h-10 rounded-xl object-cover">
+                                        <div class="text-left">
+                                            <p class="text-xs font-bold">Jayraj Mehta</p>
+                                            <p class="text-[9px] text-slate-400">Director</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 5 Years -->
+                            <div class="p-8 bg-white rounded-[2.5rem] border border-slate-50 shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all group flex flex-col items-center text-center relative overflow-hidden">
+                                <div class="absolute inset-x-0 top-0 h-2 bg-ikf-blue"></div>
+                                <div class="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mb-6 text-ikf-blue border-4 border-ikf-blue relative">
+                                    <span class="text-3xl font-black">5+</span>
+                                    <div class="absolute -bottom-3 bg-ikf-blue text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Core</div>
+                                </div>
+                                <h3 class="text-xl font-black text-slate-800 mb-4">The Architects</h3>
+                                <div class="space-y-3 w-full">
+                                    <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
+                                        <img src="images/avatars/avatar_marketing_male.png" class="w-10 h-10 rounded-xl object-cover">
+                                        <div class="text-left">
+                                            <p class="text-xs font-bold">Vikram Singh</p>
+                                            <p class="text-[9px] text-slate-400">Sr. Strategist</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 1 Year -->
+                            <div class="p-8 bg-white rounded-[2.5rem] border border-slate-50 shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all group flex flex-col items-center text-center relative overflow-hidden">
+                                <div class="absolute inset-x-0 top-0 h-2 bg-ikf-yellow"></div>
+                                <div class="w-24 h-24 bg-yellow-50 rounded-full flex items-center justify-center mb-6 text-ikf-yellow border-4 border-ikf-yellow relative">
+                                    <span class="text-3xl font-black">1+</span>
+                                    <div class="absolute -bottom-3 bg-ikf-yellow text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Rising</div>
+                                </div>
+                                <h3 class="text-xl font-black text-slate-800 mb-4">Rising Stars</h3>
+                                <div class="space-y-3 w-full">
+                                    <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
+                                        <img src="images/avatars/avatar_creative_female.png" class="w-10 h-10 rounded-xl object-cover">
+                                        <div class="text-left">
+                                            <p class="text-xs font-bold">Sneha Patel</p>
+                                            <p class="text-[9px] text-slate-400">Designer</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
+                                        <img src="images/avatars/avatar_dev_male.png" class="w-10 h-10 rounded-xl object-cover">
+                                        <div class="text-left">
+                                            <p class="text-xs font-bold">Rahul Verma</p>
+                                            <p class="text-[9px] text-slate-400">Tech Lead</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 5 Years -->
-                        <div class="ml-0 md:ml-16 bg-white rounded-[2.5rem] p-8 md:p-10 shadow-lg border-l-8 border-ikf-blue group hover:-translate-x-2 transition-transform duration-500">
-                            <div class="flex flex-col md:flex-row items-start md:items-center gap-8">
-                                <div class="w-20 h-20 bg-ikf-blue rounded-full flex items-center justify-center flex-shrink-0 text-white shadow-xl">
-                                    <span class="text-xl font-black">5+</span>
-                                    <p class="absolute -bottom-6 text-[10px] font-bold text-ikf-blue uppercase tracking-widest">Core</p>
+                        <!-- System Terminal Footer -->
+                        <div class="bg-slate-900 rounded-[3rem] p-10 md:p-14 text-center relative overflow-hidden flex flex-col items-center justify-center">
+                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+                            <div class="relative z-10 w-full max-w-lg mb-8 text-left">
+                                <div class="bg-slate-800 rounded-t-xl p-3 flex gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
                                 </div>
-                                <div class="flex-1">
-                                    <h3 class="text-xl font-black text-slate-800 mb-4">The Architects</h3>
-                                    <div class="flex flex-wrap gap-4">
-                                        <div class="flex items-center gap-3 bg-slate-50 pl-2 pr-5 py-2 rounded-full border border-slate-100 hover:bg-ikf-blue hover:text-white transition-colors group/pill">
-                                            <img src="images/avatars/avatar_marketing_male.png" class="w-8 h-8 rounded-full object-cover">
-                                                <div class="text-left">
-                                                    <p class="text-xs font-bold">Vikram Singh</p>
-                                                    <p class="text-[9px] text-slate-400 group-hover/pill:text-blue-100">Sr. Strategist</p>
-                                                </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 1 Year -->
-                        <div class="ml-0 md:ml-16 bg-white rounded-[2.5rem] p-8 md:p-10 shadow-lg border-l-8 border-ikf-yellow group hover:-translate-x-2 transition-transform duration-500">
-                            <div class="flex flex-col md:flex-row items-start md:items-center gap-8">
-                                <div class="w-16 h-16 bg-ikf-yellow rounded-full flex items-center justify-center flex-shrink-0 text-white shadow-xl">
-                                    <span class="text-lg font-black">1+</span>
-                                    <p class="absolute -bottom-6 text-[10px] font-bold text-ikf-yellow uppercase tracking-widest">Rising</p>
-                                </div>
-                                <div class="flex-1">
-                                    <h3 class="text-xl font-black text-slate-800 mb-4">The Rising Stars</h3>
-                                    <div class="flex flex-wrap gap-4">
-                                        <div class="flex items-center gap-3 bg-slate-50 pl-2 pr-5 py-2 rounded-full border border-slate-100 hover:bg-ikf-yellow hover:text-white transition-colors group/pill">
-                                            <img src="images/avatars/avatar_creative_female.png" class="w-8 h-8 rounded-full object-cover">
-                                                <div class="text-left">
-                                                    <p class="text-xs font-bold">Sneha Patel</p>
-                                                    <p class="text-[9px] text-slate-400 group-hover/pill:text-white">Designer</p>
-                                                </div>
-                                        </div>
-                                        <div class="flex items-center gap-3 bg-slate-50 pl-2 pr-5 py-2 rounded-full border border-slate-100 hover:bg-ikf-yellow hover:text-white transition-colors group/pill">
-                                            <img src="images/avatars/avatar_dev_male.png" class="w-8 h-8 rounded-full object-cover">
-                                                <div class="text-left">
-                                                    <p class="text-xs font-bold">Rahul Verma</p>
-                                                    <p class="text-[9px] text-slate-400 group-hover/pill:text-white">Tech Lead</p>
-                                                </div>
-                                        </div>
-                                    </div>
+                                <div class="bg-black/50 backdrop-blur-md p-6 rounded-b-xl border-t border-white/5 font-mono text-xs md:text-sm text-slate-300 shadow-2xl">
+                                    <p class="mb-2"><span class="text-green-400">➜</span> <span class="text-blue-400">~</span> system_check --legacy</p>
+                                    <p class="mb-2"><span class="text-green-400">✔</span> core_values_integrity: <span class="text-ikf-yellow">100%</span></p>
+                                    <p class="mb-2"><span class="text-green-400">✔</span> knowledge_transfer: <span class="text-ikf-yellow">active</span></p>
+                                    <p class="text-slate-500">// Join the league. Build your legacy.</p>
                                 </div>
                             </div>
                         </div>
@@ -1476,68 +1484,81 @@ window.AppNavigation = {
                         </div>
 
                         <!--Upcoming Birthdays Horizontal Scroll-->
+                        <!--Upcoming Birthdays Smart Grid-->
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
                             <!-- Card 1 -->
-                            <div class="bg-white rounded-[3rem] p-2 pr-8 shadow-lg border border-slate-50 flex items-center gap-6 group hover:-translate-y-1 transition-transform cursor-default">
-                                <div class="w-24 h-24 rounded-[2.5rem] bg-slate-100 overflow-hidden relative">
-                                    <img src="images/avatars/avatar_creative_female.png" class="w-full h-full object-cover">
-                                    <div class="absolute inset-0 bg-ikf-blue/20 hidden group-hover:flex items-center justify-center backdrop-blur-sm transition-all text-white text-2xl animate-pulse">
-                                        🎂
-                                    </div>
+                            <div class="bg-white rounded-[2.5rem] border border-slate-50 p-6 flex items-center gap-4 hover:shadow-lg transition-all group cursor-default">
+                                <div class="w-20 h-20 rounded-2xl bg-slate-100 relative overflow-hidden">
+                                    <img src="images/avatars/avatar_creative_female.png" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
                                 </div>
                                 <div>
-                                    <span class="px-2 py-0.5 bg-pink-50 text-pink-500 text-[9px] font-black uppercase tracking-widest rounded-md mb-2 inline-block">Feb 14</span>
-                                    <h4 class="text-lg font-black text-slate-800">Priya Sharma</h4>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Creative</p>
-                                    <div class="flex items-center gap-1 text-[10px] text-slate-300">
-                                        <i class="fas fa-star text-ikf-yellow"></i> Aquarius
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="bg-pink-100 text-pink-500 text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full">Feb 14</span>
                                     </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 2 -->
-                            <div class="bg-white rounded-[3rem] p-2 pr-8 shadow-lg border border-slate-50 flex items-center gap-6 group hover:-translate-y-1 transition-transform cursor-default">
-                                <div class="w-24 h-24 rounded-[2.5rem] bg-slate-100 overflow-hidden relative">
-                                    <img src="images/avatars/avatar_dev_male.png" class="w-full h-full object-cover">
-                                    <div class="absolute inset-0 bg-ikf-blue/20 hidden group-hover:flex items-center justify-center backdrop-blur-sm transition-all text-white text-2xl animate-pulse">
-                                        🎁
-                                    </div>
-                                </div>
-                                <div>
-                                    <span class="px-2 py-0.5 bg-blue-50 text-blue-500 text-[9px] font-black uppercase tracking-widest rounded-md mb-2 inline-block">Feb 22</span>
-                                    <h4 class="text-lg font-black text-slate-800">Rohan D.</h4>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Developer</p>
-                                    <div class="flex items-center gap-1 text-[10px] text-slate-300">
-                                        <i class="fas fa-water text-blue-300"></i> Pisces
+                                    <h3 class="text-lg font-black text-slate-800">Priya Sharma</h3>
+                                    <p class="text-xs text-slate-400 mb-2">Creative Dept</p>
+                                    <div class="flex items-center gap-1 text-[10px] text-ikf-blue font-bold">
+                                        <i class="fas fa-gift"></i> Wishing Pending
                                     </div>
                                 </div>
                             </div>
                             
-                            <!-- Card 3 -->
-                            <div class="bg-white rounded-[3rem] p-2 pr-8 shadow-lg border border-slate-50 flex items-center gap-6 group hover:-translate-y-1 transition-transform cursor-default opacity-60 hover:opacity-100">
-                                <div class="w-24 h-24 rounded-[2.5rem] bg-slate-100 overflow-hidden relative grayscale group-hover:grayscale-0 transition-all">
-                                    <img src="images/avatars/avatar_marketing_male.png" class="w-full h-full object-cover">
+                            <!-- Card 2 -->
+                            <div class="bg-white rounded-[2.5rem] border border-slate-50 p-6 flex items-center gap-4 hover:shadow-lg transition-all group cursor-default">
+                                <div class="w-20 h-20 rounded-2xl bg-slate-100 relative overflow-hidden">
+                                    <img src="images/avatars/avatar_dev_male.png" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
                                 </div>
                                 <div>
-                                    <span class="px-2 py-0.5 bg-slate-100 text-slate-400 text-[9px] font-black uppercase tracking-widest rounded-md mb-2 inline-block">Mar 05</span>
-                                    <h4 class="text-lg font-black text-slate-800">Amit K.</h4>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">SEO</p>
-                                    <div class="flex items-center gap-1 text-[10px] text-slate-300">
-                                        <i class="fas fa-water text-blue-300"></i> Pisces
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="bg-blue-100 text-blue-500 text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full">Feb 22</span>
+                                    </div>
+                                    <h3 class="text-lg font-black text-slate-800">Rohan D.</h3>
+                                    <p class="text-xs text-slate-400 mb-2">Development</p>
+                                    <div class="flex items-center gap-1 text-[10px] text-ikf-blue font-bold">
+                                        <i class="fas fa-gift"></i> Wishing Pending
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 3 -->
+                            <div class="bg-white rounded-[2.5rem] border border-slate-50 p-6 flex items-center gap-4 hover:shadow-lg transition-all group cursor-default opacity-60 hover:opacity-100">
+                                <div class="w-20 h-20 rounded-2xl bg-slate-100 relative overflow-hidden grayscale group-hover:grayscale-0 transition-all">
+                                    <img src="images/avatars/avatar_marketing_male.png" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full">Mar 05</span>
+                                    </div>
+                                    <h3 class="text-lg font-black text-slate-800">Amit K.</h3>
+                                    <p class="text-xs text-slate-400 mb-2">SEO Team</p>
+                                    <div class="flex items-center gap-1 text-[10px] text-slate-400 font-bold">
+                                        <i class="fas fa-clock"></i> Upcoming
                                     </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <!--Celebration CTA-->
-                    <div class="bg-gradient-to-r from-pink-500 to-purple-600 rounded-[3rem] p-12 text-center text-white relative overflow-hidden group cursor-pointer" onclick="alert('Wishing everyone a fantastic year ahead! 🎉')">
-                        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                        <div class="relative z-10">
-                            <i class="fas fa-birthday-cake text-5xl mb-6 block animate-bounce"></i>
-                            <h3 class="text-3xl font-black mb-2">Send Group Wish</h3>
-                            <p class="text-pink-100 text-sm font-medium">Click to confetti blast the office channel.</p>
+                        <!-- Celebration Terminal -->
+                        <div class="bg-slate-900 rounded-[3rem] p-10 text-center relative overflow-hidden flex flex-col items-center justify-center">
+                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+                            
+                            <div class="relative z-10 w-full max-w-lg mb-8 text-left">
+                                <div class="bg-slate-800 rounded-t-xl p-3 flex gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <div class="bg-black/50 backdrop-blur-md p-6 rounded-b-xl border-t border-white/5 font-mono text-xs md:text-sm text-slate-300 shadow-2xl">
+                                    <p class="mb-2"><span class="text-green-400">➜</span> <span class="text-blue-400">~</span> execute_party_protocol.sh</p>
+                                    <p class="mb-2"><span class="text-green-400">✔</span> cake_logistics: <span class="text-ikf-yellow">scheduled</span></p>
+                                    <p class="text-slate-500">// Click below to broadcast network wishes</p>
+                                </div>
+                            </div>
+
+                            <button onclick="alert('Broadcasting wishes to the specific channels... 🎈')" class="relative z-10 px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl text-white font-black uppercase tracking-[0.2em] shadow-lg hover:shadow-pink-500/30 hover:scale-105 transition-all flex items-center gap-4">
+                                <i class="fas fa-bullhorn animate-pulse"></i> Broadcast Wishes
+                            </button>
                         </div>
-                    </div>
 
                         </div>
                     </div>`;
@@ -1658,58 +1679,65 @@ window.AppNavigation = {
                             <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">The <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Commitment</span></h1>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-20">
-                            <div class="p-12 bg-white rounded-[3.5rem] premium-card">
-                                <h3 class="text-2xl font-black text-ikf-blue mb-8">Evolution & Growth</h3>
-                                <div class="space-y-6">
-                                    <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                                        <i class="fas fa-user-shield text-ikf-blue mt-1"></i>
-                                        <p class="text-xs text-slate-600 font-medium">Standard probation: 6 Months (Performance Linked).</p>
-                                    </div>
-                                    <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                                        <i class="fas fa-sign-out-alt text-ikf-blue mt-1"></i>
-                                        <p class="text-xs text-slate-600 font-medium">Notice period: 60 - 90 Days (Post-Confirmation).</p>
-                                    </div>
-                                </div>
+                        <!-- Smart Stats Grid -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
+                            <!-- Probation -->
+                            <div class="p-8 bg-white rounded-[2.5rem] text-center border border-slate-50 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all group cursor-default">
+                                <div class="w-16 h-16 mx-auto bg-blue-50 rounded-2xl flex items-center justify-center text-ikf-blue mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-hourglass-start"></i></div>
+                                <h3 class="text-3xl font-black text-slate-800 mb-1">06<span class="text-sm text-slate-400 font-bold ml-1">mo</span></h3>
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Probation</p>
                             </div>
-                            <div class="p-12 bg-white rounded-[3.5rem] premium-card">
-                                <h3 class="text-2xl font-black text-ikf-blue mb-8">Financial Hub</h3>
-                                <div class="space-y-6">
-                                    <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                                        <i class="fas fa-credit-card text-ikf-yellow mt-1"></i>
-                                        <p class="text-xs text-slate-600 font-medium">Salary Disbursement: Typically 10th of every month.</p>
-                                    </div>
-                                    <div class="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                                        <i class="fas fa-file-invoice-dollar text-ikf-yellow mt-1"></i>
-                                        <p class="text-xs text-slate-600 font-medium">Compliance: Automated TDS / Statutory Deductions.</p>
-                                    </div>
-                                </div>
+                            <!-- Notice -->
+                            <div class="p-8 bg-white rounded-[2.5rem] text-center border border-slate-50 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all group cursor-default">
+                                <div class="w-16 h-16 mx-auto bg-blue-50 rounded-2xl flex items-center justify-center text-ikf-blue mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-history"></i></div>
+                                <h3 class="text-3xl font-black text-slate-800 mb-1">90<span class="text-sm text-slate-400 font-bold ml-1">days</span></h3>
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Notice Period</p>
+                            </div>
+                            <!-- Payday -->
+                            <div class="p-8 bg-white rounded-[2.5rem] text-center border border-slate-50 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all group cursor-default">
+                                <div class="w-16 h-16 mx-auto bg-yellow-50 rounded-2xl flex items-center justify-center text-ikf-yellow mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-wallet"></i></div>
+                                <h3 class="text-3xl font-black text-slate-800 mb-1">10<span class="text-sm text-slate-400 font-bold ml-1">th</span></h3>
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Payout Date</p>
+                            </div>
+                            <!-- Compliance -->
+                            <div class="p-8 bg-white rounded-[2.5rem] text-center border border-slate-50 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all group cursor-default">
+                                <div class="w-16 h-16 mx-auto bg-green-50 rounded-2xl flex items-center justify-center text-green-500 mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-file-contract"></i></div>
+                                <h3 class="text-2xl font-black text-slate-800 mb-2 pt-1">Auto</h3>
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">PF & TDS</p>
                             </div>
                         </div>
 
-                        <div class="bg-gradient-to-br from-ikf-yellow to-orange-500 p-12 lg:p-20 rounded-[4rem] text-white premium-card text-center relative overflow-hidden">
-                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                            <div class="z-10 relative">
-                                <h3 class="text-4xl font-black mb-6">Finish Your Sync</h3>
-                                <p class="text-white/80 max-w-2xl mx-auto mb-12 text-lg">
-                                    By acknowledging this, you confirm that you have understood the I-K-F philosophy, 
-                                    operational standards, and HR policies of I Knowledge Factory.
-                                </p>
-                                
-                                <label class="flex items-center justify-center gap-6 cursor-pointer group bg-black/10 hover:bg-black/20 p-8 rounded-3xl transition-all max-w-xl mx-auto border border-white/20">
-                                    <input type="checkbox" id="final-ack-check" class="w-8 h-8 rounded-xl border-none focus:ring-4 focus:ring-white/20 text-slate-900" onchange="AppNavigation.handleAcknowledgement(this)">
-                                    <span class="font-black text-xl select-none">I'm Ready to Build</span>
+                        <!-- Smart Acknowledgment Console -->
+                        <div class="bg-slate-900 rounded-[3rem] p-10 md:p-14 text-center relative overflow-hidden flex flex-col items-center justify-center">
+                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+                            
+                            <!-- Terminal Visual -->
+                            <div class="relative z-10 w-full max-w-lg mb-10 text-left">
+                                <div class="bg-slate-800 rounded-t-xl p-3 flex gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <div class="bg-black/50 backdrop-blur-md p-6 rounded-b-xl border-t border-white/5 font-mono text-xs md:text-sm text-slate-300 shadow-2xl">
+                                    <p class="mb-2"><span class="text-green-400">➜</span> <span class="text-blue-400">~</span> initializing_handshake_protocol...</p>
+                                    <p class="mb-2"><span class="text-green-400">✔</span> policies_loaded: <span class="text-ikf-yellow">true</span></p>
+                                    <p class="mb-4"><span class="text-green-400">✔</span> user_understanding: <span class="animate-pulse">waiting_for_input...</span></p>
+                                    <p class="text-slate-500">// Check the box below to execute contract</p>
+                                </div>
+                            </div>
+
+                            <div class="relative z-10 w-full max-w-md">
+                                <label class="group relative flex items-center p-1 bg-gradient-to-r from-ikf-blue to-ikf-yellow rounded-2xl cursor-pointer hover:shadow-[0_0_40px_rgba(217,164,23,0.3)] transition-all transform hover:scale-[1.02]">
+                                    <div class="bg-slate-900 rounded-xl px-2 py-4 w-full h-full flex items-center justify-center gap-4 group-hover:bg-slate-800 transition-colors">
+                                        <input type="checkbox" id="final-ack-check" class="w-6 h-6 rounded-md border-slate-600 bg-slate-800 text-ikf-yellow focus:ring-offset-slate-900 focus:ring-ikf-yellow" onchange="AppNavigation.handleAcknowledgement(this)">
+                                        <span class="font-bold text-white uppercase tracking-[0.2em] text-sm">Execute Protocol</span>
+                                    </div>
                                 </label>
 
-                                <div id="completion-message" class="hidden mt-12 p-8 bg-white rounded-[2.5rem] text-ikf-blue animate-bounce-y shadow-2xl inline-block">
-                                    <div class="flex items-center gap-6">
-                                        <div class="w-14 h-14 bg-green-500 text-white rounded-2xl flex items-center justify-center text-3xl shadow-lg shadow-green-500/20">
-                                            <i class="fas fa-check-circle"></i>
-                                        </div>
-                                        <div class="text-left">
-                                            <p class="text-2xl font-black">Sync Successful</p>
-                                            <p class="text-xs text-slate-400 uppercase font-black tracking-widest">Welcome to the Factory</p>
-                                        </div>
+                                <div id="completion-message" class="hidden mt-8 w-full p-4 bg-green-500/10 border border-green-500/20 rounded-xl animate-fade-in-up backdrop-blur-sm">
+                                    <div class="flex items-center justify-center gap-3 text-green-400">
+                                        <i class="fas fa-check-circle text-xl"></i>
+                                        <span class="font-bold tracking-widest text-xs uppercase">Deployment Successful</span>
                                     </div>
                                 </div>
                             </div>
