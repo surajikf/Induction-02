@@ -1080,27 +1080,27 @@ window.AppNavigation = {
                                 <p class="text-slate-400 font-medium text-lg leading-relaxed">The foundational principles that drive our creative spirit and industrialized precision.</p>
                             </div>
                             
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
                                 ${(Array.isArray(missData.values) ? missData.values : []).map((val, idx) => {
                     const firstLetter = val.title.charAt(0);
                     return `
-                                        <div class="bg-white p-10 rounded-[3rem] shadow-sm hover:shadow-2xl transition-all duration-500 group relative overflow-hidden h-full flex flex-col justify-between hover:-translate-y-2">
+                                        <div class="bg-white p-8 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 group relative overflow-hidden h-full flex flex-col justify-between hover:-translate-y-2 border border-slate-50">
                                             <!-- Massive BG Letter -->
-                                            <div class="absolute -right-4 -bottom-6 text-[140px] font-black pointer-events-none opacity-[0.03] group-hover:opacity-[0.07] transition-all transform group-hover:scale-110 text-[#0E0057] select-none">
+                                            <div class="absolute -right-2 -bottom-4 text-[100px] font-black pointer-events-none opacity-[0.03] group-hover:opacity-[0.07] transition-all transform group-hover:scale-110 text-[#0E0057] select-none">
                                                 ${firstLetter}
                                             </div>
                                             
                                             <div class="relative z-10">
-                                                <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-[#d9a417] group-hover:text-white transition-all shadow-inner">
-                                                    <i class="fas ${val.icon} text-2xl"></i>
+                                                <div class="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center mb-6 group-hover:bg-[#d9a417] group-hover:text-white transition-all shadow-inner">
+                                                    <i class="fas ${val.icon} text-lg"></i>
                                                 </div>
-                                                <h4 class="text-3xl font-black text-[#0E0057] mb-4">${val.title}</h4>
-                                                <p class="text-slate-500 text-lg font-medium leading-relaxed">${val.desc}</p>
+                                                <h4 class="text-xl font-black text-[#0E0057] mb-3">${val.title}</h4>
+                                                <p class="text-slate-500 text-sm font-medium leading-relaxed">${val.desc}</p>
                                             </div>
                                             
-                                            <div class="mt-8 pt-6 border-t border-slate-50 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Protocol Core</span>
-                                                <div class="w-2 h-2 rounded-full bg-[#d9a417]"></div>
+                                            <div class="mt-6 pt-4 border-t border-slate-50 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <span class="text-[8px] font-black text-slate-300 uppercase tracking-widest">Core DNA</span>
+                                                <div class="w-1.5 h-1.5 rounded-full bg-[#d9a417]"></div>
                                             </div>
                                         </div>
                                     `;
