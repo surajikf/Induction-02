@@ -941,147 +941,108 @@ window.AppNavigation = {
                     ]
                 };
 
-                const titleChars = (pData.title || "I • K • F").replace(/<[^>]*>/g, '').split('•');
-
                 return `
-                    <div class="bg-white min-h-screen fade-in selection:bg-ikf-yellow-intense selection:text-white">
-                        <!-- Hero Section: Ultra-Bold Introduction -->
-                        <section class="relative min-h-screen flex flex-col justify-center items-center px-6 overflow-hidden border-b border-slate-100">
-                            <div class="absolute inset-0 blueprint-grid opacity-[0.4] pointer-events-none"></div>
-                            <div class="absolute inset-0 blueprint-grid-fine opacity-[0.2] pointer-events-none"></div>
-                            
-                            <div class="relative z-10 text-center">
-                                <span class="bg-ikf-blue-intense text-white px-6 py-2 rounded-sm text-[10px] font-black uppercase tracking-[0.5em] mb-12 inline-block slide-up">
+                    <div class="h-screen w-full flex flex-col bg-[#0E0057] overflow-hidden lg:h-[calc(100vh-120px)] rounded-[3rem] p-4 lg:p-8 m-0 lg:m-4 fade-in">
+                        <!-- Blueprint Overlay -->
+                        <div class="absolute inset-0 blueprint-grid opacity-10 pointer-events-none z-0"></div>
+                        
+                        <!-- Header Overlay (Minimal) -->
+                        <div class="relative z-20 flex justify-between items-end mb-8 px-6">
+                            <div>
+                                <span class="bg-[#d9a417] text-[#0E0057] px-4 py-1 rounded-sm text-[8px] font-black uppercase tracking-[0.4em] mb-3 inline-block">
                                     ${pData.badge || 'Core Directives'}
                                 </span>
-                                
-                                <div class="flex flex-col md:flex-row items-center justify-center gap-0 md:gap-8 mb-12">
-                                    ${titleChars.map((char, i) => `
-                                        <div class="flex items-center">
-                                            <span class="text-massive font-black ${i === 1 ? 'text-ikf-yellow-intense' : 'text-ikf-blue-intense'} tracking-tighter">
-                                                ${char.trim()}
-                                            </span>
-                                            ${i < titleChars.length - 1 ? `
-                                                <div class="hidden md:block w-4 h-4 rounded-full border-4 border-slate-100 mx-4"></div>
-                                            ` : ''}
-                                        </div>
-                                    `).join('')}
-                                </div>
-                                
-                                <p class="text-2xl md:text-4xl font-light text-slate-400 max-w-3xl mx-auto leading-tight slide-up" style="animation-delay: 0.2s">
-                                    ${pData.subtitle || ''}
+                                <h1 class="text-4xl md:text-5xl font-black text-white leading-none tracking-tighter">
+                                    The <span class="text-[#d9a417]">DNA</span> of IKF
+                                </h1>
+                            </div>
+                            <div class="hidden lg:block text-right">
+                                <p class="text-slate-400 text-xs font-medium max-w-[200px] leading-tight">
+                                    Interactive Portal: Hover over a pillar to traverse our core philosophy.
                                 </p>
                             </div>
+                        </div>
 
-                            <div class="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 text-slate-300">
-                                <span class="text-[10px] font-bold uppercase tracking-widest">Scroll to Traverse</span>
-                                <div class="w-px h-16 bg-gradient-to-b from-slate-200 to-transparent"></div>
-                            </div>
-                        </section>
-
-                        <!-- Pillar Narrative Loop -->
-                        ${(Array.isArray(pData.pillars) ? pData.pillars : []).map((pillar, idx) => {
-                    const isEven = idx % 2 === 0;
+                        <!-- Interactive Canvas -->
+                        <div class="flex-1 flex flex-col lg:flex-row gap-4 relative z-10 overflow-hidden">
+                            ${(Array.isArray(pData.pillars) ? pData.pillars : []).map((pillar, idx) => {
                     const pLetter = pillar.letter || pillar.id || "?";
-                    const colorClass = pLetter === 'K' ? 'text-ikf-yellow-intense' : 'text-ikf-blue-intense';
-                    const bgColorClass = pLetter === 'K' ? 'bg-ikf-yellow-intense' : 'bg-ikf-blue-intense';
-                    const borderColorClass = pLetter === 'K' ? 'border-ikf-yellow-intense' : 'border-ikf-blue-intense';
+                    const isYellow = pLetter === 'K';
+                    const activeColor = isYellow ? '#d9a417' : '#ffffff';
 
                     return `
-                                <section class="relative py-32 lg:py-48 px-6 lg:px-24 overflow-hidden border-b border-slate-50">
-                                    <div class="absolute ${isEven ? 'right-0' : 'left-0'} top-0 bottom-0 w-1/3 blueprint-grid opacity-[0.1] pointer-events-none"></div>
-                                    
-                                    <div class="max-w-7xl mx-auto flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-20">
-                                        <!-- Pillar Visual Meta -->
-                                        <div class="w-full lg:w-1/2 relative">
-                                            <div class="absolute -top-10 ${isEven ? '-left-10' : '-right-10'} text-[200px] font-black text-slate-50 -z-10 leading-none select-none">
-                                                0${idx + 1}
-                                            </div>
-                                            <div class="aspect-square bg-slate-50 rounded-[4rem] relative overflow-hidden group border border-slate-100">
-                                                <div class="absolute inset-0 flex items-center justify-center text-[180px] font-black ${colorClass} opacity-20 group-hover:scale-110 transition-transform duration-700">
-                                                    ${pLetter}
+                                    <div class="panel-interactive relative bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 overflow-hidden group cursor-pointer">
+                                        <!-- Vertical Massive Letter (Background) -->
+                                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                            <span class="text-[120px] lg:text-[280px] font-black opacity-10 group-hover:opacity-5 transition-opacity duration-700" style="color: ${activeColor}">
+                                                ${pLetter}
+                                            </span>
+                                        </div>
+
+                                        <div class="panel-mask"></div>
+
+                                        <div class="absolute inset-0 p-8 lg:p-12 flex flex-col items-center lg:items-start text-center lg:text-left justify-between">
+                                            <!-- Panel Header -->
+                                            <div class="w-full">
+                                                <div class="flex items-center justify-center lg:justify-start gap-4 mb-6">
+                                                    <div class="w-2 h-2 rounded-full shadow-[0_0_10px_rgba(217,164,23,0.5)]" style="background: ${activeColor}"></div>
+                                                    <span class="text-[10px] font-black uppercase tracking-[0.4em]" style="color: ${activeColor}">Pillar 0${idx + 1}</span>
                                                 </div>
-                                                <div class="absolute top-12 left-12 right-12 bottom-12 border-2 ${borderColorClass} opacity-10 rounded-[3rem]"></div>
+                                                <h2 class="text-4xl lg:text-6xl font-black transition-all duration-500 group-hover:translate-x-2" style="color: ${activeColor}">
+                                                    ${pillar.title || ''}
+                                                </h2>
+                                            </div>
+
+                                            <!-- Panel Expanded Content -->
+                                            <div class="panel-content w-full max-w-md">
+                                                <p class="text-white/60 text-base lg:text-xl font-medium leading-relaxed mb-10">
+                                                    ${pillar.description || pillar.content || ''}
+                                                </p>
                                                 
-                                                <!-- Technical Details Plate -->
-                                                <div class="absolute bottom-12 left-12 right-12 p-8 bg-white/80 backdrop-blur-md rounded-3xl border border-white/50 shadow-2xl">
-                                                    <div class="flex items-center gap-4 mb-4">
-                                                        <div class="w-2 h-2 rounded-full ${bgColorClass} animate-pulse"></div>
-                                                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">IKF Protocol v25.0</span>
+                                                <div class="grid grid-cols-2 gap-6 p-6 bg-white/5 rounded-3xl border border-white/5">
+                                                    <div>
+                                                        <span class="block text-[8px] font-black text-[#d9a417] uppercase tracking-widest mb-1">Status</span>
+                                                        <span class="text-xs font-bold text-white uppercase">Operational</span>
                                                     </div>
-                                                    <div class="h-1 w-full bg-slate-100 rounded-full mb-2">
-                                                        <div class="h-full w-[85%] ${bgColorClass}"></div>
-                                                    </div>
-                                                    <div class="flex justify-between text-[8px] font-bold text-slate-300 uppercase">
-                                                        <span>Processing</span>
-                                                        <span>100% Mastery</span>
+                                                    <div>
+                                                        <span class="block text-[8px] font-black text-[#d9a417] uppercase tracking-widest mb-1">Efficiency</span>
+                                                        <span class="text-xs font-bold text-white uppercase">100% Mastery</span>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <!-- Pillar Content -->
-                                        <div class="w-full lg:w-1/2">
-                                            <div class="flex items-center gap-6 mb-8 uppercase tracking-[0.3em] font-black text-xs">
-                                                <span class="${colorClass}">Phase 0${idx + 1}</span>
-                                                <div class="h-px w-20 bg-slate-200"></div>
+                                            <!-- Panel Footer (Initial State Visibility) -->
+                                            <div class="w-full flex items-center justify-between opacity-40 group-hover:opacity-100 transition-opacity">
+                                                <div class="h-[1px] flex-1 bg-white/20 mr-4"></div>
+                                                <i class="fas fa-plus text-xs" style="color: ${activeColor}"></i>
                                             </div>
-                                            
-                                            <h2 class="text-6xl md:text-8xl font-black mb-10 tracking-tighter leading-none ${colorClass}">
-                                                ${pillar.title || ''}
-                                            </h2>
-                                            
-                                            <p class="text-xl md:text-2xl text-slate-500 font-medium leading-relaxed mb-16 max-w-xl">
-                                                ${pillar.description || pillar.content || ''}
-                                            </p>
-
-                                            <button class="flex items-center gap-6 text-slate-900 font-bold uppercase tracking-widest text-sm group">
-                                                <div class="w-16 h-16 rounded-full border-2 border-slate-900 flex items-center justify-center group-hover:${bgColorClass} group-hover:border-transparent group-hover:text-white transition-all duration-300">
-                                                    <i class="fas fa-arrow-right"></i>
-                                                </div>
-                                                See Methodology
-                                            </button>
                                         </div>
                                     </div>
-                                </section>
-                            `;
+                                `;
                 }).join('')}
+                        </div>
 
-                        <!-- Final Brand Manifesto: The Conclusion -->
-                        <section class="bg-ikf-blue-intense py-48 px-6 text-center relative overflow-hidden">
-                            <div class="absolute inset-0 blueprint-grid opacity-[0.05] pointer-events-none"></div>
-                            
-                            <div class="relative z-10 max-w-5xl mx-auto">
-                                <h2 class="text-massive font-black text-white mb-16 tracking-tighter uppercase leading-[0.7]">
-                                    Beyond <br/> <span class="text-ikf-yellow-intense">Services.</span>
-                                </h2>
-                                
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-left mb-24">
-                                    <p class="text-2xl font-light text-slate-300 leading-relaxed">
-                                        At IKF, our philosophy is the engine of our growth. We don't just use tools; we refine them through a human lens, ensuring every output is a blend of precision and heart.
-                                    </p>
-                                    <p class="text-2xl font-light text-slate-300 leading-relaxed">
-                                        For 25 years, we've engineered competitive advantages for our 1500+ global partners by remaining obsessed with curiosity and mastered in digital wisdom.
-                                    </p>
+                        <!-- Minimal Manifesto Strip -->
+                        <div class="relative z-20 mt-8 py-4 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+                            <p class="text-white/30 text-[10px] font-bold uppercase tracking-[0.3em]">
+                                Beyond Services, <span class="text-[#d9a417]">We Build Legacies.</span>
+                            </p>
+                            <div class="flex gap-10">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xl font-black text-[#d9a417]">25+</span>
+                                    <span class="text-[8px] font-bold text-white/40 uppercase tracking-widest">Years Mastery</span>
                                 </div>
-
-                                <div class="flex flex-wrap justify-center gap-20">
-                                    <div class="flex flex-col items-center">
-                                        <div class="text-6xl font-black text-ikf-yellow-intense mb-2">25+</div>
-                                        <div class="text-xs font-black uppercase tracking-[0.4em] text-white/50">Years Legacy</div>
-                                    </div>
-                                    <div class="flex flex-col items-center">
-                                        <div class="text-6xl font-black text-white mb-2">1.5K</div>
-                                        <div class="text-xs font-black uppercase tracking-[0.4em] text-white/50">Global Clients</div>
-                                    </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xl font-black text-[#d9a417]">1500+</span>
+                                    <span class="text-[8px] font-bold text-white/40 uppercase tracking-widest">Global Partners</span>
                                 </div>
                             </div>
-                        </section>
+                        </div>
                     </div>`;
 
             case 'mission':
                 const missData = this.contentData?.mission_vision || {
-                    badge: "Strategic Compass",
+                    badge: "Strategic Imperatives",
                     title: "Mission & <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow\">Vision</span>",
                     vision: { title: "The Vision", content: "\"To be a globally respected, multidisciplinary digital agency known for its commitment to excellence and innovation.\"" },
                     mission: { title: "The Mission", content: "\"To unlock the full growth potential of brands by pioneering new approaches and delivering high-impact digital solutions.\"" },
@@ -1095,7 +1056,7 @@ window.AppNavigation = {
                     ]
                 };
                 return `
-                    <div class="max-w-6xl mx-auto py-6 fade-in">
+                        <div class="max-w-6xl mx-auto py-6 fade-in" >
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${missData.badge}</span>
                             <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${missData.title}</h1>
@@ -1164,14 +1125,14 @@ window.AppNavigation = {
                     gallery: { title: "Life @ IKF", tag: "#TeamBonding", image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" }
                 };
                 return `
-                    <div class="max-w-7xl mx-auto py-6 fade-in">
+                        <div class="max-w-7xl mx-auto py-6 fade-in">
                         <div class="mb-16 text-center">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${cultData.badge}</span>
                             <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${cultData.title}</h1>
                             <p class="text-slate-400 mt-4 max-w-2xl mx-auto text-sm font-medium">${cultData.subtitle}</p>
                         </div>
 
-                        <!-- Culture Stats Grid -->
+                        <!--Culture Stats Grid-- >
                         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                             ${(Array.isArray(cultData.stats) ? cultData.stats : []).map(stat => `
                                 <div class="p-8 bg-white rounded-[2.5rem] shadow-lg hover:shadow-xl transition-all border border-slate-50 text-center group cursor-pointer hover:-translate-y-2">
@@ -1182,59 +1143,59 @@ window.AppNavigation = {
                             `).join('')}
                         </div>
 
-                        <!-- Main Culture Modules -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 h-[600px] md:h-auto">
-        <!-- Left: Smart Values -->
-        <div class="md:col-span-2 space-y-6">
-            <div class="bg-gradient-to-br from-ikf-blue to-slate-900 rounded-[3rem] p-10 md:p-14 text-white relative overflow-hidden group">
-                <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-ikf-yellow/20 transition-colors duration-700"></div>
-                <div class="relative z-10">
-                    <div class="flex items-center gap-4 mb-8">
-                        <span class="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-mono border border-white/20">values.json</span>
-                        <div class="h-[1px] flex-1 bg-white/10"></div>
-                    </div>
-                    <h3 class="text-3xl md:text-5xl font-black mb-6 leading-tight">${cultData.mainValue.title}</h3>
-                    <p class="text-slate-300 max-w-lg text-sm leading-relaxed mb-8">${cultData.mainValue.description}</p>
-                    <div class="flex gap-4">
-                        <div class="flex -space-x-4">
-                            <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-700"></div>
-                            <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-600"></div>
-                            <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-500 flex items-center justify-center text-[10px] font-bold">+</div>
-                        </div>
-                        <div class="flex items-center gap-2 text-xs font-bold text-ikf-yellow">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Collaboration Mode: Active</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        <!--Main Culture Modules-- >
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 h-[600px] md:h-auto">
+                            <!-- Left: Smart Values -->
+                            <div class="md:col-span-2 space-y-6">
+                                <div class="bg-gradient-to-br from-ikf-blue to-slate-900 rounded-[3rem] p-10 md:p-14 text-white relative overflow-hidden group">
+                                    <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-ikf-yellow/20 transition-colors duration-700"></div>
+                                    <div class="relative z-10">
+                                        <div class="flex items-center gap-4 mb-8">
+                                            <span class="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-mono border border-white/20">values.json</span>
+                                            <div class="h-[1px] flex-1 bg-white/10"></div>
+                                        </div>
+                                        <h3 class="text-3xl md:text-5xl font-black mb-6 leading-tight">${cultData.mainValue.title}</h3>
+                                        <p class="text-slate-300 max-w-lg text-sm leading-relaxed mb-8">${cultData.mainValue.description}</p>
+                                        <div class="flex gap-4">
+                                            <div class="flex -space-x-4">
+                                                <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-700"></div>
+                                                <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-600"></div>
+                                                <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-500 flex items-center justify-center text-[10px] font-bold">+</div>
+                                            </div>
+                                            <div class="flex items-center gap-2 text-xs font-bold text-ikf-yellow">
+                                                <i class="fas fa-check-circle"></i>
+                                                <span>Collaboration Mode: Active</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-            <div class="grid grid-cols-2 gap-6">
-                ${(Array.isArray(cultData.secondaryValues) ? cultData.secondaryValues : []).map(val => `
+                                <div class="grid grid-cols-2 gap-6">
+                                    ${(Array.isArray(cultData.secondaryValues) ? cultData.secondaryValues : []).map(val => `
                                         <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group">
                                             <i class="fas ${val.icon} text-3xl text-${val.color} mb-4 group-hover:scale-110 transition-transform block"></i>
                                             <h4 class="font-black text-lg mb-2">${val.title}</h4>
                                             <p class="text-xs text-slate-400">${val.desc}</p>
                                         </div>
                                     `).join('')}
-            </div>
-        </div>
+                                </div>
+                            </div>
 
-        <!-- Right: Life Gallery (Smart Vertical) -->
-        <div class="bg-slate-50 rounded-[3rem] p-4 flex flex-col gap-4 overflow-hidden relative border border-slate-100">
-            <div class="absolute top-8 left-8 z-10 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-black shadow-sm">
-                <i class="fas fa-camera text-ikf-blue mr-2"></i> ${cultData.gallery.title}
-            </div>
-            <div class="flex-1 rounded-[2.5rem] bg-cover bg-center" style="background-image: url('${cultData.gallery.image}');"></div>
-            <div class="h-40 rounded-[2.5rem] bg-ikf-yellow/10 flex items-center justify-center relative overflow-hidden group cursor-pointer">
-                <div class="absolute inset-0 bg-ikf-yellow/80 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center">
-                    <span class="text-white font-black uppercase text-xs tracking-widest">View Gallery</span>
-                </div>
-                <span class="text-ikf-blue/30 font-black text-xl rotate-12 group-hover:rotate-0 transition-transform">${cultData.gallery.tag}</span>
-            </div>
-        </div>
-    </div>
-                    </div> `;
+                            <!-- Right: Life Gallery (Smart Vertical) -->
+                            <div class="bg-slate-50 rounded-[3rem] p-4 flex flex-col gap-4 overflow-hidden relative border border-slate-100">
+                                <div class="absolute top-8 left-8 z-10 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-black shadow-sm">
+                                    <i class="fas fa-camera text-ikf-blue mr-2"></i> ${cultData.gallery.title}
+                                </div>
+                                <div class="flex-1 rounded-[2.5rem] bg-cover bg-center" style="background-image: url('${cultData.gallery.image}');"></div>
+                                <div class="h-40 rounded-[2.5rem] bg-ikf-yellow/10 flex items-center justify-center relative overflow-hidden group cursor-pointer">
+                                    <div class="absolute inset-0 bg-ikf-yellow/80 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center">
+                                        <span class="text-white font-black uppercase text-xs tracking-widest">View Gallery</span>
+                                    </div>
+                                    <span class="text-ikf-blue/30 font-black text-xl rotate-12 group-hover:rotate-0 transition-transform">${cultData.gallery.tag}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
 
             case 'social':
                 const socData = this.contentData?.social || {};
@@ -1258,7 +1219,7 @@ window.AppNavigation = {
                 ];
 
                 return `
-    <div class="max-w-7xl mx-auto py-6 fade-in" >
+                        <div class="max-w-7xl mx-auto py-6 fade-in">
                         <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
                             <div>
                                 <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${socData.badge || 'Digital Command Center'}</span>
@@ -1300,30 +1261,30 @@ window.AppNavigation = {
                         </div>
 
                         <!--Recent Transmissions(Feed Simulation)-- >
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20 md:h-96">
-        <!-- Featured Post -->
-        <div class="lg:col-span-2 bg-gradient-to-br from-slate-900 to-ikf-blue rounded-[3rem] p-10 text-white relative overflow-hidden group">
-            <div class="absolute inset-0 bg-[url('${featured.image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0'}')] bg-cover bg-center opacity-20 group-hover:scale-105 transition-transform duration-700"></div>
-            <div class="absolute top-8 right-8 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/20">
-                ${featured.badge || 'Latest Transmission'}
-            </div>
-            <div class="relative z-10 h-full flex flex-col justify-end">
-                <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-6">
-                    <i class="fas fa-play text-white ml-1"></i>
-                </div>
-                <h3 class="text-2xl md:text-4xl font-black leading-tight mb-4">${featured.title || 'Untitled Transmission'}</h3>
-                <p class="text-blue-100 max-w-lg text-sm leading-relaxed mb-8 line-clamp-2">${featured.description || ''}</p>
-                <a href="${featured.linkUrl || '#'}" target="_blank" class="inline-flex items-center gap-3 text-xs font-bold uppercase tracking-widest hover:text-ikf-yellow transition-colors">
-                    ${featured.cta || 'Learn More'} <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20 md:h-96">
+                            <!-- Featured Post -->
+                            <div class="lg:col-span-2 bg-gradient-to-br from-slate-900 to-ikf-blue rounded-[3rem] p-10 text-white relative overflow-hidden group">
+                                <div class="absolute inset-0 bg-[url('${featured.image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0'}')] bg-cover bg-center opacity-20 group-hover:scale-105 transition-transform duration-700"></div>
+                                <div class="absolute top-8 right-8 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/20">
+                                    ${featured.badge || 'Latest Transmission'}
+                                </div>
+                                <div class="relative z-10 h-full flex flex-col justify-end">
+                                    <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-6">
+                                        <i class="fas fa-play text-white ml-1"></i>
+                                    </div>
+                                    <h3 class="text-2xl md:text-4xl font-black leading-tight mb-4">${featured.title || 'Untitled Transmission'}</h3>
+                                    <p class="text-blue-100 max-w-lg text-sm leading-relaxed mb-8 line-clamp-2">${featured.description || ''}</p>
+                                    <a href="${featured.linkUrl || '#'}" target="_blank" class="inline-flex items-center gap-3 text-xs font-bold uppercase tracking-widest hover:text-ikf-yellow transition-colors">
+                                        ${featured.cta || 'Learn More'} <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
 
-        <!-- Feed List -->
-        <div class="bg-white rounded-[3rem] p-8 border border-slate-100 shadow-sm flex flex-col">
-            <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6">Recent Activity</h4>
-            <div class="flex-1 space-y-6 overflow-hidden">
-                ${(Array.isArray(feed) ? feed : []).map(item => `
+                            <!-- Feed List -->
+                            <div class="bg-white rounded-[3rem] p-8 border border-slate-100 shadow-sm flex flex-col">
+                                <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6">Recent Activity</h4>
+                                <div class="flex-1 space-y-6 overflow-hidden">
+                                    ${(Array.isArray(feed) ? feed : []).map(item => `
                                         <div class="flex gap-4 group cursor-pointer">
                                             <div class="w-12 h-12 rounded-xl bg-slate-100 flex-shrink-0 bg-cover bg-center" style="background-image: url('${item.image || 'https://images.unsplash.com/photo-1531482615713-2afd69097998'}')"></div>
                                             <div>
@@ -1332,10 +1293,10 @@ window.AppNavigation = {
                                             </div>
                                         </div>
                                     `).join('')}
-            </div>
-        </div>
-    </div>
-                    </div> `;
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
 
             case 'referral':
                 const refData = this.contentData?.referral || {};
@@ -1350,7 +1311,7 @@ window.AppNavigation = {
                 ];
 
                 return `
-    <div class="max-w-6xl mx-auto py-6 fade-in" >
+                        < div class="max-w-6xl mx-auto py-6 fade-in" >
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${refData.badge || 'Talent Acquisition Protocol'}</span>
                             <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight mb-4">${refData.title || 'The <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Bounty</span> Board'}</h1>
@@ -1390,16 +1351,16 @@ window.AppNavigation = {
                         </div>
 
                         <!--CTA Section-- >
-    <div class="bg-ikf-blue rounded-[3rem] p-12 text-center text-white relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-r from-ikf-blue to-slate-900 opacity-50"></div>
-        <div class="relative z-10">
-            <h3 class="text-3xl font-black mb-6">Ready to refer?</h3>
-            <a href="https://forms.gle/referral-example" target="_blank" class="inline-flex items-center gap-4 px-10 py-5 bg-ikf-yellow text-ikf-blue font-black uppercase tracking-widest text-sm rounded-2xl hover:scale-105 transition-transform shadow-xl shadow-ikf-yellow/20">
-                <i class="fas fa-paper-plane"></i> Submit Application
-            </a>
-        </div>
-    </div>
-                    </div> `;
+                        <div class="bg-ikf-blue rounded-[3rem] p-12 text-center text-white relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-r from-ikf-blue to-slate-900 opacity-50"></div>
+                            <div class="relative z-10">
+                                <h3 class="text-3xl font-black mb-6">Ready to refer?</h3>
+                                <a href="https://forms.gle/referral-example" target="_blank" class="inline-flex items-center gap-4 px-10 py-5 bg-ikf-yellow text-ikf-blue font-black uppercase tracking-widest text-sm rounded-2xl hover:scale-105 transition-transform shadow-xl shadow-ikf-yellow/20">
+                                    <i class="fas fa-paper-plane"></i> Submit Application
+                                </a>
+                            </div>
+                        </div>
+                    </div>`;
 
             case 'anniversary':
                 const annivData = this.contentData?.anniversary || {};
@@ -1409,7 +1370,7 @@ window.AppNavigation = {
                 ];
 
                 return `
-    <div class="max-w-6xl mx-auto py-6 fade-in" >
+                        < div class="max-w-6xl mx-auto py-6 fade-in" >
                         <div class="mb-16 flex flex-col md:flex-row items-center justify-between gap-8">
                             <div>
                                 <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${annivData.badge || 'Legacy System'}</span>
@@ -1474,7 +1435,7 @@ window.AppNavigation = {
                 const bdayTerminal = bdayData.terminal || { command: "execute_party_protocol.sh", output: ["cake_logistics: scheduled"] };
 
                 return `
-    <div class="max-w-6xl mx-auto py-6 fade-in" >
+                        < div class="max-w-6xl mx-auto py-6 fade-in" >
                         <div class="mb-12 flex items-end justify-between">
                             <div>
                                 <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${bdayData.badge || 'Solar Returns'}</span>
@@ -1519,7 +1480,7 @@ window.AppNavigation = {
                                 <i class="fas fa-bullhorn animate-pulse"></i> ${bdayData.cta || 'Broadcast Wishes'}
                             </button>
                         </div>
-                    </div> `;
+                    </div>`;
 
             case 'holidays':
                 const holidayData = this.contentData?.holidays || {};
@@ -1534,7 +1495,7 @@ window.AppNavigation = {
                 };
 
                 return `
-    <div class="max-w-6xl mx-auto py-6 fade-in" >
+                        < div class="max-w-6xl mx-auto py-6 fade-in" >
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${holidayData.badge || 'Global Calendar'}</span>
                             <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${holidayData.title || 'Holidays 2025-26'}</h1>
@@ -1565,7 +1526,7 @@ window.AppNavigation = {
                                 </div>
                             </div>
                         </div>
-                    </div> `;
+                    </div>`;
 
             case 'attendance':
                 const attendData = this.contentData?.attendance || {};
@@ -1576,7 +1537,7 @@ window.AppNavigation = {
                 const punctuality = attendData.punctuality || { title: "The Punctuality DNA", description: "Precision is our product.", rules: ["Entry: 09:30 AM"] };
 
                 return `
-    <div class="max-w-6xl mx-auto py-6 fade-in" >
+                        < div class="max-w-6xl mx-auto py-6 fade-in" >
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${attendData.badge || 'Operation Hours'}</span>
                             <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${attendData.title || 'Sync & Flow'}</h1>
@@ -1616,7 +1577,7 @@ window.AppNavigation = {
                             </div>
                             <div class="w-full md:w-96 aspect-square bg-white/5 backdrop-blur-3xl rounded-[3rem] border-4 border-white/5 z-10 shadow-2xl flex items-center justify-center text-white/20 text-4xl font-black italic">PORTAL</div>
                         </div>
-                    </div> `;
+                    </div>`;
 
             case 'policies':
                 const policyData = this.contentData?.policies || {};
@@ -1627,7 +1588,7 @@ window.AppNavigation = {
                 const policyTerminal = policyData.terminal || { command: "initializing_handshake_protocol...", output: ["policies_loaded: true"] };
 
                 return `
-    <div class="max-w-6xl mx-auto py-6 fade-in" >
+                        < div class="max-w-6xl mx-auto py-6 fade-in" >
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${policyData.badge || 'Legal Framework'}</span>
                             <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${policyData.title || 'The Commitment'}</h1>
@@ -1665,16 +1626,16 @@ window.AppNavigation = {
                                 <span class="text-white text-sm font-bold uppercase tracking-widest group-hover:text-ikf-yellow transition-colors">I acknowledge and accept the protocol</span>
                             </label>
                         </div>
-                    </div> `;
+                    </div>`;
 
             default:
                 return `
-    <div class="max-w-4xl mx-auto py-20 text-center" >
+                        <div class="max-w-4xl mx-auto py-20 text-center">
                         <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6"><i class="fas fa-tools text-2xl text-slate-400"></i></div>
                         <h2 class="text-2xl font-bold text-ikf-blue">Module Under Construction</h2>
                         <p class="text-slate-500 mt-2 text-lg">We are building high-quality content for <span class="font-bold text-ikf-yellow italic">${sectionId}</span>.</p>
                         <button onclick="AppNavigation.navigateTo('intro')" class="mt-8 text-ikf-blue font-bold hover:underline"><i class="fas fa-arrow-left mr-2"></i> Back to Intro</button>
-                    </div> `;
+                    </div>`;
         }
     }
 };

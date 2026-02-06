@@ -182,9 +182,34 @@
     transition: margin 1s ease-out, mask-position 1s ease-out;
 }
 
-.pillar-revealed {
-    margin-bottom: 0;
-    mask-position: 0 100%;
+.panel-interactive {
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    flex-grow: 1;
+}
+
+.panel-interactive:hover {
+    flex-grow: 2.5;
+}
+
+.panel-content {
+    opacity: 0;
+    transition: opacity 0.5s ease 0.3s;
+}
+
+.panel-interactive:hover .panel-content {
+    opacity: 1;
+}
+
+.panel-mask {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent, rgba(14, 0, 87, 0.8));
+    opacity: 0.6;
+    transition: opacity 0.5s ease;
+}
+
+.panel-interactive:hover .panel-mask {
+    opacity: 0.2;
 }
 
 /* Gentle Float - Subtle Movement */
