@@ -1080,7 +1080,7 @@ window.AppNavigation = {
                                 <p class="text-slate-400 font-medium text-lg leading-relaxed">The foundational principles that drive our creative spirit and industrialized precision.</p>
                             </div>
                             
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                                 ${(Array.isArray(missData.values) ? missData.values : []).map((val, idx) => {
                     const firstLetter = val.title.charAt(0);
                     return `
@@ -1120,13 +1120,13 @@ window.AppNavigation = {
                         { icon: "fa-brain", value: "200", suffix: "h", label: "Learning / Yr", color: "purple" },
                         { icon: "fa-seedling", value: "0", suffix: "%", label: "Boredom", color: "green" }
                     ],
-                    mainValue: {
+                    mainMessage: {
                         title: "We Debug <br /><span class=\"text-ikf-yellow\">Problems</span>, Not People.",
                         description: "In a high-pressure agency environment, we prioritize psychological safety. Mistakes are compile errors, not fatal crashes. We fix them together."
                     },
-                    secondaryValues: [
-                        { icon: "fa-rocket", title: "Growth Mindset", desc: "Fail fast, learn faster.", color: "ikf-blue" },
-                        { icon: "fa-coffee", title: "Fuel Creativity", desc: "Caffeine & Ideas.", color: "ikf-yellow" }
+                    values: [
+                        { icon: "fa-rocket", title: "Growth Mindset", description: "Fail fast, learn faster.", color: "ikf-blue" },
+                        { icon: "fa-coffee", title: "Fuel Creativity", description: "Caffeine & Ideas.", color: "ikf-yellow" }
                     ],
                     gallery: { title: "Life @ IKF", tag: "#TeamBonding", image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" }
                 };
@@ -1160,8 +1160,8 @@ window.AppNavigation = {
                                             <span class="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-mono border border-white/20">values.json</span>
                                             <div class="h-[1px] flex-1 bg-white/10"></div>
                                         </div>
-                                        <h3 class="text-3xl md:text-5xl font-black mb-6 leading-tight">${cultData.mainValue.title}</h3>
-                                        <p class="text-slate-300 max-w-lg text-sm leading-relaxed mb-8">${cultData.mainValue.description}</p>
+                                        <h3 class="text-3xl md:text-5xl font-black mb-6 leading-tight">${(cultData.mainMessage || cultData.mainValue || {}).title || ''}</h3>
+                                        <p class="text-slate-300 max-w-lg text-sm leading-relaxed mb-8">${(cultData.mainMessage || cultData.mainValue || {}).description || ''}</p>
                                         <div class="flex gap-4">
                                             <div class="flex -space-x-4">
                                                 <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-700"></div>
@@ -1177,11 +1177,11 @@ window.AppNavigation = {
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-6">
-                                    ${(Array.isArray(cultData.secondaryValues) ? cultData.secondaryValues : []).map(val => `
+                                    ${(Array.isArray(cultData.values || cultData.secondaryValues) ? (cultData.values || cultData.secondaryValues) : []).map(val => `
                                         <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group">
-                                            <i class="fas ${val.icon} text-3xl text-${val.color} mb-4 group-hover:scale-110 transition-transform block"></i>
-                                            <h4 class="font-black text-lg mb-2">${val.title}</h4>
-                                            <p class="text-xs text-slate-400">${val.desc}</p>
+                                            <i class="fas ${val.icon || 'fa-star'} text-3xl text-${val.color || 'ikf-yellow'} mb-4 group-hover:scale-110 transition-transform block"></i>
+                                            <h4 class="font-black text-lg mb-2">${val.title || ''}</h4>
+                                            <p class="text-xs text-slate-400">${val.description || val.desc || ''}</p>
                                         </div>
                                     `).join('')}
                                 </div>
