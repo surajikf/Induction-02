@@ -1190,14 +1190,14 @@ window.AppNavigation = {
                             <!-- Right: Life Gallery (Smart Vertical) -->
                             <div class="bg-slate-50 rounded-[3rem] p-4 flex flex-col gap-4 overflow-hidden relative border border-slate-100">
                                 <div class="absolute top-8 left-8 z-10 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-black shadow-sm">
-                                    <i class="fas fa-camera text-ikf-blue mr-2"></i> ${cultData.gallery.title}
+                                    <i class="fas fa-camera text-ikf-blue mr-2"></i> ${(cultData.gallery || {}).title || 'Life @ IKF'}
                                 </div>
-                                <div class="flex-1 rounded-[2.5rem] bg-cover bg-center" style="background-image: url('${cultData.gallery.image}');"></div>
+                                <div class="flex-1 rounded-[2.5rem] bg-cover bg-center" style="background-image: url('${(cultData.gallery || {}).image || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}');"></div>
                                 <div class="h-40 rounded-[2.5rem] bg-ikf-yellow/10 flex items-center justify-center relative overflow-hidden group cursor-pointer">
                                     <div class="absolute inset-0 bg-ikf-yellow/80 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center">
                                         <span class="text-white font-black uppercase text-xs tracking-widest">View Gallery</span>
                                     </div>
-                                    <span class="text-ikf-blue/30 font-black text-xl rotate-12 group-hover:rotate-0 transition-transform">${cultData.gallery.tag}</span>
+                                    <span class="text-ikf-blue/30 font-black text-xl rotate-12 group-hover:rotate-0 transition-transform">${(cultData.gallery || {}).tag || '#IKFLife'}</span>
                                 </div>
                             </div>
                         </div>
