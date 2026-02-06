@@ -70,13 +70,6 @@ window.AppNavigation = {
             $('#content-panel').html(html);
         }
 
-        // 5. Special Init for Directory
-        if (sectionId === 'directory') {
-            setTimeout(() => {
-                this.renderDirectoryGrid();
-            }, 50); // Small delay to ensure DOM is ready
-        }
-
         // 6. Scroll to Top
         $('#content-panel').scrollTop(0);
 
@@ -306,6 +299,12 @@ window.AppNavigation = {
         // Fade out transition
         $panel.fadeOut(150, () => {
             $panel.html(this.getTemplate(sectionId));
+
+            // Special Init for Directory
+            if (sectionId === 'directory') {
+                this.renderDirectoryGrid();
+            }
+
             $panel.fadeIn(200);
         });
     },
