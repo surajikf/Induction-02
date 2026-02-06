@@ -941,25 +941,94 @@ window.AppNavigation = {
                     ]
                 };
                 return `
-                    <div class="max-w-6xl mx-auto py-6 fade-in">
-                        <div class="mb-16">
-                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${philData.badge}</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tighter leading-none mb-4">
-                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">${philData.title}</span> <br/><span class="text-slate-400 text-2xl md:text-3xl font-light">${philData.subtitle}</span>
-                            </h1>
+                    <div class="max-w-7xl mx-auto py-12 fade-in">
+                        <!-- Redesigned Header -->
+                        <div class="relative mb-24">
+                            <div class="absolute -left-12 -top-12 text-[180px] font-black text-slate-50 pointer-events-none select-none">CORE</div>
+                            <div class="relative z-10">
+                                <span class="text-ikf-yellow font-black uppercase tracking-[0.4em] text-[10px] mb-4 block animate-pulse">${philData.badge}</span>
+                                <h1 class="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none mb-6">
+                                    ${philData.title.split('•').map(char => `<span class="hover:text-ikf-blue transition-colors cursor-default">${char.trim()}</span>`).join(' <span class="text-ikf-yellow">•</span> ')}
+                                </h1>
+                                <p class="text-slate-400 font-medium text-xl md:text-2xl max-w-2xl leading-tight">
+                                    ${philData.subtitle}
+                                </p>
+                            </div>
                         </div>
 
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-20">
-                            ${(Array.isArray(philData.pillars) ? philData.pillars : []).map(pillar => `
-                                <div class="premium-card bg-white p-12 group overflow-hidden relative">
-                                    <div class="absolute -top-10 -right-10 text-[120px] font-black text-slate-50 group-hover:text-ikf-blue/5 transition-colors">${pillar.id}</div>
-                                    <div class="relative z-10">
-                                        <div class="w-16 h-16 bg-ikf-blue text-white rounded-[1.5rem] flex items-center justify-center font-black text-3xl mb-8 shadow-xl shadow-ikf-blue/20">${pillar.id}</div>
-                                        <h3 class="text-2xl font-black text-ikf-blue mb-4">${pillar.title}</h3>
-                                        <p class="text-slate-500 leading-relaxed">${pillar.content}</p>
+                        <!-- Staggered Pillars Grid -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 mb-32 relative">
+                            <!-- Background Connecting Line (Desktop Only) -->
+                            <div class="hidden lg:block absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-slate-100 to-transparent -z-10"></div>
+
+                            ${(Array.isArray(philData.pillars) ? philData.pillars : []).map((pillar, idx) => {
+                    const icons = { 'I': 'fa-microchip', 'K': 'fa-brain', 'F': 'fa-industry' };
+                    const icon = icons[pillar.id] || 'fa-atom';
+                    const colors = { 'I': 'ikf-blue', 'K': 'ikf-yellow', 'F': 'slate-900' };
+                    const color = colors[pillar.id] || 'ikf-blue';
+                    const staggerClass = idx === 1 ? 'lg:mt-16' : '';
+
+                    return `
+                                    <div class="premium-card bg-white p-10 lg:p-14 group transition-all duration-500 hover:-translate-y-4 relative overflow-hidden ${staggerClass}">
+                                        <!-- Massive Watermark -->
+                                        <div class="absolute -bottom-10 -right-10 text-[180px] font-black text-slate-50 group-hover:text-ikf-blue/[0.03] transition-colors pointer-events-none select-none">${pillar.id}</div>
+                                        
+                                        <!-- Card Header -->
+                                        <div class="relative z-10">
+                                            <div class="flex items-center justify-between mb-10">
+                                                <div class="w-16 h-16 bg-white rounded-2xl shadow-xl shadow-ikf-blue/10 flex items-center justify-center text-${color === 'ikf-yellow' ? 'ikf-yellow' : color} text-2xl group-hover:bg-${color === 'ikf-yellow' ? 'ikf-yellow' : color} group-hover:text-white transition-all duration-500 border border-slate-50">
+                                                    <i class="fas ${icon}"></i>
+                                                </div>
+                                                <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Pillar 0${idx + 1}</span>
+                                            </div>
+
+                                            <h3 class="text-3xl font-black text-slate-800 mb-6 flex items-center gap-3">
+                                                <span class="text-${color === 'ikf-yellow' ? 'ikf-yellow' : color}">${pillar.id}</span>
+                                                <span class="h-px w-8 bg-slate-100 group-hover:w-12 transition-all"></span>
+                                                ${pillar.title}
+                                            </h3>
+                                            
+                                            <p class="text-slate-500 font-medium leading-relaxed text-lg mb-8">
+                                                ${pillar.content}
+                                            </p>
+
+                                            <!-- Decorative Footer element -->
+                                            <div class="flex items-center gap-2 text-[10px] font-bold text-slate-300 uppercase tracking-tight">
+                                                <div class="w-1.5 h-1.5 rounded-full bg-${color === 'ikf-yellow' ? 'ikf-yellow' : color}"></div>
+                                                ${pillar.title} Protocol Active
+                                            </div>
+                                        </div>
+
+                                        <!-- Hover Decoration -->
+                                        <div class="absolute bottom-0 left-0 h-1 bg-${color === 'ikf-yellow' ? 'ikf-yellow' : color} w-0 group-hover:w-full transition-all duration-700"></div>
+                                    </div>
+                                `;
+                }).join('')}
+                        </div>
+
+                        <!-- Philosophy Secondary Section (New) -->
+                        <div class="bg-slate-900 rounded-[4rem] p-12 lg:p-24 text-white relative overflow-hidden mb-20">
+                            <div class="absolute top-0 right-0 p-12 opacity-10"><i class="fas fa-fingerprint text-[200px]"></i></div>
+                            <div class="relative z-10 max-w-3xl">
+                                <h2 class="text-4xl font-black mb-8 leading-tight">Beyond Services, <br/><span class="text-ikf-yellow">We Build Legacies.</span></h2>
+                                <p class="text-slate-400 text-lg mb-12">At IKF, our philosophy isn't just about output; it's about the synthesis of human intelligence and industrialized precision. We don't just solve problems—we engineer competitive advantages.</p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div class="flex gap-4">
+                                        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-ikf-yellow flex-shrink-0"><i class="fas fa-chess-knight"></i></div>
+                                        <div>
+                                            <h4 class="font-bold mb-1">Strategic Mastery</h4>
+                                            <p class="text-xs text-slate-500">25+ Years of market evolution knowledge.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-4">
+                                        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-ikf-yellow flex-shrink-0"><i class="fas fa-rocket"></i></div>
+                                        <div>
+                                            <h4 class="font-bold mb-1">Future Focused</h4>
+                                            <p class="text-xs text-slate-500">AI-native methodologies & creative craft.</p>
+                                        </div>
                                     </div>
                                 </div>
-                            `).join('')}
+                            </div>
                         </div>
                     </div>`;
 
