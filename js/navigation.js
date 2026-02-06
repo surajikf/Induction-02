@@ -99,8 +99,8 @@ window.AppNavigation = {
             ashish: "<p>Welcome to IKF! With over 25 years of digital excellence, we've grown alongside the internet itself. Our journey from a boutique setup to a multidisciplinary agency has been driven by one core philosophy: Innovation, Knowledge, and Factory.</p><p>We help global brands thrive across digital ecosystems using AI-refined strategies without losing the human lens. Your role here is crucial in maintaining our legacy of delivering high-impact solutions for our 1500+ clients.</p>",
             leadership: "<p>At IKF, we believe in a culture where 'respect begets respect.' We treat our employees, collaborators, and clients with dignity and consideration. Our leadship is committed to creating an environment that boosts creativity, efficiency, and productivity.</p>",
             hr: "<p>Our mission is to unlock the full growth potential of brands by pioneering new approaches. As you join our 50+ passionate team members, you'll find that transparency and openness are the guiding forces behind every decision we make.</p>",
-            jayraj: "<p>Jayraj oversees strategic operations and technological integration, ensuring that the Factory operates at peak industrial precision. His focus on process optimization drives our ability to deliver consistent quality at scale.</p>",
-            anuja: "<p>Anuja leads the creative and brand strategy units, focusing on human-centric digital storytelling. Her vision bridges the gap between data-driven performance and emotional brand connection.</p>"
+            gunjan: "<p>Gunjan oversees strategic operations and technological integration, ensuring that the Factory operates at peak industrial precision. Her focus on process optimization drives our ability to deliver consistent quality at scale.</p>",
+            ritu: "<p>Ritu leads the creative and brand strategy units, focusing on human-centric digital storytelling. Her vision bridges the gap between data-driven performance and emotional brand connection.</p>"
         };
 
         $('#modal-leader-name').text(name);
@@ -178,7 +178,7 @@ window.AppNavigation = {
 
         grid.innerHTML = list.map((emp, index) => `
             <div class="employee-card card-clean group cursor-pointer p-6"
-                 onclick="AppNavigation.showLeaderModal('${emp.id === 'ashish' || emp.id === 'jayraj' || emp.id === 'anuja' ? emp.id : 'leadership'}', '${emp.name}', '${emp.role}')"
+                 onclick="AppNavigation.showLeaderModal('${emp.id === 'ashish' || emp.id === 'gunjan' || emp.id === 'ritu' ? emp.id : 'leadership'}', '${emp.name}', '${emp.role}')"
                  style="animation: fadeInUp 0.5s ease-out backwards ${index * 50}ms">
                 
                 <!-- Avatar Section -->
@@ -422,10 +422,10 @@ window.AppNavigation = {
                         
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
                             <!-- Leader 1: Ashish Dalia -->
-                            <div class="group relative perspective-1000" onclick="AppNavigation.showLeaderModal('ashish', 'Ashish Dalia', 'CEO')">
+                            <div class="group relative perspective-1000" onclick="AppNavigation.showLeaderModal('ashish', 'Ashish Dalia', 'Founder')">
                                 <div class="bg-white rounded-[3rem] p-4 relative z-10 transition-all duration-500 transform preserve-3d group-hover:rotate-y-6 group-hover:shadow-2xl border border-slate-100 h-full flex flex-col">
                                     <div class="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-6 bg-slate-100">
-                                        <img src="images/avatars/ashish_real.jpg" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Ashish Dalia">
+                                        <img src="images/IKFLOGO/Ashish-Dalia-Sir.jpg" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Ashish Dalia">
                                         
                                         <!-- Smart Overlay -->
                                         <div class="absolute inset-0 bg-gradient-to-t from-ikf-blue via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
@@ -447,7 +447,7 @@ window.AppNavigation = {
                                     
                                     <div class="px-4 pb-4 text-center">
                                         <h3 class="text-2xl font-black text-slate-800 group-hover:text-ikf-blue transition-colors mb-1">Ashish Dalia</h3>
-                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">The Architect (CEO)</p>
+                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Founder</p>
                                         
                                         <!-- Decorative Tech Elements -->
                                         <div class="flex justify-center gap-1 opacity-20 group-hover:opacity-100 transition-opacity duration-700">
@@ -461,11 +461,11 @@ window.AppNavigation = {
                                 <div class="absolute inset-4 bg-ikf-yellow/30 rounded-[3rem] blur-2xl -z-10 group-hover:blur-3xl transition-all opacity-0 group-hover:opacity-70"></div>
                             </div>
 
-                            <!-- Leader 2: Jayraj Mehta -->
-                            <div class="group relative perspective-1000" onclick="AppNavigation.showLeaderModal('jayraj', 'Jayraj Mehta', 'Director')">
+                            <!-- Leader 2: Gunjan Bhansali -->
+                            <div class="group relative perspective-1000" onclick="AppNavigation.showLeaderModal('gunjan', 'Gunjan Bhansali', 'Operations Head')">
                                 <div class="bg-white rounded-[3rem] p-4 relative z-10 transition-all duration-500 transform preserve-3d group-hover:rotate-y-6 group-hover:shadow-2xl border border-slate-100 h-full flex flex-col">
                                     <div class="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-6 bg-slate-100">
-                                        <img src="images/avatars/jayraj.png" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Jayraj Mehta">
+                                        <img src="images/IKFLOGO/Gunjan-Bhansali-IMG.jpg" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Gunjan Bhansali">
                                         <div class="absolute inset-0 bg-gradient-to-t from-ikf-blue via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
                                         
                                         <div class="absolute inset-x-0 bottom-0 p-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
@@ -483,8 +483,8 @@ window.AppNavigation = {
                                     </div>
                                     
                                     <div class="px-4 pb-4 text-center">
-                                        <h3 class="text-2xl font-black text-slate-800 group-hover:text-ikf-blue transition-colors mb-1">Jayraj Mehta</h3>
-                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">The Engine (Director)</p>
+                                        <h3 class="text-2xl font-black text-slate-800 group-hover:text-ikf-blue transition-colors mb-1">Gunjan Bhansali</h3>
+                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Operations Head</p>
                                         
                                         <div class="flex justify-center gap-1 opacity-20 group-hover:opacity-100 transition-opacity duration-700">
                                             <div class="w-1 h-1 bg-cyan-500 rounded-full"></div>
@@ -496,11 +496,11 @@ window.AppNavigation = {
                                 <div class="absolute inset-4 bg-cyan-500/30 rounded-[3rem] blur-2xl -z-10 group-hover:blur-3xl transition-all opacity-0 group-hover:opacity-70"></div>
                             </div>
 
-                            <!-- Leader 3: Anuja Kapoor -->
-                            <div class="group relative perspective-1000" onclick="AppNavigation.showLeaderModal('anuja', 'Anuja Kapoor', 'Director')">
+                            <!-- Leader 3: Ritu Dalia -->
+                            <div class="group relative perspective-1000" onclick="AppNavigation.showLeaderModal('ritu', 'Ritu Dalia', 'Co-Founder')">
                                 <div class="bg-white rounded-[3rem] p-4 relative z-10 transition-all duration-500 transform preserve-3d group-hover:rotate-y-6 group-hover:shadow-2xl border border-slate-100 h-full flex flex-col">
                                     <div class="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-6 bg-slate-100">
-                                        <img src="images/avatars/anuja.png" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Anuja Kapoor">
+                                        <img src="images/IKFLOGO/Ritu-Dalia-IMG.jpg" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Ritu Dalia">
                                         <div class="absolute inset-0 bg-gradient-to-t from-ikf-blue via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
                                         
                                         <div class="absolute inset-x-0 bottom-0 p-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
@@ -518,8 +518,8 @@ window.AppNavigation = {
                                     </div>
                                     
                                     <div class="px-4 pb-4 text-center">
-                                        <h3 class="text-2xl font-black text-slate-800 group-hover:text-ikf-blue transition-colors mb-1">Anuja Kapoor</h3>
-                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">The Soul (Director)</p>
+                                        <h3 class="text-2xl font-black text-slate-800 group-hover:text-ikf-blue transition-colors mb-1">Ritu Dalia</h3>
+                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Co-Founder</p>
                                         
                                         <div class="flex justify-center gap-1 opacity-20 group-hover:opacity-100 transition-opacity duration-700">
                                             <div class="w-1 h-1 bg-pink-500 rounded-full"></div>
@@ -1122,155 +1122,153 @@ window.AppNavigation = {
                     </div>`;
 
             case 'social':
-                const socData = this.contentData?.social || {
-                    badge: "Digital Command Center",
-                    title: "The <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow\">Ecosystem</span>",
-                    stats: [
-                        { platform: "LinkedIn", icon: "fa-linkedin-in", value: "25k", label: "Connections", trend: "12% vs last month", color: "#0077b5", url: "https://www.linkedin.com/company/i-knowledge-factory-pvt.-ltd./" },
-                        { platform: "Instagram", icon: "fa-instagram", value: "18k", label: "Followers", trend: "8.5% Engagement", color: "#E1306C", url: "https://www.instagram.com/ikfdigital/" },
-                        { platform: "Facebook", icon: "fa-facebook-f", value: "42k", label: "Community", trend: "Stable", color: "#1877F2", url: "https://www.facebook.com/IKFDigital/" },
-                        { platform: "YouTube", icon: "fa-youtube", value: "500k", label: "Views", trend: "New Viral Hit", color: "#FF0000", url: "https://www.youtube.com/c/IKFDigital" }
-                    ],
-                    featured: {
-                        badge: "Latest Transmission",
-                        title: "\"The Future of AI in Marketing\"",
-                        description: "Our Director, Ashish Dalia, breaks down how generative AI is reshaping the agency landscape. Watch the full keynote now.",
-                        linkText: "Watch Video",
-                        linkUrl: "https://www.youtube.com/c/IKFDigital",
-                        image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80"
-                    },
-                    feed: [
-                        { title: "IKF celebrates 23 years of excellence! 🎉", time: "2 hours ago", platform: "Instagram", image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" },
-                        { title: "We are hiring! Join our creative team. 🚀", time: "5 hours ago", platform: "LinkedIn", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" },
-                        { title: "New case study: Rebranding a tech giant.", time: "1 day ago", platform: "Behance", image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" }
-                    ]
+                const socData = this.contentData?.social || {};
+                const stats = socData.platforms || [
+                    { name: "LinkedIn", icon: "fa-linkedin-in", stat: "25k", label: "Connections", growth: "12% vs last month", url: "https://www.linkedin.com/company/i-knowledge-factory-pvt.-ltd./" },
+                    { name: "Instagram", icon: "fa-instagram", stat: "18k", label: "Followers", growth: "8.5% Engagement", url: "https://www.instagram.com/ikfdigital/" },
+                    { name: "Facebook", icon: "fa-facebook-f", stat: "42k", label: "Community", growth: "Stable", url: "https://www.facebook.com/IKFDigital/" },
+                    { name: "YouTube", icon: "fa-youtube", stat: "500k", label: "Views", growth: "New Viral Hit", url: "https://www.youtube.com/c/IKFDigital" }
+                ];
+                const featured = socData.featuredPost || {
+                    badge: "Latest Transmission",
+                    title: "\"The Future of AI in Marketing\"",
+                    description: "Our Director, Ashish Dalia, breaks down how generative AI is reshaping the agency landscape.",
+                    cta: "Watch Video",
+                    linkUrl: "https://www.youtube.com/c/IKFDigital",
+                    image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80"
                 };
+                const feed = socData.recentActivity || [
+                    { text: "IKF celebrates 23 years of excellence! 🎉", time: "2 hours ago", platform: "Instagram", image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" },
+                    { text: "We are hiring! Join our creative team. 🚀", time: "5 hours ago", platform: "LinkedIn", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" }
+                ];
+
                 return `
                     <div class="max-w-7xl mx-auto py-6 fade-in">
                         <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
                             <div>
-                                <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${socData.badge}</span>
-                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${socData.title}</h1>
+                                <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${socData.badge || 'Digital Command Center'}</span>
+                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${socData.title || 'The <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Ecosystem</span>'}</h1>
                             </div>
                             <div class="flex items-center gap-2 text-green-500 font-bold text-xs bg-green-50 px-4 py-2 rounded-full border border-green-100 animate-pulse">
                                 <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                                Live Sync: Active
+                                ${socData.liveStatus || 'Live Sync: Active'}
                             </div>
                         </div>
 
                         <!--Live Stats Grid-->
                         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-                            ${(socData.stats || []).map(stat => `
-                                <a href="${stat.url}" target="_blank" class="group bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all relative overflow-hidden">
-                                    <div class="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-full -mr-8 -mt-8 group-hover:bg-[${stat.color}] transition-colors duration-500"></div>
-                                    <i class="fab ${stat.icon} text-3xl mb-4 text-[${stat.color}] group-hover:text-white relative z-10 transition-colors"></i>
-                                    <div class="relative z-10">
-                                        <h3 class="text-3xl font-black text-slate-800 mb-1">${stat.value}<span class="text-sm text-slate-400 font-bold">+</span></h3>
-                                        <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">${stat.label}</p>
-                                    </div>
-                                    <div class="mt-4 flex items-center gap-2 text-[10px] font-bold ${stat.trend.includes('last month') || stat.trend.includes('Engagement') ? 'text-green-500' : 'text-slate-400'}">
-                                        <i class="fas ${stat.trend.includes('vs last month') || stat.trend.includes('Engagement') ? 'fa-arrow-up' : 'fa-minus'}"></i> ${stat.trend}
-                                    </div>
-                                </a>
-                            `).join('')}
+                            ${stats.map(stat => {
+                    const platformColors = {
+                        'LinkedIn': '#0077b5',
+                        'Instagram': '#E1306C',
+                        'Facebook': '#1877F2',
+                        'YouTube': '#FF0000',
+                        'Behance': '#1769ff'
+                    };
+                    const pColor = platformColors[stat.name] || '#0E0057';
+                    const pIcon = stat.icon || (stat.name === 'LinkedIn' ? 'fa-linkedin-in' : (stat.name === 'Instagram' ? 'fa-instagram' : 'fa-share-nodes'));
+
+                    return `
+                                    <a href="${stat.url || '#'}" target="_blank" class="group bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all relative overflow-hidden">
+                                        <div class="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-full -mr-8 -mt-8 group-hover:bg-[${pColor}] transition-colors duration-500"></div>
+                                        <i class="fab ${pIcon} text-3xl mb-4 text-[${pColor}] group-hover:text-white relative z-10 transition-colors"></i>
+                                        <div class="relative z-10">
+                                            <h3 class="text-3xl font-black text-slate-800 mb-1">${stat.stat || '0'}<span class="text-sm text-slate-400 font-bold">+</span></h3>
+                                            <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">${stat.label || stat.name}</p>
+                                        </div>
+                                        <div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-green-500">
+                                            <i class="fas fa-arrow-up"></i> ${stat.growth || 'Stable'}
+                                        </div>
+                                    </a>
+                                `;
+                }).join('')}
                         </div>
 
                         <!--Recent Transmissions(Feed Simulation)-->
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20 md:h-96">
-                        <!-- Featured Post -->
-                        <div class="lg:col-span-2 bg-gradient-to-br from-slate-900 to-ikf-blue rounded-[3rem] p-10 text-white relative overflow-hidden group">
-                            <div class="absolute inset-0 bg-[url('${socData.featured.image}')] bg-cover bg-center opacity-20 group-hover:scale-105 transition-transform duration-700"></div>
-                            <div class="absolute top-8 right-8 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/20">
-                                ${socData.featured.badge}
-                            </div>
-                            <div class="relative z-10 h-full flex flex-col justify-end">
-                                <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-6">
-                                    <i class="fas fa-play text-white ml-1"></i>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20 md:h-96">
+                            <!-- Featured Post -->
+                            <div class="lg:col-span-2 bg-gradient-to-br from-slate-900 to-ikf-blue rounded-[3rem] p-10 text-white relative overflow-hidden group">
+                                <div class="absolute inset-0 bg-[url('${featured.image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0'}')] bg-cover bg-center opacity-20 group-hover:scale-105 transition-transform duration-700"></div>
+                                <div class="absolute top-8 right-8 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/20">
+                                    ${featured.badge || 'Latest Transmission'}
                                 </div>
-                                <h3 class="text-2xl md:text-4xl font-black leading-tight mb-4">${socData.featured.title}</h3>
-                                <p class="text-blue-100 max-w-lg text-sm leading-relaxed mb-8 line-clamp-2">${socData.featured.description}</p>
-                                <a href="${socData.featured.linkUrl}" target="_blank" class="inline-flex items-center gap-3 text-xs font-bold uppercase tracking-widest hover:text-ikf-yellow transition-colors">
-                                    ${socData.featured.linkText} <i class="fas fa-arrow-right"></i>
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Feed List -->
-                        <div class="bg-white rounded-[3rem] p-8 border border-slate-100 shadow-sm flex flex-col">
-                            <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6">Recent Activity</h4>
-                            <div class="flex-1 space-y-6 overflow-hidden">
-                                ${(socData.feed || []).map(item => `
-                                    <div class="flex gap-4 group cursor-pointer">
-                                        <div class="w-12 h-12 rounded-xl bg-slate-100 flex-shrink-0 bg-cover bg-center" style="background-image: url('${item.image}')"></div>
-                                        <div>
-                                            <p class="text-xs font-bold text-slate-700 leading-tight mb-1 group-hover:text-ikf-blue transition-colors">${item.title}</p>
-                                            <p class="text-[10px] text-slate-400">${item.time} • ${item.platform}</p>
-                                        </div>
+                                <div class="relative z-10 h-full flex flex-col justify-end">
+                                    <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-6">
+                                        <i class="fas fa-play text-white ml-1"></i>
                                     </div>
-                                `).join('')}
+                                    <h3 class="text-2xl md:text-4xl font-black leading-tight mb-4">${featured.title || 'Untitled Transmission'}</h3>
+                                    <p class="text-blue-100 max-w-lg text-sm leading-relaxed mb-8 line-clamp-2">${featured.description || ''}</p>
+                                    <a href="${featured.linkUrl || '#'}" target="_blank" class="inline-flex items-center gap-3 text-xs font-bold uppercase tracking-widest hover:text-ikf-yellow transition-colors">
+                                        ${featured.cta || 'Learn More'} <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Feed List -->
+                            <div class="bg-white rounded-[3rem] p-8 border border-slate-100 shadow-sm flex flex-col">
+                                <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6">Recent Activity</h4>
+                                <div class="flex-1 space-y-6 overflow-hidden">
+                                    ${feed.map(item => `
+                                        <div class="flex gap-4 group cursor-pointer">
+                                            <div class="w-12 h-12 rounded-xl bg-slate-100 flex-shrink-0 bg-cover bg-center" style="background-image: url('${item.image || 'https://images.unsplash.com/photo-1531482615713-2afd69097998'}')"></div>
+                                            <div>
+                                                <p class="text-xs font-bold text-slate-700 leading-tight mb-1 group-hover:text-ikf-blue transition-colors">${item.text || item.title || ''}</p>
+                                                <p class="text-[10px] text-slate-400">${item.time || ''} • ${item.platform || ''}</p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>`;
+                    </div>`;
 
             case 'referral':
-                const refData = this.contentData?.referral || {
-                    badge: "Talent Acquisition Protocol",
-                    title: "The <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow\">Referral</span> Engine",
-                    subtitle: "Help us build the next generation of IKF. Your network is our greatest asset.",
-                    rewardHeading: "Tiered Rewards Program",
-                    rewards: [
-                        { icon: "fa-gift", amount: "₹5,000", label: "Junior Level", color: "blue" },
-                        { icon: "fa-crown", amount: "₹10,000", label: "Mid Level", color: "yellow" },
-                        { icon: "fa-gem", amount: "₹20,000", label: "Senior/Lead", color: "purple" }
-                    ],
-                    process: [
-                        { step: "01", title: "Identify", desc: "Spot a talent in your network." },
-                        { step: "02", title: "Submit", desc: "Share their CV via our portal." },
-                        { step: "03", title: "Track", desc: "Follow the interview progress." },
-                        { step: "04", title: "Earn", desc: "Get rewarded after 3 months." }
-                    ],
-                    cta: {
-                        title: "Ready to refer?",
-                        buttonText: "Open Referral Form",
-                        link: "https://forms.gle/referral-example"
-                    }
-                };
+                const refData = this.contentData?.referral || {};
+                const tiers = refData.tiers || [
+                    { title: "Junior Agent", experience: "0-2 Years Exp", reward: "₹5,000", label: "Successfully Hired" },
+                    { title: "Specialist", experience: "2-5 Years Exp", reward: "₹15,000", label: "Successfully Hired" },
+                    { title: "Architect", experience: "5+ Years Exp", reward: "₹25,000", label: "Successfully Hired" }
+                ];
+                const refProcess = refData.process || [
+                    { step: "1. Identify", description: "Locate a candidate matching our cultural code." },
+                    { step: "2. Submit", description: "Forward coordinates (CV) to HR via secure channel." }
+                ];
+
                 return `
                     <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
-                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${refData.badge}</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight mb-4">${refData.title}</h1>
-                            <p class="text-slate-400 max-w-xl text-sm font-medium">${refData.subtitle}</p>
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${refData.badge || 'Talent Acquisition Protocol'}</span>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight mb-4">${refData.title || 'The <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Bounty</span> Board'}</h1>
+                            <p class="text-slate-400 max-w-xl text-sm font-medium">${refData.subtitle || 'Help us build the next generation of IKF.'}</p>
                         </div>
 
                         <!--Rewards Showcase-->
                         <div class="bg-white rounded-[3rem] p-8 md:p-16 shadow-xl shadow-ikf-blue/5 border border-slate-50 mb-16 overflow-hidden relative">
                             <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-ikf-yellow/5 rounded-full"></div>
                             <h3 class="text-2xl font-black text-ikf-blue mb-12 flex items-center gap-4">
-                                ${refData.rewardHeading}
+                                Tiered Rewards Program
                                 <div class="h-px flex-1 bg-slate-100"></div>
                             </h3>
 
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
-                                ${(refData.rewards || []).map(reward => `
+                                ${tiers.map(tier => `
                                     <div class="p-8 rounded-[2rem] bg-slate-50 border border-slate-100 group hover:bg-ikf-blue hover:text-white transition-all">
-                                        <i class="fas ${reward.icon} text-3xl text-ikf-yellow mb-6"></i>
-                                        <h4 class="text-4xl font-black mb-2">${reward.amount}</h4>
-                                        <p class="text-[10px] uppercase font-bold tracking-widest opacity-60">${reward.label}</p>
+                                        <i class="fas ${tier.featured ? 'fa-gem' : 'fa-gift'} text-3xl text-ikf-yellow mb-6"></i>
+                                        <h4 class="text-4xl font-black mb-2">${tier.reward}</h4>
+                                        <p class="text-[10px] uppercase font-bold tracking-widest opacity-60">${tier.title} • ${tier.experience}</p>
                                     </div>
                                 `).join('')}
                             </div>
                         </div>
 
                         <!--Process Grid-->
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-20">
-                            ${(refData.process || []).map(step => `
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+                            ${refProcess.map(step => `
                                 <div class="bg-white p-8 rounded-[2rem] border border-slate-100 relative group overflow-hidden">
-                                    <span class="absolute -right-4 -top-4 text-7xl font-black text-slate-50 group-hover:text-ikf-blue/5 transition-colors">${step.step}</span>
+                                     <span class="absolute -right-4 -top-4 text-7xl font-black text-slate-50 group-hover:text-ikf-blue/5 transition-colors">${typeof step.step === 'string' ? step.step.split('.')[0] : step.step}</span>
                                     <div class="relative z-10">
-                                        <h4 class="font-black text-ikf-blue mb-2">${step.title}</h4>
-                                        <p class="text-xs text-slate-400 font-medium">${step.desc}</p>
+                                        <h4 class="font-black text-ikf-blue mb-2">${typeof step.step === 'string' ? step.step.split('.')[1] || step.step : step.step}</h4>
+                                        <p class="text-xs text-slate-400 font-medium">${step.description || step.desc || ''}</p>
                                     </div>
                                 </div>
                             `).join('')}
@@ -1280,54 +1278,50 @@ window.AppNavigation = {
                         <div class="bg-ikf-blue rounded-[3rem] p-12 text-center text-white relative overflow-hidden">
                             <div class="absolute inset-0 bg-gradient-to-r from-ikf-blue to-slate-900 opacity-50"></div>
                             <div class="relative z-10">
-                                <h3 class="text-3xl font-black mb-6">${refData.cta.title}</h3>
-                                <a href="${refData.cta.link}" target="_blank" class="inline-flex items-center gap-4 px-10 py-5 bg-ikf-yellow text-ikf-blue font-black uppercase tracking-widest text-sm rounded-2xl hover:scale-105 transition-transform shadow-xl shadow-ikf-yellow/20">
-                                    <i class="fas fa-paper-plane"></i> ${refData.cta.buttonText}
+                                <h3 class="text-3xl font-black mb-6">Ready to refer?</h3>
+                                <a href="https://forms.gle/referral-example" target="_blank" class="inline-flex items-center gap-4 px-10 py-5 bg-ikf-yellow text-ikf-blue font-black uppercase tracking-widest text-sm rounded-2xl hover:scale-105 transition-transform shadow-xl shadow-ikf-yellow/20">
+                                    <i class="fas fa-paper-plane"></i> Submit Application
                                 </a>
                             </div>
                         </div>
                     </div>`;
 
             case 'anniversary':
-                const annivData = this.contentData?.anniversaries || {
-                    badge: "Legacy System",
-                    title: "Hall of <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow\">Fame</span>",
-                    totalExperience: "142",
-                    milestones: [
-                        { years: "10+", label: "Titan", title: "Founding Pillars", people: [{ name: "Ashish Dalia", role: "Founder", img: "images/avatars/ashish_real.jpg" }, { name: "Jayraj Mehta", role: "Director", img: "images/avatars/jayraj.png" }] },
-                        { years: "5+", label: "Core", title: "The Architects", people: [{ name: "Vikram Singh", role: "Sr. Strategist", img: "images/avatars/avatar_marketing_male.png" }] },
-                        { years: "1+", label: "Rising", title: "Rising Stars", people: [{ name: "Sneha Patel", role: "Designer", img: "images/avatars/avatar_creative_female.png" }, { name: "Rahul Verma", role: "Tech Lead", img: "images/avatars/avatar_dev_male.png" }] }
-                    ]
-                };
+                const annivData = this.contentData?.anniversary || {};
+                const milestones = annivData.milestones || [
+                    { years: "10+", badge: "Titan", title: "Founding Pillars", members: [{ name: "Ashish Dalia", role: "Founder", image: "images/avatars/ashish_real.jpg" }] },
+                    { years: "5+", badge: "Core", title: "The Architects", members: [{ name: "Vikram Singh", role: "Sr. Strategist", image: "images/avatars/avatar_marketing_male.png" }] }
+                ];
+
                 return `
                     <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16 flex flex-col md:flex-row items-center justify-between gap-8">
                             <div>
-                                <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${annivData.badge}</span>
-                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${annivData.title}</h1>
+                                <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${annivData.badge || 'Legacy System'}</span>
+                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${annivData.title || 'Hall of Fame'}</h1>
                             </div>
                             <div class="bg-slate-900 text-white px-8 py-4 rounded-[2rem] flex items-center gap-4 shadow-xl">
                                 <div class="text-right">
                                     <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Total Experience</p>
-                                    <p class="text-2xl font-black text-ikf-yellow">${annivData.totalExperience}<span class="text-sm text-white"> Years</span></p>
+                                    <p class="text-2xl font-black text-ikf-yellow">${annivData.totalExperience || '142+'}<span class="text-sm text-white"> Years</span></p>
                                 </div>
                                 <i class="fas fa-hourglass-half text-3xl text-slate-700"></i>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-                            ${(annivData.milestones || []).map(m => `
+                            ${milestones.map(m => `
                                 <div class="p-8 bg-white rounded-[2.5rem] border border-slate-50 shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all group flex flex-col items-center text-center relative overflow-hidden">
                                     <div class="absolute inset-x-0 top-0 h-2 bg-slate-900"></div>
                                     <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6 text-slate-900 border-4 border-slate-900 relative">
                                         <span class="text-3xl font-black">${m.years}</span>
-                                        <div class="absolute -bottom-3 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full">${m.label}</div>
+                                        <div class="absolute -bottom-3 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full">${m.badge || m.label || 'Elite'}</div>
                                     </div>
                                     <h3 class="text-xl font-black text-slate-800 mb-4">${m.title}</h3>
                                     <div class="space-y-3 w-full">
-                                        ${(m.people || []).map(p => `
+                                        ${(m.members || m.people || []).map(p => `
                                             <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
-                                                <img src="${p.img}" class="w-10 h-10 rounded-xl object-cover">
+                                                <img src="${p.image || p.img || 'images/avatars/avatar_dev_male.png'}" class="w-10 h-10 rounded-xl object-cover">
                                                 <div class="text-left">
                                                     <p class="text-xs font-bold">${p.name}</p>
                                                     <p class="text-[9px] text-slate-400">${p.role}</p>
@@ -1357,38 +1351,36 @@ window.AppNavigation = {
                     </div>`;
 
             case 'birthdays':
-                const bdayData = this.contentData?.birthdays || {
-                    badge: "Solar Returns",
-                    title: "Party <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow\">Protocol</span>",
-                    upcoming: [
-                        { name: "Priya Sharma", date: "Feb 14", dept: "Creative Dept", status: "Wishing Pending", img: "images/avatars/avatar_creative_female.png" },
-                        { name: "Rohan D.", date: "Feb 22", dept: "Development", status: "Wishing Pending", img: "images/avatars/avatar_dev_male.png" },
-                        { name: "Amit K.", date: "Mar 05", dept: "SEO Team", status: "Upcoming", img: "images/avatars/avatar_marketing_male.png" }
-                    ]
-                };
+                const bdayData = this.contentData?.birthdays || {};
+                const upcoming = bdayData.upcoming || [
+                    { name: "Priya Sharma", date: "Feb 14", dept: "Creative Dept", image: "images/avatars/avatar_creative_female.png" },
+                    { name: "Rohan D.", date: "Feb 22", dept: "Development", image: "images/avatars/avatar_dev_male.png" }
+                ];
+                const bdayTerminal = bdayData.terminal || { command: "execute_party_protocol.sh", output: ["cake_logistics: scheduled"] };
+
                 return `
                     <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-12 flex items-end justify-between">
                             <div>
-                                <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${bdayData.badge}</span>
-                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${bdayData.title}</h1>
+                                <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${bdayData.badge || 'Solar Returns'}</span>
+                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${bdayData.title || 'Party Protocol'}</h1>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-                            ${(bdayData.upcoming || []).map(b => `
+                            ${upcoming.map(b => `
                                 <div class="bg-white rounded-[2.5rem] border border-slate-50 p-6 flex items-center gap-4 hover:shadow-lg transition-all group cursor-default">
                                     <div class="w-20 h-20 rounded-2xl bg-slate-100 relative overflow-hidden">
-                                        <img src="${b.img}" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
+                                        <img src="${b.image || b.img || 'images/avatars/avatar_dev_male.png'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
                                     </div>
                                     <div>
                                         <div class="flex items-center gap-2 mb-1">
-                                            <span class="bg-pink-100 text-pink-500 text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full">${b.date}</span>
+                                            <span class="bg-pink-100 text-pink-500 text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full">${b.date || 'TBD'}</span>
                                         </div>
                                         <h3 class="text-lg font-black text-slate-800">${b.name}</h3>
-                                        <p class="text-xs text-slate-400 mb-2">${b.dept}</p>
+                                        <p class="text-xs text-slate-400 mb-2">${b.dept || 'Ecosystem'}</p>
                                         <div class="flex items-center gap-1 text-[10px] text-ikf-blue font-bold">
-                                            <i class="fas ${b.status === 'Upcoming' ? 'fa-clock' : 'fa-gift'}"></i> ${b.status}
+                                            <i class="fas ${b.status === 'Upcoming' ? 'fa-clock' : 'fa-gift'}"></i> ${b.status || 'Wishing Pending'}
                                         </div>
                                     </div>
                                 </div>
@@ -1404,40 +1396,40 @@ window.AppNavigation = {
                                     <div class="w-3 h-3 rounded-full bg-green-500"></div>
                                 </div>
                                 <div class="bg-black/50 backdrop-blur-md p-6 rounded-b-xl border-t border-white/5 font-mono text-xs md:text-sm text-slate-300 shadow-2xl">
-                                    <p class="mb-2"><span class="text-green-400">➜</span> <span class="text-blue-400">~</span> execute_party_protocol.sh</p>
-                                    <p class="mb-2"><span class="text-green-400">✔</span> cake_logistics: <span class="text-ikf-yellow">scheduled</span></p>
-                                    <p class="text-slate-500">// Click below to broadcast network wishes</p>
+                                    <p class="mb-2"><span class="text-green-400">➜</span> <span class="text-blue-400">~</span> ${bdayTerminal.command}</p>
+                                    ${(bdayTerminal.output || []).map(line => `<p class="mb-2"><span class="text-green-400">✔</span> ${line}</p>`).join('')}
                                 </div>
                             </div>
                             <button onclick="alert('Broadcasting wishes to the specific channels... 🎈')" class="relative z-10 px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl text-white font-black uppercase tracking-[0.2em] shadow-lg hover:shadow-pink-500/30 hover:scale-105 transition-all flex items-center gap-4">
-                                <i class="fas fa-bullhorn animate-pulse"></i> Broadcast Wishes
+                                <i class="fas fa-bullhorn animate-pulse"></i> ${bdayData.cta || 'Broadcast Wishes'}
                             </button>
                         </div>
                     </div>`;
 
             case 'holidays':
-                const holidayData = this.contentData?.holidays || {
-                    badge: "Global Calendar",
-                    title: "Holidays <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow\">2025-26</span>",
-                    list: [
-                        { name: "Republic Day", date: "JANUARY 26", type: "Mandatory" },
-                        { name: "Independence Day", date: "AUGUST 15", type: "Mandatory" },
-                        { name: "Gandhi Jayanti", date: "OCTOBER 02", type: "Mandatory" },
-                        { name: "Diwali (Priti/Padwa)", date: "NOVEMBER", type: "Regional" }
-                    ]
+                const holidayData = this.contentData?.holidays || {};
+                const strategicResets = holidayData.strategicResets || holidayData.list || [
+                    { name: "Republic Day", date: "JANUARY 26", type: "Mandatory" },
+                    { name: "Independence Day", date: "AUGUST 15", type: "Mandatory" }
+                ];
+                const holidayPolicy = holidayData.policy || {
+                    title: "Execution Protocol",
+                    description: "IKF publishes its final holiday list at the start of every calendar year.",
+                    compensatory: "Holidays falling on Sundays are not carried forward."
                 };
+
                 return `
                     <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
-                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${holidayData.badge}</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${holidayData.title}</h1>
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${holidayData.badge || 'Global Calendar'}</span>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${holidayData.title || 'Holidays 2025-26'}</h1>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20">
                             <div class="bg-white p-12 lg:p-16 rounded-[3.5rem] premium-card">
                                 <h3 class="text-2xl font-black text-ikf-blue mb-10">Strategic Resets</h3>
                                 <div class="space-y-6">
-                                    ${(holidayData.list || []).map(h => `
+                                    ${strategicResets.map(h => `
                                         <div class="flex items-center justify-between p-6 bg-slate-50 rounded-2xl group hover:bg-ikf-blue hover:text-white transition-all">
                                             <div><p class="font-black text-sm uppercase mb-1">${h.name}</p><p class="text-xs opacity-50 font-bold">${h.date}</p></div>
                                             <div class="text-[10px] font-black uppercase tracking-widest bg-ikf-yellow text-white px-3 py-1 rounded-full">${h.type}</div>
@@ -1448,61 +1440,63 @@ window.AppNavigation = {
                             <div class="bg-slate-900 p-12 lg:p-16 rounded-[3.5rem] premium-card text-white relative overflow-hidden flex flex-col justify-center">
                                 <div class="absolute inset-0 bg-ikf-blue/10"></div>
                                 <i class="fas fa-umbrella-beach text-[120px] absolute -right-4 -bottom-4 opacity-5"></i>
-                                <h4 class="text-2xl font-black mb-6">Execution Protocol</h4>
+                                <h4 class="text-2xl font-black mb-6">${holidayPolicy.title}</h4>
                                 <p class="text-slate-400 leading-relaxed mb-8">
-                                    IKF publishes its final holiday list at the start of every calendar year. Regional variations 
-                                    between Pune, Mumbai, and Noida offices are detailed in the official HR circular.
+                                    ${holidayPolicy.description}
                                 </p>
                                 <div class="p-6 bg-white/5 border border-white/10 rounded-2xl">
                                     <p class="text-[10px] font-black text-ikf-yellow uppercase tracking-widest mb-2">Compensatory Policy</p>
-                                    <p class="text-xs text-slate-400">Holidays falling on Sundays are not carried forward as per agency standards.</p>
+                                    <p class="text-xs text-slate-400">${holidayPolicy.compensatory}</p>
                                 </div>
                             </div>
                         </div>
                     </div>`;
 
             case 'attendance':
-                const attendData = this.contentData?.attendance || {
-                    badge: "Operation Hours",
-                    title: "Sync & <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow\">Flow</span>",
-                    cards: [
-                        { icon: "fa-calendar-alt", title: "Work Week", line1: "Monday - Friday", line2: "Occasional Strategic Saturdays" },
-                        { icon: "fa-stopwatch", title: "Core Hours", line1: "09:30 AM - 06:15 PM", line2: "8.75 Hours of Productive Sync" },
-                        { icon: "fa-fingerprint", title: "Digital Log", line1: "Bio-Auth / App Sync", line2: "Automated Attendance Tracking" }
-                    ]
-                };
+                const attendData = this.contentData?.attendance || {};
+                const schedule = attendData.schedule || [
+                    { title: "Work Week", value: "Monday - Friday", note: "Strategic Fridays" },
+                    { title: "Core Hours", value: "09:30 AM - 06:15 PM", note: "Productive Sync" }
+                ];
+                const punctuality = attendData.punctuality || { title: "The Punctuality DNA", description: "Precision is our product.", rules: ["Entry: 09:30 AM"] };
+
                 return `
                     <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
-                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${attendData.badge}</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${attendData.title}</h1>
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${attendData.badge || 'Operation Hours'}</span>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${attendData.title || 'Sync & Flow'}</h1>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-                            ${(attendData.cards || []).map(card => `
-                                <div class="bg-white p-12 rounded-[2.5rem] premium-card text-center group">
-                                    <div class="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:bg-ikf-blue group-hover:text-white transition-all shadow-lg">
-                                        <i class="fas ${card.icon} text-2xl"></i>
+                            ${schedule.map((card, idx) => {
+                    const icons = ["fa-calendar-alt", "fa-stopwatch", "fa-fingerprint"];
+                    return `
+                                    <div class="bg-white p-12 rounded-[2.5rem] premium-card text-center group">
+                                        <div class="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:bg-ikf-blue group-hover:text-white transition-all shadow-lg">
+                                            <i class="fas ${icons[idx] || 'fa-clock'} text-2xl"></i>
+                                        </div>
+                                        <h4 class="text-xl font-black text-ikf-blue mb-2">${card.title}</h4>
+                                        <p class="text-sm font-bold text-slate-400 uppercase tracking-widest leading-none">${card.value}</p>
+                                        <p class="text-[10px] text-slate-300 mt-4 font-medium uppercase tracking-tighter">${card.note}</p>
                                     </div>
-                                    <h4 class="text-xl font-black text-ikf-blue mb-2">${card.title}</h4>
-                                    <p class="text-sm font-bold text-slate-400 uppercase tracking-widest leading-none">${card.line1}</p>
-                                    <p class="text-[10px] text-slate-300 mt-4 font-medium uppercase tracking-tighter">${card.line2}</p>
-                                </div>
-                            `).join('')}
+                                `;
+                }).join('')}
                         </div>
 
                         <div class="bg-slate-900 p-12 lg:p-20 rounded-[4rem] premium-card text-white flex flex-col md:flex-row items-center gap-16 relative overflow-hidden">
                             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/pinstriped-suit.png')] opacity-10"></div>
                             <div class="flex-1 z-10">
-                                <h3 class="text-4xl font-extrabold mb-6">The Punctuality DNA</h3>
+                                <h3 class="text-4xl font-extrabold mb-6">${punctuality.title}</h3>
                                 <p class="text-slate-400 leading-relaxed mb-10 text-lg">
-                                    Precision is our product. At IKF, synchronization starts with timing. 
-                                    Ensuring you're logged in by 09:30 AM helps the entire Factory begin 
-                                    its creative and technical operations without friction.
+                                    ${punctuality.description}
                                 </p>
                                 <div class="space-y-6">
-                                    <div class="flex items-center gap-6"><span class="w-3 h-3 bg-ikf-yellow rounded-full shadow-[0_0_15px_rgba(217,164,23,1)]"></span><p class="font-bold text-xs uppercase tracking-widest">Entry: 09:30 AM SHARP</p></div>
-                                    <div class="flex items-center gap-6"><span class="w-3 h-3 bg-red-500 rounded-full shadow-[0_0_15px_rgba(239,68,68,1)]"></span><p class="font-bold text-xs uppercase tracking-widest">Grace: 15 Mins (Max 3/Month)</p></div>
+                                    ${(punctuality.rules || []).map((rule, idx) => `
+                                        <div class="flex items-center gap-6">
+                                            <span class="w-3 h-3 ${idx === 0 ? 'bg-ikf-yellow shadow-[0_0_15px_rgba(217,164,23,1)]' : 'bg-red-500 shadow-[0_0_15px_rgba(239,68,68,1)]'} rounded-full"></span>
+                                            <p class="font-bold text-xs uppercase tracking-widest">${rule}</p>
+                                        </div>
+                                    `).join('')}
                                 </div>
                             </div>
                             <div class="w-full md:w-96 aspect-square bg-white/5 backdrop-blur-3xl rounded-[3rem] border-4 border-white/5 z-10 shadow-2xl flex items-center justify-center text-white/20 text-4xl font-black italic">PORTAL</div>
@@ -1510,27 +1504,31 @@ window.AppNavigation = {
                     </div>`;
 
             case 'policies':
-                const policyStats = this.contentData?.policies?.stats || [
-                    { icon: "fa-hourglass-start", value: "06", unit: "mo", label: "Probation" },
-                    { icon: "fa-history", value: "90", unit: "days", label: "Notice Period" },
-                    { icon: "fa-wallet", value: "10", unit: "th", label: "Payout Date" },
-                    { icon: "fa-file-contract", value: "Auto", unit: "", label: "PF & TDS" }
+                const policyData = this.contentData?.policies || {};
+                const policyStats = policyData.stats || [
+                    { value: "06", label: "Probation" },
+                    { value: "90", label: "Notice Period" }
                 ];
+                const policyTerminal = policyData.terminal || { command: "initializing_handshake_protocol...", output: ["policies_loaded: true"] };
+
                 return `
                     <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
-                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Legal Framework</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">The <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Commitment</span></h1>
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${policyData.badge || 'Legal Framework'}</span>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${policyData.title || 'The Commitment'}</h1>
                         </div>
 
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
-                            ${(policyStats || []).map(stat => `
-                                <div class="p-8 bg-white rounded-[2.5rem] text-center border border-slate-50 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all group cursor-default">
-                                    <div class="w-16 h-16 mx-auto bg-blue-50 rounded-2xl flex items-center justify-center text-ikf-blue mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas ${stat.icon}"></i></div>
-                                    <h3 class="text-3xl font-black text-slate-800 mb-1">${stat.value}${stat.unit ? `<span class="text-sm text-slate-400 font-bold ml-1">${stat.unit}</span>` : ''}</h3>
-                                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">${stat.label}</p>
-                                </div>
-                            `).join('')}
+                            ${policyStats.map((stat, idx) => {
+                    const icons = ["fa-hourglass-start", "fa-history", "fa-wallet", "fa-file-contract"];
+                    return `
+                                    <div class="p-8 bg-white rounded-[2.5rem] text-center border border-slate-50 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all group cursor-default">
+                                        <div class="w-16 h-16 mx-auto bg-blue-50 rounded-2xl flex items-center justify-center text-ikf-blue mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas ${icons[idx] || 'fa-info-circle'}"></i></div>
+                                        <h3 class="text-3xl font-black text-slate-800 mb-1">${stat.value}</h3>
+                                        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">${stat.label}</p>
+                                    </div>
+                                `;
+                }).join('')}
                         </div>
 
                         <div class="bg-slate-900 rounded-[3rem] p-10 md:p-14 text-center relative overflow-hidden flex flex-col items-center justify-center">
@@ -1542,10 +1540,8 @@ window.AppNavigation = {
                                     <div class="w-3 h-3 rounded-full bg-green-500"></div>
                                 </div>
                                 <div class="bg-black/50 backdrop-blur-md p-6 rounded-b-xl border-t border-white/5 font-mono text-xs md:text-sm text-slate-300 shadow-2xl">
-                                    <p class="mb-2"><span class="text-green-400">➜</span> <span class="text-blue-400">~</span> initializing_handshake_protocol...</p>
-                                    <p class="mb-2"><span class="text-green-400">✔</span> policies_loaded: <span class="text-ikf-yellow">true</span></p>
-                                    <p class="mb-4"><span class="text-green-400">✔</span> user_understanding: <span class="animate-pulse">waiting_for_input...</span></p>
-                                    <p class="text-slate-500">// Check the box below to execute contract</p>
+                                    <p class="mb-2"><span class="text-green-400">➜</span> <span class="text-blue-400">~</span> ${policyTerminal.command}</p>
+                                    ${(policyTerminal.output || []).map(line => `<p class="mb-2"><span class="text-green-400">✔</span> ${line}</p>`).join('')}
                                 </div>
                             </div>
 

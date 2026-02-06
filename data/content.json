@@ -21,7 +21,11 @@
     "mission": {
       "title": "The Mission",
       "content": "IKF is a multidisciplinary agency that blends strategy, design, and performance marketing to help brands thrive across digital ecosystems. We survive market shifts by staying true to our core: <strong>Human Intelligence.</strong>",
-      "badges": ["25+ Years", "360° Digital", "Pune HQ"]
+      "badges": [
+        "25+ Years",
+        "360° Digital",
+        "Pune HQ"
+      ]
     },
     "stats": {
       "strategies": {
@@ -43,29 +47,29 @@
       {
         "id": "ashish",
         "name": "Ashish Dalia",
-        "role": "The Architect (CEO)",
-        "image": "images/avatars/ashish_real.jpg",
+        "role": "Founder",
+        "image": "images/IKFLOGO/Ashish-Dalia-Sir.jpg",
         "skill": "Strategy",
         "skillLevel": "98%",
         "note": "Welcome to IKF! With over 25 years of digital excellence, we've grown alongside the internet itself. Our journey from a boutique setup to a multidisciplinary agency has been driven by one core philosophy: Innovation, Knowledge, and Factory. We help global brands thrive across digital ecosystems using AI-refined strategies without losing the human lens. Your role here is crucial in maintaining our legacy of delivering high-impact solutions for our 1500+ clients."
       },
       {
-        "id": "jayraj",
-        "name": "Jayraj Mehta",
-        "role": "The Engine (Director)",
-        "image": "images/avatars/jayraj.png",
+        "id": "gunjan",
+        "name": "Gunjan Bhansali",
+        "role": "Operations Head",
+        "image": "images/IKFLOGO/Gunjan-Bhansali-IMG.jpg",
         "skill": "Operations",
         "skillLevel": "99%",
-        "note": "Jayraj oversees strategic operations and technological integration, ensuring that the Factory operates at peak industrial precision. His focus on process optimization drives our ability to deliver consistent quality at scale."
+        "note": "Gunjan oversees strategic operations and technological integration, ensuring that the Factory operates at peak industrial precision. Her focus on process optimization drives our ability to deliver consistent quality at scale."
       },
       {
-        "id": "anuja",
-        "name": "Anuja Kapoor",
-        "role": "The Soul (Director)",
-        "image": "images/avatars/anuja.png",
+        "id": "ritu",
+        "name": "Ritu Dalia",
+        "role": "Co-Founder",
+        "image": "images/IKFLOGO/Ritu-Dalia-IMG.jpg",
         "skill": "Creativity",
         "skillLevel": "100%",
-        "note": "Anuja leads the creative and brand strategy units, focusing on human-centric digital storytelling. Her vision bridges the gap between data-driven performance and emotional brand connection."
+        "note": "Ritu leads the creative and brand strategy units, focusing on human-centric digital storytelling. Her vision bridges the gap between data-driven performance and emotional brand connection."
       }
     ]
   },
@@ -105,11 +109,26 @@
     "coreValues": {
       "title": "Our Core Values (T.R.I.I.I.P)",
       "values": [
-        {"name": "Transparent", "description": "Openness in all we do."},
-        {"name": "Respectful", "description": "Respect begets respect."},
-        {"name": "Innovative", "description": "Challenge the norm."},
-        {"name": "Inspired", "description": "Inspired & Inspiring."},
-        {"name": "Professional", "description": "Excellence in delivery."}
+        {
+          "name": "Transparent",
+          "description": "Openness in all we do."
+        },
+        {
+          "name": "Respectful",
+          "description": "Respect begets respect."
+        },
+        {
+          "name": "Innovative",
+          "description": "Challenge the norm."
+        },
+        {
+          "name": "Inspired",
+          "description": "Inspired & Inspiring."
+        },
+        {
+          "name": "Professional",
+          "description": "Excellence in delivery."
+        }
       ]
     }
   },
@@ -118,10 +137,22 @@
     "title": "The IKF Culture <span class=\"gradient\">Code</span>",
     "subtitle": "Running on version 4.0. Optimized for high performance, creativity, and human-centric processing.",
     "stats": [
-      {"value": "4.8/5", "label": "Happiness Index"},
-      {"value": "52+", "label": "Friday Parties"},
-      {"value": "200h", "label": "Learning / Yr"},
-      {"value": "0%", "label": "Boredom"}
+      {
+        "value": "4.8/5",
+        "label": "Happiness Index"
+      },
+      {
+        "value": "52+",
+        "label": "Friday Parties"
+      },
+      {
+        "value": "200h",
+        "label": "Learning / Yr"
+      },
+      {
+        "value": "0%",
+        "label": "Boredom"
+      }
     ],
     "mainMessage": {
       "title": "We Debug <span class=\"highlight\">Problems</span>, Not People.",
@@ -129,8 +160,14 @@
       "status": "Collaboration Mode: Active"
     },
     "values": [
-      {"title": "Growth Mindset", "description": "Fail fast, learn faster."},
-      {"title": "Fuel Creativity", "description": "Caffeine & Ideas."}
+      {
+        "title": "Growth Mindset",
+        "description": "Fail fast, learn faster."
+      },
+      {
+        "title": "Fuel Creativity",
+        "description": "Caffeine & Ideas."
+      }
     ]
   },
   "social": {
@@ -173,9 +210,21 @@
       "cta": "Watch Video"
     },
     "recentActivity": [
-      {"text": "IKF celebrates 23 years of excellence! 🎉", "time": "2 hours ago", "platform": "Instagram"},
-      {"text": "We are hiring! Join our creative team. 🚀", "time": "5 hours ago", "platform": "LinkedIn"},
-      {"text": "New case study: Rebranding a tech giant.", "time": "1 day ago", "platform": "Behance"}
+      {
+        "text": "IKF celebrates 23 years of excellence! 🎉",
+        "time": "2 hours ago",
+        "platform": "Instagram"
+      },
+      {
+        "text": "We are hiring! Join our creative team. 🚀",
+        "time": "5 hours ago",
+        "platform": "LinkedIn"
+      },
+      {
+        "text": "New case study: Rebranding a tech giant.",
+        "time": "1 day ago",
+        "platform": "Behance"
+      }
     ]
   },
   "referral": {
@@ -210,9 +259,18 @@
       }
     ],
     "process": [
-      {"step": "1. Identify", "description": "Locate a candidate matching our cultural code."},
-      {"step": "2. Submit", "description": "Forward coordinates (CV) to HR via secure channel."},
-      {"step": "3. Reward", "description": "Payment released upon 3-month survival confirmation."}
+      {
+        "step": "1. Identify",
+        "description": "Locate a candidate matching our cultural code."
+      },
+      {
+        "step": "2. Submit",
+        "description": "Forward coordinates (CV) to HR via secure channel."
+      },
+      {
+        "step": "3. Reward",
+        "description": "Payment released upon 3-month survival confirmation."
+      }
     ]
   },
   "anniversary": {
@@ -225,8 +283,16 @@
         "badge": "Titan",
         "title": "Founding Pillars",
         "members": [
-          {"name": "Ashish Dalia", "role": "Founder", "image": "images/avatars/ashish_real.jpg"},
-          {"name": "Jayraj Mehta", "role": "Director", "image": "images/avatars/jayraj.png"}
+          {
+            "name": "Ashish Dalia",
+            "role": "Founder",
+            "image": "images/avatars/ashish_real.jpg"
+          },
+          {
+            "name": "Jayraj Mehta",
+            "role": "Director",
+            "image": "images/avatars/jayraj.png"
+          }
         ]
       },
       {
@@ -234,7 +300,11 @@
         "badge": "Core",
         "title": "The Architects",
         "members": [
-          {"name": "Vikram Singh", "role": "Sr. Strategist", "image": "images/avatars/avatar_marketing_male.png"}
+          {
+            "name": "Vikram Singh",
+            "role": "Sr. Strategist",
+            "image": "images/avatars/avatar_marketing_male.png"
+          }
         ]
       },
       {
@@ -242,8 +312,16 @@
         "badge": "Rising",
         "title": "Rising Stars",
         "members": [
-          {"name": "Sneha Patel", "role": "Designer", "image": "images/avatars/avatar_creative_female.png"},
-          {"name": "Rahul Verma", "role": "Tech Lead", "image": "images/avatars/avatar_dev_male.png"}
+          {
+            "name": "Sneha Patel",
+            "role": "Designer",
+            "image": "images/avatars/avatar_creative_female.png"
+          },
+          {
+            "name": "Rahul Verma",
+            "role": "Tech Lead",
+            "image": "images/avatars/avatar_dev_male.png"
+          }
         ]
       }
     ],
@@ -261,9 +339,24 @@
     "title": "Party <span class=\"gradient\">Protocol</span>",
     "nextEvent": "2 Days",
     "upcoming": [
-      {"name": "Priya Sharma", "date": "Feb 14", "dept": "Creative Dept", "image": "images/avatars/avatar_creative_female.png"},
-      {"name": "Rohan D.", "date": "Feb 22", "dept": "Development", "image": "images/avatars/avatar_dev_male.png"},
-      {"name": "Amit K.", "date": "Mar 05", "dept": "SEO Team", "image": "images/avatars/avatar_marketing_male.png"}
+      {
+        "name": "Priya Sharma",
+        "date": "Feb 14",
+        "dept": "Creative Dept",
+        "image": "images/avatars/avatar_creative_female.png"
+      },
+      {
+        "name": "Rohan D.",
+        "date": "Feb 22",
+        "dept": "Development",
+        "image": "images/avatars/avatar_dev_male.png"
+      },
+      {
+        "name": "Amit K.",
+        "date": "Mar 05",
+        "dept": "SEO Team",
+        "image": "images/avatars/avatar_marketing_male.png"
+      }
     ],
     "terminal": {
       "command": "execute_party_protocol.sh",
@@ -278,10 +371,26 @@
     "badge": "Global Calendar",
     "title": "Holidays <span class=\"gradient\">2025-26</span>",
     "strategicResets": [
-      {"name": "Republic Day", "date": "JANUARY 26", "type": "Mandatory"},
-      {"name": "Independence Day", "date": "AUGUST 15", "type": "Mandatory"},
-      {"name": "Gandhi Jayanti", "date": "OCTOBER 02", "type": "Mandatory"},
-      {"name": "Diwali (Priti/Padwa)", "date": "NOVEMBER", "type": "Regional"}
+      {
+        "name": "Republic Day",
+        "date": "JANUARY 26",
+        "type": "Mandatory"
+      },
+      {
+        "name": "Independence Day",
+        "date": "AUGUST 15",
+        "type": "Mandatory"
+      },
+      {
+        "name": "Gandhi Jayanti",
+        "date": "OCTOBER 02",
+        "type": "Mandatory"
+      },
+      {
+        "name": "Diwali (Priti/Padwa)",
+        "date": "NOVEMBER",
+        "type": "Regional"
+      }
     ],
     "policy": {
       "title": "Execution Protocol",
@@ -322,10 +431,22 @@
     "badge": "Legal Framework",
     "title": "The <span class=\"gradient\">Commitment</span>",
     "stats": [
-      {"value": "06mo", "label": "Probation"},
-      {"value": "90days", "label": "Notice Period"},
-      {"value": "10th", "label": "Payout Date"},
-      {"value": "Auto", "label": "PF & TDS"}
+      {
+        "value": "06mo",
+        "label": "Probation"
+      },
+      {
+        "value": "90days",
+        "label": "Notice Period"
+      },
+      {
+        "value": "10th",
+        "label": "Payout Date"
+      },
+      {
+        "value": "Auto",
+        "label": "PF & TDS"
+      }
     ],
     "terminal": {
       "command": "initializing_handshake_protocol...",
