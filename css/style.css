@@ -75,6 +75,60 @@
     animation: fadeInUp 0.6s ease-out forwards;
 }
 
+/* --- Creative Philosophy Redesign Utils --- */
+.glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark .glass-card {
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.kinetic-text {
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.group:hover .kinetic-text {
+    transform: translateY(-10px) scale(1.05);
+}
+
+.mesh-gradient-ikf {
+    background-color: #ffffff;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(0, 51, 161, 0.03) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(255, 184, 28, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(0, 51, 161, 0.03) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(255, 184, 28, 0.05) 0px, transparent 50%);
+}
+
+.pillar-connector {
+    position: absolute;
+    background: linear-gradient(90deg, transparent, rgba(0, 51, 161, 0.1), transparent);
+    z-index: -1;
+}
+
+@keyframes float-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.animate-float-slow {
+    animation: float-slow 8s ease-in-out infinite;
+}
+
+@keyframes slide-reveal {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0 0 0 0); }
+}
+
+.reveal-text {
+    animation: slide-reveal 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
 /* Gentle Float - Subtle Movement */
 @keyframes gentleFloat {
     0%, 100% {
