@@ -930,7 +930,7 @@ window.AppNavigation = {
                     </div>`;
 
             case 'philosophy':
-                const philData = this.contentData?.philosophy || {
+                const pData = this.contentData?.philosophy || {
                     badge: "Core Directives",
                     title: "I • K • F",
                     subtitle: "The DNA of Our Identity",
@@ -941,130 +941,142 @@ window.AppNavigation = {
                     ]
                 };
 
-                const rawTitle = philData.title || "I • K • F";
-                const cleanTitleChars = rawTitle.replace(/<[^>]*>/g, '').split('•');
+                const titleChars = (pData.title || "I • K • F").replace(/<[^>]*>/g, '').split('•');
 
                 return `
-                    <div class="mesh-gradient-ikf min-h-screen pt-20 pb-32 fade-in overflow-hidden relative">
-                        <!-- Background Decorative Elements -->
-                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] pointer-events-none opacity-20">
-                            <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-transparent to-transparent"></div>
-                            <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                                <path d="M0,50 Q25,30 50,50 T100,50" stroke="rgba(0,51,161,0.05)" fill="none" stroke-width="0.1" />
-                            </svg>
-                        </div>
-
-                        <div class="max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10">
-                            <!-- Ultra-Premium Hero -->
-                            <div class="relative mb-40 pt-10">
-                                <div class="flex flex-col items-center text-center">
-                                    <span class="text-ikf-blue font-black uppercase tracking-[0.5em] text-[12px] mb-8 py-2 px-4 rounded-full border border-ikf-blue/10 bg-white/50 backdrop-blur-sm reveal-text">
-                                        ${philData.badge || 'Core Directives'}
-                                    </span>
-                                    
-                                    <!-- Kinetic Typography Grid -->
-                                    <div class="flex items-center justify-center gap-4 md:gap-12 mb-12">
-                                        ${cleanTitleChars.map((char, charIdx) => `
-                                            <div class="group relative">
-                                                <h1 class="text-[100px] md:text-[240px] font-black leading-none tracking-tighter transition-all duration-700 select-none cursor-default
-                                                    ${charIdx === 1 ? 'text-ikf-yellow' : 'text-slate-900'} group-hover:drop-shadow-[0_20px_50px_rgba(0,51,161,0.2)]">
-                                                    <span class="kinetic-text inline-block transform">${char.trim()}</span>
-                                                </h1>
-                                                <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-slate-200 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                            </div>
-                                            ${charIdx < cleanTitleChars.length - 1 ? `<span class="text-4xl md:text-8xl font-thin text-slate-200 mt-auto mb-10 md:mb-20">•</span>` : ''}
-                                        `).join('')}
-                                    </div>
-                                    
-                                    <div class="max-w-2xl overflow-hidden">
-                                        <p class="text-slate-400 font-medium text-xl md:text-3xl leading-tight reveal-text" style="animation-delay: 0.3s">
-                                            ${philData.subtitle || ''}
-                                        </p>
-                                    </div>
+                    <div class="bg-white min-h-screen fade-in selection:bg-ikf-yellow-intense selection:text-white">
+                        <!-- Hero Section: Ultra-Bold Introduction -->
+                        <section class="relative min-h-screen flex flex-col justify-center items-center px-6 overflow-hidden border-b border-slate-100">
+                            <div class="absolute inset-0 blueprint-grid opacity-[0.4] pointer-events-none"></div>
+                            <div class="absolute inset-0 blueprint-grid-fine opacity-[0.2] pointer-events-none"></div>
+                            
+                            <div class="relative z-10 text-center">
+                                <span class="bg-ikf-blue-intense text-white px-6 py-2 rounded-sm text-[10px] font-black uppercase tracking-[0.5em] mb-12 inline-block slide-up">
+                                    ${pData.badge || 'Core Directives'}
+                                </span>
+                                
+                                <div class="flex flex-col md:flex-row items-center justify-center gap-0 md:gap-8 mb-12">
+                                    ${titleChars.map((char, i) => `
+                                        <div class="flex items-center">
+                                            <span class="text-massive font-black ${i === 1 ? 'text-ikf-yellow-intense' : 'text-ikf-blue-intense'} tracking-tighter">
+                                                ${char.trim()}
+                                            </span>
+                                            ${i < titleChars.length - 1 ? `
+                                                <div class="hidden md:block w-4 h-4 rounded-full border-4 border-slate-100 mx-4"></div>
+                                            ` : ''}
+                                        </div>
+                                    `).join('')}
                                 </div>
+                                
+                                <p class="text-2xl md:text-4xl font-light text-slate-400 max-w-3xl mx-auto leading-tight slide-up" style="animation-delay: 0.2s">
+                                    ${pData.subtitle || ''}
+                                </p>
                             </div>
 
-                            <!-- Integrated Pillar Journey -->
-                            <div class="relative grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-20">
-                                <!-- Desktop Connecting Line -->
-                                <div class="hidden lg:block absolute top-[140px] left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-slate-100 to-transparent -z-10"></div>
-                                
-                                ${(Array.isArray(philData.pillars) ? philData.pillars : []).map((pillar, idx) => {
+                            <div class="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 text-slate-300">
+                                <span class="text-[10px] font-bold uppercase tracking-widest">Scroll to Traverse</span>
+                                <div class="w-px h-16 bg-gradient-to-b from-slate-200 to-transparent"></div>
+                            </div>
+                        </section>
+
+                        <!-- Pillar Narrative Loop -->
+                        ${(Array.isArray(pData.pillars) ? pData.pillars : []).map((pillar, idx) => {
+                    const isEven = idx % 2 === 0;
                     const pLetter = pillar.letter || pillar.id || "?";
-                    const icons = { 'I': 'fa-microchip', 'K': 'fa-brain', 'F': 'fa-industry' };
-                    const icon = icons[pLetter] || 'fa-atom';
-                    const colors = { 'I': 'ikf-blue', 'K': 'ikf-yellow', 'F': 'slate-900' };
-                    const color = colors[pLetter] || 'ikf-blue';
+                    const colorClass = pLetter === 'K' ? 'text-ikf-yellow-intense' : 'text-ikf-blue-intense';
+                    const bgColorClass = pLetter === 'K' ? 'bg-ikf-yellow-intense' : 'bg-ikf-blue-intense';
+                    const borderColorClass = pLetter === 'K' ? 'border-ikf-yellow-intense' : 'border-ikf-blue-intense';
 
                     return `
-                                        <div class="group relative h-full animate-float-slow" style="animation-delay: ${idx * 0.5}s">
-                                            <!-- Massive Numbering -->
-                                            <div class="absolute -top-12 left-6 text-[120px] font-black text-slate-50 group-hover:text-ikf-blue/5 transition-colors duration-500 pointer-events-none select-none">0${idx + 1}</div>
-                                            
-                                            <div class="glass-card rounded-[3rem] p-12 lg:p-16 h-full transition-all duration-700 border-white/50 hover:shadow-[0_40px_100px_-20px_rgba(0,51,161,0.15)] hover:border-ikf-blue/10 relative overflow-hidden group/card">
-                                                <!-- Dynamic Flare -->
-                                                <div class="absolute -right-20 -top-20 w-64 h-64 bg-ikf-blue/5 rounded-full blur-3xl group-hover:bg-ikf-blue/10 transition-colors duration-700"></div>
+                                <section class="relative py-32 lg:py-48 px-6 lg:px-24 overflow-hidden border-b border-slate-50">
+                                    <div class="absolute ${isEven ? 'right-0' : 'left-0'} top-0 bottom-0 w-1/3 blueprint-grid opacity-[0.1] pointer-events-none"></div>
+                                    
+                                    <div class="max-w-7xl mx-auto flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-20">
+                                        <!-- Pillar Visual Meta -->
+                                        <div class="w-full lg:w-1/2 relative">
+                                            <div class="absolute -top-10 ${isEven ? '-left-10' : '-right-10'} text-[200px] font-black text-slate-50 -z-10 leading-none select-none">
+                                                0${idx + 1}
+                                            </div>
+                                            <div class="aspect-square bg-slate-50 rounded-[4rem] relative overflow-hidden group border border-slate-100">
+                                                <div class="absolute inset-0 flex items-center justify-center text-[180px] font-black ${colorClass} opacity-20 group-hover:scale-110 transition-transform duration-700">
+                                                    ${pLetter}
+                                                </div>
+                                                <div class="absolute top-12 left-12 right-12 bottom-12 border-2 ${borderColorClass} opacity-10 rounded-[3rem]"></div>
                                                 
-                                                <div class="relative z-10 flex flex-col h-full">
-                                                    <!-- Icon Box -->
-                                                    <div class="w-20 h-20 rounded-[2rem] bg-white shadow-2xl shadow-slate-200 border border-slate-50 flex items-center justify-center text-3xl mb-12 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-500
-                                                        text-${color === 'ikf-yellow' ? 'ikf-yellow' : color}">
-                                                        <i class="fas ${icon}"></i>
+                                                <!-- Technical Details Plate -->
+                                                <div class="absolute bottom-12 left-12 right-12 p-8 bg-white/80 backdrop-blur-md rounded-3xl border border-white/50 shadow-2xl">
+                                                    <div class="flex items-center gap-4 mb-4">
+                                                        <div class="w-2 h-2 rounded-full ${bgColorClass} animate-pulse"></div>
+                                                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">IKF Protocol v25.0</span>
                                                     </div>
-
-                                                    <h3 class="text-4xl font-black text-slate-900 mb-8 tracking-tight">
-                                                        <span class="text-${color === 'ikf-yellow' ? 'ikf-yellow' : color}">${pLetter}</span>
-                                                        <span class="text-slate-200 font-thin mx-2">/</span>
-                                                        ${pillar.title || ''}
-                                                    </h3>
-                                                    
-                                                    <p class="text-slate-500 font-medium leading-relaxed text-lg mb-12 flex-grow">
-                                                        ${pillar.description || pillar.content || ''}
-                                                    </p>
-
-                                                    <!-- Interactive Footer -->
-                                                    <div class="flex items-center gap-4 pt-8 border-t border-slate-100/50">
-                                                        <div class="h-1 flex-1 bg-slate-100 rounded-full overflow-hidden">
-                                                            <div class="h-full w-0 group-hover/card:w-full bg-${color === 'ikf-yellow' ? 'ikf-yellow' : color} transition-all duration-1000 ease-out"></div>
-                                                        </div>
-                                                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-300">Strategy Active</span>
+                                                    <div class="h-1 w-full bg-slate-100 rounded-full mb-2">
+                                                        <div class="h-full w-[85%] ${bgColorClass}"></div>
+                                                    </div>
+                                                    <div class="flex justify-between text-[8px] font-bold text-slate-300 uppercase">
+                                                        <span>Processing</span>
+                                                        <span>100% Mastery</span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    `;
-                }).join('')}
-                            </div>
-                        </div>
 
-                        <!-- Brand Manifesto Teaser section -->
-                        <div class="mt-40 bg-slate-900 mx-6 lg:mx-20 rounded-[4rem] p-16 lg:p-32 relative overflow-hidden">
-                            <div class="absolute inset-0 opacity-10 pointer-events-none">
-                                <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(0,51,161,0.3),transparent)]"></div>
-                            </div>
-                            <div class="relative z-10 max-w-4xl mx-auto text-center">
-                                <h2 class="text-5xl lg:text-8xl font-black text-white mb-12 leading-[0.9] tracking-tighter">
-                                    Beyond Services, <br/>
-                                    <span class="text-ikf-yellow italic">We Build Legacies.</span>
-                                </h1>
-                                <p class="text-slate-400 text-xl md:text-2xl font-light leading-relaxed mb-16">
-                                    Our philosophy isn't a statement; it's an operating system. <br class="hidden md:block"/>
-                                    We synchronize human intelligence with industrialized scale to <br class="hidden md:block"/>
-                                    engineer competitive advantages for the global digital era.
-                                </p>
-                                <div class="flex flex-wrap justify-center gap-12 text-white">
-                                    <div class="flex flex-col items-center">
-                                        <span class="text-5xl font-black text-ikf-yellow mb-2">25+</span>
-                                        <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500">Years of Mastery</span>
+                                        <!-- Pillar Content -->
+                                        <div class="w-full lg:w-1/2">
+                                            <div class="flex items-center gap-6 mb-8 uppercase tracking-[0.3em] font-black text-xs">
+                                                <span class="${colorClass}">Phase 0${idx + 1}</span>
+                                                <div class="h-px w-20 bg-slate-200"></div>
+                                            </div>
+                                            
+                                            <h2 class="text-6xl md:text-8xl font-black mb-10 tracking-tighter leading-none ${colorClass}">
+                                                ${pillar.title || ''}
+                                            </h2>
+                                            
+                                            <p class="text-xl md:text-2xl text-slate-500 font-medium leading-relaxed mb-16 max-w-xl">
+                                                ${pillar.description || pillar.content || ''}
+                                            </p>
+
+                                            <button class="flex items-center gap-6 text-slate-900 font-bold uppercase tracking-widest text-sm group">
+                                                <div class="w-16 h-16 rounded-full border-2 border-slate-900 flex items-center justify-center group-hover:${bgColorClass} group-hover:border-transparent group-hover:text-white transition-all duration-300">
+                                                    <i class="fas fa-arrow-right"></i>
+                                                </div>
+                                                See Methodology
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="w-px h-16 bg-white/10 hidden md:block"></div>
+                                </section>
+                            `;
+                }).join('')}
+
+                        <!-- Final Brand Manifesto: The Conclusion -->
+                        <section class="bg-ikf-blue-intense py-48 px-6 text-center relative overflow-hidden">
+                            <div class="absolute inset-0 blueprint-grid opacity-[0.05] pointer-events-none"></div>
+                            
+                            <div class="relative z-10 max-w-5xl mx-auto">
+                                <h2 class="text-massive font-black text-white mb-16 tracking-tighter uppercase leading-[0.7]">
+                                    Beyond <br/> <span class="text-ikf-yellow-intense">Services.</span>
+                                </h2>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-left mb-24">
+                                    <p class="text-2xl font-light text-slate-300 leading-relaxed">
+                                        At IKF, our philosophy is the engine of our growth. We don't just use tools; we refine them through a human lens, ensuring every output is a blend of precision and heart.
+                                    </p>
+                                    <p class="text-2xl font-light text-slate-300 leading-relaxed">
+                                        For 25 years, we've engineered competitive advantages for our 1500+ global partners by remaining obsessed with curiosity and mastered in digital wisdom.
+                                    </p>
+                                </div>
+
+                                <div class="flex flex-wrap justify-center gap-20">
                                     <div class="flex flex-col items-center">
-                                        <span class="text-5xl font-black text-ikf-blue mb-2">1500+</span>
-                                        <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500">Global Partners</span>
+                                        <div class="text-6xl font-black text-ikf-yellow-intense mb-2">25+</div>
+                                        <div class="text-xs font-black uppercase tracking-[0.4em] text-white/50">Years Legacy</div>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="text-6xl font-black text-white mb-2">1.5K</div>
+                                        <div class="text-xs font-black uppercase tracking-[0.4em] text-white/50">Global Clients</div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </section>
                     </div>`;
 
             case 'mission':
