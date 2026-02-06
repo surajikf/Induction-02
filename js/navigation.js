@@ -290,6 +290,59 @@ window.AppNavigation = {
     },
 
     /**
+     * Initializes hover-to-play video previews for the social section
+     */
+    initSocialVideos: function () {
+        const _this = this;
+        $('.video-card').each(function () {
+            const $card = $(this);
+            const videoId = $card.data('video');
+            if (!videoId) return;
+
+            $card.on('mouseenter', function () {
+                const $container = $card.find('.video-container');
+                const $img = $card.find('.thumbnail-img');
+                const $playIcon = $card.find('.play-icon');
+
+                // Inject iframe if not present or empty
+                if ($container.is(':empty')) {
+                    $container.html(`
+                        <iframe 
+                            width="100%" 
+                            height="100%" 
+                            src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&rel=0&modestbranding=1" 
+                            frameborder="0" 
+                            allow="autoplay; encrypted-media" 
+                            class="w-full h-full scale-125 pointer-events-none">
+                        </iframe>
+                    `);
+                }
+
+                // Show video with proper layering
+                $container.removeClass('opacity-0').addClass('opacity-100');
+                $img.addClass('opacity-0');
+                $playIcon.addClass('opacity-0');
+            }).on('mouseleave', function () {
+                const $container = $card.find('.video-container');
+                const $img = $card.find('.thumbnail-img');
+                const $playIcon = $card.find('.play-icon');
+
+                // Fade back to thumbnail
+                $container.removeClass('opacity-100').addClass('opacity-0');
+                $img.removeClass('opacity-0');
+                $playIcon.removeClass('opacity-0');
+
+                // Cleanup after transition to save resources
+                setTimeout(() => {
+                    if ($container.hasClass('opacity-0')) {
+                        $container.empty();
+                    }
+                }, 500);
+            });
+        });
+    },
+
+    /**
      * Replaces the content in the main panel
      * @param {string} sectionId 
      */
@@ -303,6 +356,11 @@ window.AppNavigation = {
             // Special Init for Directory
             if (sectionId === 'directory') {
                 this.renderDirectoryGrid();
+            }
+
+            // Special Init for Social Videos
+            if (sectionId === 'social') {
+                this.initSocialVideos();
             }
 
             $panel.fadeIn(200);
@@ -336,7 +394,7 @@ window.AppNavigation = {
                         <div class="mb-16 flex flex-col md:flex-row items-end justify-between gap-8 border-b border-slate-100 pb-12">
                             <div class="max-w-3xl">
                                 <span class="text-ikf-yellow font-bold uppercase tracking-[0.2em] text-xs mb-4 block">${introData.badge}</span>
-                                <h1 class="text-4xl md:text-6xl font-extrabold text-slate-800 tracking-tight leading-tight mb-6">
+                                <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tight leading-tight mb-6">
                                     ${introData.title}
                                 </h1>
                                 <p class="text-slate-500 text-lg md:text-xl font-medium leading-relaxed max-w-2xl">
@@ -411,8 +469,8 @@ window.AppNavigation = {
                     <div class="max-w-7xl mx-auto py-6 fade-in">
                         <div class="mb-16 text-center">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">System Architects</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tighter leading-none mb-6">
-                                The <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Visionaries</span>
+                            <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">
+                                The <span class="text-[#d9a417]">Visionaries</span>
                             </h1>
                             <p class="text-slate-400 max-w-2xl mx-auto text-sm font-medium leading-relaxed">
                                 Guiding the IKF mainframes with over <span class="text-ikf-blue font-bold">75 years</span> of combined digital intelligence.
@@ -460,42 +518,7 @@ window.AppNavigation = {
                                 <div class="absolute inset-4 bg-ikf-yellow/30 rounded-[3rem] blur-2xl -z-10 group-hover:blur-3xl transition-all opacity-0 group-hover:opacity-70"></div>
                             </div>
 
-                            <!-- Leader 2: Gunjan Bhansali -->
-                            <div class="group relative perspective-1000" onclick="AppNavigation.showLeaderModal('gunjan', 'Gunjan Bhansali', 'Operations Head')">
-                                <div class="bg-white rounded-[3rem] p-4 relative z-10 transition-all duration-500 transform preserve-3d group-hover:rotate-y-6 group-hover:shadow-2xl border border-slate-100 h-full flex flex-col">
-                                    <div class="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-6 bg-slate-100">
-                                        <img src="images/IKFLOGO/Gunjan-Bhansali-IMG.jpg" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Gunjan Bhansali">
-                                        <div class="absolute inset-0 bg-gradient-to-t from-ikf-blue via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
-                                        
-                                        <div class="absolute inset-x-0 bottom-0 p-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
-                                            <div class="flex items-center justify-between text-white mb-2">
-                                                <span class="text-[10px] font-bold uppercase tracking-widest">Operations</span>
-                                                <span class="text-[10px] font-bold">99%</span>
-                                            </div>
-                                            <div class="w-full h-1 bg-white/20 rounded-full overflow-hidden mb-4">
-                                                <div class="h-full bg-cyan-400 w-[99%] shadow-[0_0_10px_rgba(255,255,255,0.5)]"></div>
-                                            </div>
-                                            <div class="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-widest border border-white/30 rounded-full px-3 py-1 bg-white/10 backdrop-blur-md w-max">
-                                                <i class="fas fa-fingerprint text-cyan-400"></i> Access Profile
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="px-4 pb-4 text-center">
-                                        <h3 class="text-2xl font-black text-slate-800 group-hover:text-ikf-blue transition-colors mb-1">Gunjan Bhansali</h3>
-                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Operations Head</p>
-                                        
-                                        <div class="flex justify-center gap-1 opacity-20 group-hover:opacity-100 transition-opacity duration-700">
-                                            <div class="w-1 h-1 bg-cyan-500 rounded-full"></div>
-                                            <div class="w-1 h-1 bg-cyan-500 rounded-full"></div>
-                                            <div class="w-8 h-1 bg-cyan-500 rounded-full"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="absolute inset-4 bg-cyan-500/30 rounded-[3rem] blur-2xl -z-10 group-hover:blur-3xl transition-all opacity-0 group-hover:opacity-70"></div>
-                            </div>
-
-                            <!-- Leader 3: Ritu Dalia -->
+                            <!-- Leader 2: Ritu Dalia -->
                             <div class="group relative perspective-1000" onclick="AppNavigation.showLeaderModal('ritu', 'Ritu Dalia', 'Co-Founder')">
                                 <div class="bg-white rounded-[3rem] p-4 relative z-10 transition-all duration-500 transform preserve-3d group-hover:rotate-y-6 group-hover:shadow-2xl border border-slate-100 h-full flex flex-col">
                                     <div class="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-6 bg-slate-100">
@@ -528,6 +551,41 @@ window.AppNavigation = {
                                     </div>
                                 </div>
                                 <div class="absolute inset-4 bg-pink-500/30 rounded-[3rem] blur-2xl -z-10 group-hover:blur-3xl transition-all opacity-0 group-hover:opacity-70"></div>
+                            </div>
+
+                            <!-- Leader 3: Gunjan Bhansali -->
+                            <div class="group relative perspective-1000" onclick="AppNavigation.showLeaderModal('gunjan', 'Gunjan Bhansali', 'Operations Head')">
+                                <div class="bg-white rounded-[3rem] p-4 relative z-10 transition-all duration-500 transform preserve-3d group-hover:rotate-y-6 group-hover:shadow-2xl border border-slate-100 h-full flex flex-col">
+                                    <div class="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-6 bg-slate-100">
+                                        <img src="images/IKFLOGO/Gunjan-Bhansali-IMG.jpg" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Gunjan Bhansali">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-ikf-blue via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
+                                        
+                                        <div class="absolute inset-x-0 bottom-0 p-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                                            <div class="flex items-center justify-between text-white mb-2">
+                                                <span class="text-[10px] font-bold uppercase tracking-widest">Operations</span>
+                                                <span class="text-[10px] font-bold">99%</span>
+                                            </div>
+                                            <div class="w-full h-1 bg-white/20 rounded-full overflow-hidden mb-4">
+                                                <div class="h-full bg-cyan-400 w-[99%] shadow-[0_0_10px_rgba(255,255,255,0.5)]"></div>
+                                            </div>
+                                            <div class="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-widest border border-white/30 rounded-full px-3 py-1 bg-white/10 backdrop-blur-md w-max">
+                                                <i class="fas fa-fingerprint text-cyan-400"></i> Access Profile
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="px-4 pb-4 text-center">
+                                        <h3 class="text-2xl font-black text-slate-800 group-hover:text-ikf-blue transition-colors mb-1">Gunjan Bhansali</h3>
+                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Operations Head</p>
+                                        
+                                        <div class="flex justify-center gap-1 opacity-20 group-hover:opacity-100 transition-opacity duration-700">
+                                            <div class="w-1 h-1 bg-cyan-500 rounded-full"></div>
+                                            <div class="w-1 h-1 bg-cyan-500 rounded-full"></div>
+                                            <div class="w-8 h-1 bg-cyan-500 rounded-full"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="absolute inset-4 bg-cyan-500/30 rounded-[3rem] blur-2xl -z-10 group-hover:blur-3xl transition-all opacity-0 group-hover:opacity-70"></div>
                             </div>
                         </div>
 
@@ -596,8 +654,8 @@ window.AppNavigation = {
                         <!-- Header -->
                         <div class="mb-12 text-center">
                             <span class="text-ikf-yellow font-bold uppercase tracking-[0.2em] text-xs mb-3 block">Our Structure</span>
-                            <h1 class="text-4xl md:text-5xl font-black text-slate-800 tracking-tight mb-4">
-                                How We're <span class="text-ikf-blue">Organized</span>
+                            <h1 class="text-4xl md:text-5xl font-black text-[#0E0057] tracking-tight mb-4">
+                                How We're <span class="text-[#d9a417]">Organized</span>
                             </h1>
                             <p class="text-slate-500 text-lg max-w-2xl mx-auto">
                                 A simple overview of our departments and what they do
@@ -734,8 +792,8 @@ window.AppNavigation = {
                         <!-- Header -->
                         <div class="mb-12 text-center">
                             <span class="text-ikf-yellow font-bold uppercase tracking-[0.2em] text-xs mb-3 block">Global Impact</span>
-                            <h1 class="text-4xl md:text-5xl font-black text-slate-800 tracking-tight mb-4">
-                                Our <span class="text-ikf-blue">Client Showcase</span>
+                            <h1 class="text-4xl md:text-5xl font-black text-[#0E0057] tracking-tight mb-4">
+                                Our <span class="text-[#d9a417]">Client Showcase</span>
                             </h1>
                             <p class="text-slate-500 text-lg max-w-2xl mx-auto">
                                 We partner with leading national and global brands to create powerful, insight-driven digital experiences.
@@ -863,8 +921,8 @@ window.AppNavigation = {
                             <div class="flex flex-col md:flex-row items-end justify-between gap-8 mb-10">
                                 <div>
                                     <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block animate-pulse">${dirData.badge}</span>
-                                    <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tighter leading-none mb-2">
-                                        ${(dirData.title || "The Collective.").replace('Collective.', '<span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Collective.</span>')}
+                                    <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tighter leading-none mb-2">
+                                        ${(dirData.title || "The Collective.").replace('Collective.', '<span class="text-[#d9a417]">Collective.</span>')}
                                     </h1>
                                     <p class="text-slate-400 font-medium max-w-xl text-sm">${dirData.description || dirData.subtitle || ""}</p>
                                 </div>
@@ -1046,7 +1104,7 @@ window.AppNavigation = {
                         <div class="max-w-6xl mx-auto py-6 fade-in" >
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${missData.badge}</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${missData.title}</h1>
+                            <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tight">${missData.title}</h1>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20">
@@ -1134,7 +1192,7 @@ window.AppNavigation = {
                         <div class="max-w-7xl mx-auto py-6 fade-in">
                         <div class="mb-16 text-center">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${cultData.badge}</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${cultData.title}</h1>
+                            <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tight">${cultData.title}</h1>
                             <p class="text-slate-400 mt-4 max-w-2xl mx-auto text-sm font-medium">${cultData.subtitle}</p>
                         </div>
 
@@ -1206,103 +1264,162 @@ window.AppNavigation = {
             case 'social':
                 const socData = this.contentData?.social || {};
                 const stats = socData.platforms || [
-                    { name: "LinkedIn", icon: "fa-linkedin-in", stat: "25k", label: "Connections", growth: "12% vs last month", url: "https://www.linkedin.com/company/i-knowledge-factory-pvt.-ltd./" },
-                    { name: "Instagram", icon: "fa-instagram", stat: "18k", label: "Followers", growth: "8.5% Engagement", url: "https://www.instagram.com/ikfdigital/" },
-                    { name: "Facebook", icon: "fa-facebook-f", stat: "42k", label: "Community", growth: "Stable", url: "https://www.facebook.com/IKFDigital/" },
-                    { name: "YouTube", icon: "fa-youtube", stat: "500k", label: "Views", growth: "New Viral Hit", url: "https://www.youtube.com/c/IKFDigital" }
+                    { name: "LinkedIn", stat: "25k+", label: "Connections", growth: "Top Talent Hub", url: "#" },
+                    { name: "Instagram", stat: "18k+", label: "Followers", growth: "Culture & Life", url: "#" },
+                    { name: "YouTube", stat: "5k+", label: "Subscribers", growth: "Expert Insights", url: "#" },
+                    { name: "Facebook", stat: "42k+", label: "Fans", growth: "Community Rooted", url: "#" }
                 ];
-                const featured = socData.featuredPost || {
-                    badge: "Latest Transmission",
-                    title: "\"The Future of AI in Marketing\"",
-                    description: "Our Director, Ashish Dalia, breaks down how generative AI is reshaping the agency landscape.",
-                    cta: "Watch Video",
-                    linkUrl: "https://www.youtube.com/c/IKFDigital",
-                    image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80"
-                };
-                const feed = socData.recentActivity || [
-                    { text: "IKF celebrates 23 years of excellence! 🎉", time: "2 hours ago", platform: "Instagram", image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" },
-                    { text: "We are hiring! Join our creative team. 🚀", time: "5 hours ago", platform: "LinkedIn", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" }
-                ];
+                const feed = socData.feed || [];
 
                 return `
-                        <div class="max-w-7xl mx-auto py-6 fade-in">
-                        <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
-                            <div>
-                                <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${socData.badge || 'Digital Command Center'}</span>
-                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${socData.title || 'The <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Ecosystem</span>'}</h1>
-                            </div>
-                            <div class="flex items-center gap-2 text-green-500 font-bold text-xs bg-green-50 px-4 py-2 rounded-full border border-green-100 animate-pulse">
-                                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                                ${socData.liveStatus || 'Live Sync: Active'}
-                            </div>
+                    <div class="max-w-7xl mx-auto py-12 px-6 fade-in">
+                        <!-- Header -->
+                        <div class="mb-16 text-center lg:text-left relative">
+                            <div class="absolute -top-10 -left-10 text-[120px] font-black text-slate-50 -z-10 select-none opacity-50">HUB</div>
+                            <span class="bg-[#0E0057] text-white px-5 py-2 rounded-sm text-[10px] font-black uppercase tracking-[0.4em] mb-6 inline-block">
+                                ${socData.badge || 'Stay Connected'}
+                            </span>
+                            <h1 class="text-5xl md:text-7xl font-black text-[#0E0057] leading-none tracking-tighter mb-6">
+                                The <span class="text-[#d9a417]">Social Hub</span>
+                            </h1>
+                            <p class="text-xl text-slate-400 font-medium max-w-2xl leading-relaxed">
+                                Join the IKF digital ecosystem. Follow our journey, celebrate our culture, and stay updated with the latest from our global network.
+                            </p>
                         </div>
 
-                        <!--Live Stats Grid-- >
-                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-                            ${(Array.isArray(stats) ? stats : []).map(stat => {
-                    const platformColors = {
-                        'LinkedIn': '#0077b5',
-                        'Instagram': '#E1306C',
-                        'Facebook': '#1877F2',
-                        'YouTube': '#FF0000',
-                        'Behance': '#1769ff'
+                        <!-- Platform Stats Grid -->
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
+                            ${stats.map(stat => {
+                    const platformMeta = {
+                        'LinkedIn': { color: '#0077b5', icon: 'fa-linkedin-in' },
+                        'Instagram': { color: '#E1306C', icon: 'fa-instagram' },
+                        'Facebook': { color: '#1877F2', icon: 'fa-facebook-f' },
+                        'YouTube': { color: '#FF0000', icon: 'fa-youtube' }
                     };
-                    const pColor = platformColors[stat.name] || '#0E0057';
-                    const pIcon = stat.icon || (stat.name === 'LinkedIn' ? 'fa-linkedin-in' : (stat.name === 'Instagram' ? 'fa-instagram' : 'fa-share-nodes'));
-
+                    const meta = platformMeta[stat.name] || { color: '#0E0057', icon: 'fa-share-nodes' };
                     return `
-                                    <a href="${stat.url || '#'}" target="_blank" class="group bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all relative overflow-hidden">
-                                        <div class="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-full -mr-8 -mt-8 group-hover:bg-[${pColor}] transition-colors duration-500"></div>
-                                        <i class="fab ${pIcon} text-3xl mb-4 text-[${pColor}] group-hover:text-white relative z-10 transition-colors"></i>
-                                        <div class="relative z-10">
-                                            <h3 class="text-3xl font-black text-slate-800 mb-1">${stat.stat || '0'}<span class="text-sm text-slate-400 font-bold">+</span></h3>
-                                            <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">${stat.label || stat.name}</p>
+                                    <a href="${stat.url}" target="_blank" class="group bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 relative overflow-hidden">
+                                        <div class="absolute top-0 right-0 w-32 h-32 opacity-[0.03] group-hover:opacity-[0.1] transition-opacity duration-500 -mr-8 -mt-8">
+                                            <i class="fab ${meta.icon} text-8xl"></i>
                                         </div>
-                                        <div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-green-500">
-                                            <i class="fas fa-arrow-up"></i> ${stat.growth || 'Stable'}
+                                        <div class="flex items-center justify-between mb-8">
+                                            <span class="w-12 h-12 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg transition-transform group-hover:scale-110" style="background-color: ${meta.color}">
+                                                <i class="fab ${meta.icon}"></i>
+                                            </span>
+                                            <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest group-hover:text-[#d9a417] transition-colors">Follow Us</span>
+                                        </div>
+                                        <h3 class="text-4xl font-black text-slate-800 mb-1 tracking-tighter">${stat.stat}</h3>
+                                        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-4">${stat.label}</p>
+                                        <div class="flex items-center gap-2 text-[10px] font-black text-[#d9a417] uppercase tracking-wider">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#d9a417] animate-pulse"></span>
+                                            ${stat.growth}
                                         </div>
                                     </a>
                                 `;
                 }).join('')}
                         </div>
 
-                        <!--Recent Transmissions(Feed Simulation)-- >
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20 md:h-96">
-                            <!-- Featured Post -->
-                            <div class="lg:col-span-2 bg-gradient-to-br from-slate-900 to-ikf-blue rounded-[3rem] p-10 text-white relative overflow-hidden group">
-                                <div class="absolute inset-0 bg-[url('${featured.image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0'}')] bg-cover bg-center opacity-20 group-hover:scale-105 transition-transform duration-700"></div>
-                                <div class="absolute top-8 right-8 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/20">
-                                    ${featured.badge || 'Latest Transmission'}
-                                </div>
-                                <div class="relative z-10 h-full flex flex-col justify-end">
-                                    <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-6">
-                                        <i class="fas fa-play text-white ml-1"></i>
-                                    </div>
-                                    <h3 class="text-2xl md:text-4xl font-black leading-tight mb-4">${featured.title || 'Untitled Transmission'}</h3>
-                                    <p class="text-blue-100 max-w-lg text-sm leading-relaxed mb-8 line-clamp-2">${featured.description || ''}</p>
-                                    <a href="${featured.linkUrl || '#'}" target="_blank" class="inline-flex items-center gap-3 text-xs font-bold uppercase tracking-widest hover:text-ikf-yellow transition-colors">
-                                        ${featured.cta || 'Learn More'} <i class="fas fa-arrow-right"></i>
-                                    </a>
+                        <!-- Social Feed Visualization -->
+                        <div class="mb-12">
+                            <div class="flex items-center justify-between mb-10">
+                                <h2 class="text-3xl font-black text-[#0E0057] tracking-tight">Recent <span class="text-[#d9a417]">Transmissions</span></h2>
+                                <div class="hidden md:flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                    <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                                    Live Sync Active
                                 </div>
                             </div>
 
-                            <!-- Feed List -->
-                            <div class="bg-white rounded-[3rem] p-8 border border-slate-100 shadow-sm flex flex-col">
-                                <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6">Recent Activity</h4>
-                                <div class="flex-1 space-y-6 overflow-hidden">
-                                    ${(Array.isArray(feed) ? feed : []).map(item => `
-                                        <div class="flex gap-4 group cursor-pointer">
-                                            <div class="w-12 h-12 rounded-xl bg-slate-100 flex-shrink-0 bg-cover bg-center" style="background-image: url('${item.image || 'https://images.unsplash.com/photo-1531482615713-2afd69097998'}')"></div>
-                                            <div>
-                                                <p class="text-xs font-bold text-slate-700 leading-tight mb-1 group-hover:text-ikf-blue transition-colors">${item.text || item.title || ''}</p>
-                                                <p class="text-[10px] text-slate-400">${item.time || ''} • ${item.platform || ''}</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                                ${feed.map(post => {
+                    const platformLinks = {
+                        'LinkedIn': 'https://www.linkedin.com/company/i-knowledge-factory-pvt.-ltd./',
+                        'Instagram': 'https://www.instagram.com/ikfdigital/',
+                        'Facebook': 'https://www.facebook.com/IKFDigital/',
+                        'YouTube': 'https://www.youtube.com/c/IKFDigital'
+                    };
+                    const postUrl = platformLinks[post.platform] || '#';
+
+                    return `
+                                    <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden flex flex-col group hover:shadow-xl transition-all duration-500">
+                                        <!-- Post Header -->
+                                        <div class="p-5 flex items-center justify-between border-b border-slate-50">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[#0E0057] text-xs font-black">
+                                                    ${post.user.substring(0, 1)}
+                                                </div>
+                                                <div>
+                                                    <p class="text-[11px] font-black text-slate-800 leading-none mb-1">${post.user}</p>
+                                                    <p class="text-[10px] font-bold text-slate-400 leading-none">${post.handle}</p>
+                                                </div>
+                                            </div>
+                                            <i class="fab ${post.icon} text-slate-200 group-hover:text-[#d9a417] transition-colors"></i>
+                                        </div>
+                                        
+                                        <!-- Post Image -->
+                                        <div class="aspect-square bg-slate-100 overflow-hidden relative video-card" ${post.platform === 'YouTube' ? `data-video="${post.url.split('v=')[1]}"` : ''}>
+                                            <img src="${post.image}" alt="Social Post" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 thumbnail-img" referrerpolicy="no-referrer">
+                                            
+                                            ${post.platform === 'YouTube' ? `
+                                                <div class="absolute inset-0 flex items-center justify-center z-10 play-icon pointer-events-none">
+                                                    <div class="w-14 h-14 bg-red-600 rounded-full flex items-center justify-center text-white shadow-2xl group-hover:scale-110 transition-transform duration-500">
+                                                        <i class="fas fa-play text-xl ml-1"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="absolute inset-0 video-container opacity-0 transition-opacity duration-500 pointer-events-none z-0"></div>
+                                            ` : ''}
+
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                                                <div class="absolute bottom-4 left-4 right-4">
+                                                     <a href="${post.url || postUrl}" target="_blank" class="w-full py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-xl text-white text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-[#d9a417] hover:border-[#d9a417] transition-all">
+                                                        ${post.platform === 'YouTube' ? 'Watch on YouTube' : 'View on ' + post.platform} <i class="fas fa-external-link-alt text-[8px]"></i>
+                                                     </a>
+                                                </div>
                                             </div>
                                         </div>
-                                    `).join('')}
+
+                                        <!-- Post Content -->
+                                        <div class="p-6 flex-1 flex flex-col">
+                                            <p class="text-xs text-slate-600 leading-relaxed mb-6 flex-1 line-clamp-3">
+                                                ${post.text}
+                                            </p>
+                                            <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                                                <div class="flex items-center gap-4">
+                                                    <span class="flex items-center gap-1.5 text-[10px] font-bold text-slate-400">
+                                                        <i class="fas fa-heart text-red-100 group-hover:text-red-500 transition-colors"></i> ${post.likes}
+                                                    </span>
+                                                    <span class="text-[10px] font-bold text-slate-300 tracking-tight">${post.date}</span>
+                                                </div>
+                                                <i class="fas fa-arrow-right text-[10px] text-slate-100 group-hover:text-[#0E0057] group-hover:translate-x-1 transition-all"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                }).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Dark CTA Section -->
+                        <div class="mt-24 bg-[#0E0057] rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-96 h-96 bg-blue-900 rounded-full -mr-48 -mt-48 opacity-20"></div>
+                            <div class="absolute bottom-0 left-0 w-64 h-64 bg-[#d9a417] rounded-full -ml-32 -mb-32 opacity-10"></div>
+                            
+                            <div class="relative z-10 max-w-2xl mx-auto">
+                                <h3 class="text-3xl md:text-5xl font-black text-white mb-6 leading-tight">Become an <span class="text-[#d9a417]">Amplifier</span></h3>
+                                <p class="text-blue-200 text-lg font-medium mb-10 leading-relaxed">
+                                    Our employees are our biggest ambassadors. Join the conversation, share our stories, and help us grow the IKF global community.
+                                </p>
+                                <div class="flex flex-wrap justify-center gap-4">
+                                    <button class="px-8 py-4 bg-[#d9a417] text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-white hover:text-[#0E0057] transition-all shadow-xl">
+                                        Access Media Kit
+                                    </button>
+                                    <button class="px-8 py-4 bg-white/10 text-white border border-white/20 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-white/20 transition-all backdrop-blur-md">
+                                        View Guidelines
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                    </div>`;
+                    </div>
+                `;
 
             case 'referral':
                 const refData = this.contentData?.referral || {};
@@ -1434,7 +1551,7 @@ window.AppNavigation = {
                         <div class="mb-16 flex flex-col md:flex-row items-center justify-between gap-8">
                             <div>
                                 <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${annivData.badge || 'Legacy System'}</span>
-                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${annivData.title || 'Hall of Fame'}</h1>
+                                <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tight">${annivData.title || 'Hall of <span class="text-[#d9a417]">Fame</span>'}</h1>
                             </div>
                             <div class="bg-slate-900 text-white px-8 py-4 rounded-[2rem] flex items-center gap-4 shadow-xl">
                                 <div class="text-right">
@@ -1499,7 +1616,7 @@ window.AppNavigation = {
                         <div class="mb-12 flex items-end justify-between">
                             <div>
                                 <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${bdayData.badge || 'Solar Returns'}</span>
-                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${bdayData.title || 'Party Protocol'}</h1>
+                                <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tight">${bdayData.title || 'Party <span class="text-[#d9a417]">Protocol</span>'}</h1>
                             </div>
                         </div>
 
@@ -1558,7 +1675,7 @@ window.AppNavigation = {
                     < div class="max-w-6xl mx-auto py-6 fade-in" >
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${holidayData.badge || 'Global Calendar'}</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${holidayData.title || 'Holidays 2025-26'}</h1>
+                            <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tight">${holidayData.title || 'Holidays <span class="text-[#d9a417]">2025-26</span>'}</h1>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20">
@@ -1600,7 +1717,7 @@ window.AppNavigation = {
                     < div class="max-w-6xl mx-auto py-6 fade-in" >
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${attendData.badge || 'Operation Hours'}</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${attendData.title || 'Sync & Flow'}</h1>
+                            <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tight">${attendData.title || 'Sync & <span class="text-[#d9a417]">Flow</span>'}</h1>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
@@ -1651,7 +1768,7 @@ window.AppNavigation = {
                     < div class="max-w-6xl mx-auto py-6 fade-in" >
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${policyData.badge || 'Legal Framework'}</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${policyData.title || 'The Commitment'}</h1>
+                            <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tight">${policyData.title || 'Operational <span class="text-[#d9a417]">Directives</span>'}</h1>
                         </div>
 
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">

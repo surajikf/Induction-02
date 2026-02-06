@@ -16,7 +16,7 @@
   },
   "intro": {
     "badge": "Onboarding Portal",
-    "title": "Welcome to <span class=\"gradient\">I Knowledge Factory.</span>",
+    "title": "Welcome to <span class=\"text-[#d9a417]\">I Knowledge Factory.</span>",
     "subtitle": "Where strategy meets digital craftsmanship. We've been shaping the internet since 2000.",
     "mission": {
       "title": "The Mission",
@@ -41,7 +41,7 @@
   },
   "management": {
     "badge": "System Architects",
-    "title": "The <span class=\"gradient\">Visionaries</span>",
+    "title": "The <span class=\"text-[#d9a417]\">Visionaries</span>",
     "subtitle": "Guiding the IKF mainframes with over <strong>75 years</strong> of combined digital intelligence.",
     "leaders": [
       {
@@ -54,15 +54,6 @@
         "note": "Welcome to IKF! With over 25 years of digital excellence, we've grown alongside the internet itself. Our journey from a boutique setup to a multidisciplinary agency has been driven by one core philosophy: Innovation, Knowledge, and Factory. We help global brands thrive across digital ecosystems using AI-refined strategies without losing the human lens. Your role here is crucial in maintaining our legacy of delivering high-impact solutions for our 1500+ clients."
       },
       {
-        "id": "gunjan",
-        "name": "Gunjan Bhansali",
-        "role": "Operations Head",
-        "image": "images/IKFLOGO/Gunjan-Bhansali-IMG.jpg",
-        "skill": "Operations",
-        "skillLevel": "99%",
-        "note": "Gunjan oversees strategic operations and technological integration, ensuring that the Factory operates at peak industrial precision. Her focus on process optimization drives our ability to deliver consistent quality at scale."
-      },
-      {
         "id": "ritu",
         "name": "Ritu Dalia",
         "role": "Co-Founder",
@@ -70,12 +61,21 @@
         "skill": "Creativity",
         "skillLevel": "100%",
         "note": "Ritu leads the creative and brand strategy units, focusing on human-centric digital storytelling. Her vision bridges the gap between data-driven performance and emotional brand connection."
+      },
+      {
+        "id": "gunjan",
+        "name": "Gunjan Bhansali",
+        "role": "Operations Head",
+        "image": "images/IKFLOGO/Gunjan-Bhansali-IMG.jpg",
+        "skill": "Operations",
+        "skillLevel": "99%",
+        "note": "Gunjan manages the operational mainframes of IKF, ensuring project delivery and resource optimization. Her leadership ensures that the factory runs with high-precision output."
       }
     ]
   },
   "philosophy": {
     "badge": "Core Directives",
-    "title": "<span class=\"gradient\">I • K • F</span>",
+    "title": "I • K • <span class=\"text-[#d9a417]\">F</span>",
     "subtitle": "The DNA of Our Identity",
     "pillars": [
       {
@@ -97,7 +97,7 @@
   },
   "mission": {
     "badge": "Strategic Compass",
-    "title": "Mission & <span class=\"gradient\">Vision</span>",
+    "title": "Mission & <span class=\"text-[#d9a417]\">Vision</span>",
     "vision": {
       "title": "The Vision",
       "content": "To be a globally respected, multidisciplinary digital agency known for its commitment to excellence and innovation."
@@ -134,7 +134,7 @@
   },
   "culture": {
     "badge": "System Core",
-    "title": "The IKF Culture <span class=\"gradient\">Code</span>",
+    "title": "The IKF Culture <span class=\"text-[#d9a417]\">Code</span>",
     "subtitle": "Running on version 4.0. Optimized for high performance, creativity, and human-centric processing.",
     "stats": [
       {
@@ -176,59 +176,171 @@
     }
   },
   "social": {
-    "badge": "Digital Command Center",
-    "title": "The <span class=\"gradient\">Ecosystem</span>",
-    "liveStatus": "Live Sync: Active",
+    "badge": "Stay Connected",
+    "title": "The <span class=\"text-[#d9a417]\">Social Hub</span>",
+    "liveStatus": "Social activity: High",
     "platforms": [
       {
         "name": "LinkedIn",
         "url": "https://www.linkedin.com/company/i-knowledge-factory-pvt.-ltd./",
         "stat": "25k+",
         "label": "Connections",
-        "growth": "12% vs last month"
+        "growth": "Top Talent Hub"
       },
       {
         "name": "Instagram",
         "url": "https://www.instagram.com/ikfdigital/",
         "stat": "18k+",
         "label": "Followers",
-        "growth": "8.5% Engagement"
+        "growth": "Culture & Life"
+      },
+      {
+        "name": "YouTube",
+        "url": "https://www.youtube.com/c/IKFDigital",
+        "stat": "5k+",
+        "label": "Subscribers",
+        "growth": "Expert Insights"
       },
       {
         "name": "Facebook",
         "url": "https://www.facebook.com/IKFDigital/",
         "stat": "42k+",
-        "label": "Community",
-        "growth": "Stable"
-      },
-      {
-        "name": "YouTube",
-        "url": "https://www.youtube.com/c/IKFDigital",
-        "stat": "500k",
-        "label": "Views",
-        "growth": "New Viral Hit"
+        "label": "Fans",
+        "growth": "Community Rooted"
       }
     ],
-    "featuredPost": {
-      "title": "The Future of AI in Marketing",
-      "description": "Our Director, Ashish Dalia, breaks down how generative AI is reshaping the agency landscape. Watch the full keynote now.",
-      "cta": "Watch Video"
-    },
-    "recentActivity": [
+    "feed": [
       {
-        "text": "IKF celebrates 23 years of excellence! 🎉",
-        "time": "2 hours ago",
-        "platform": "Instagram"
+        "platform": "YouTube",
+        "icon": "fa-youtube",
+        "user": "IKF Insights",
+        "handle": "IKFDigital",
+        "text": "Christmas at the office, done our way! 🎄 A peek into our celebrations and the spirit of IKF.",
+        "image": "https://img.youtube.com/vi/jH7-Yy2jLpA/hqdefault.jpg",
+        "date": "1mo ago",
+        "likes": "2.5k",
+        "url": "https://www.youtube.com/watch?v=jH7-Yy2jLpA"
       },
       {
-        "text": "We are hiring! Join our creative team. 🚀",
-        "time": "5 hours ago",
-        "platform": "LinkedIn"
+        "platform": "YouTube",
+        "icon": "fa-youtube",
+        "user": "IKF Insights",
+        "handle": "IKFDigital",
+        "text": "Vikas Dabade - Why IKF is the best place to work with? Real talk from our team.",
+        "image": "https://img.youtube.com/vi/_S0x1T6z_80/hqdefault.jpg",
+        "date": "6mo ago",
+        "likes": "4.1k",
+        "url": "https://www.youtube.com/watch?v=_S0x1T6z_80"
       },
       {
-        "text": "New case study: Rebranding a tech giant.",
-        "time": "1 day ago",
-        "platform": "Behance"
+        "platform": "YouTube",
+        "icon": "fa-youtube",
+        "user": "IKF Insights",
+        "handle": "IKFDigital",
+        "text": "How Storytelling Drives Luxury Branding | IKF x De Mandovi masterclass.",
+        "image": "https://img.youtube.com/vi/kY6f8p4e-K4/hqdefault.jpg",
+        "date": "4mo ago",
+        "likes": "1.2k",
+        "url": "https://www.youtube.com/watch?v=kY6f8p4e-K4"
+      },
+      {
+        "platform": "LinkedIn",
+        "icon": "fa-linkedin-in",
+        "user": "IKF Official",
+        "handle": "@ikf-digital",
+        "text": "Exactly what is GEO? Generative Engine Optimization explained for the future of digital search.",
+        "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+        "date": "2w ago",
+        "likes": "1.2k",
+        "url": "https://www.linkedin.com/company/i-knowledge-factory-pvt.-ltd./"
+      },
+      {
+        "platform": "LinkedIn",
+        "icon": "fa-linkedin-in",
+        "user": "IKF Official",
+        "handle": "@ikf-digital",
+        "text": "We debug problems, not people. Our philosophy on psychological safety in an agency.",
+        "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800",
+        "date": "3w ago",
+        "likes": "890",
+        "url": "https://www.linkedin.com/company/i-knowledge-factory-pvt.-ltd./"
+      },
+      {
+        "platform": "LinkedIn",
+        "icon": "fa-linkedin-in",
+        "user": "IKF Official",
+        "handle": "@ikf-digital",
+        "text": "Join us in celebrating 25 years of digital craftsmanship. Our journey began in 2000.",
+        "image": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=800",
+        "date": "1w ago",
+        "likes": "450",
+        "url": "https://www.linkedin.com/company/i-knowledge-factory-pvt.-ltd./"
+      },
+      {
+        "platform": "Instagram",
+        "icon": "fa-instagram",
+        "user": "Life At IKF",
+        "handle": "@ikfdigital",
+        "text": "Friday vibes at the office! Caffeine, creativity, and the best team. ☕️🚀 #LifeAtIKF",
+        "image": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=800",
+        "date": "2d ago",
+        "likes": "310",
+        "url": "https://www.instagram.com/ikfdigital/"
+      },
+      {
+        "platform": "Instagram",
+        "icon": "fa-instagram",
+        "user": "Life At IKF",
+        "handle": "@ikfdigital",
+        "text": "Lemon Tea Never Looked This Good | Chai Kapi x IKF Reel Squad. Sneak peek.",
+        "image": "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80&w=800",
+        "date": "4d ago",
+        "likes": "520",
+        "url": "https://www.instagram.com/ikfdigital/"
+      },
+      {
+        "platform": "Instagram",
+        "icon": "fa-instagram",
+        "user": "Life At IKF",
+        "handle": "@ikfdigital",
+        "text": "Celebrating 25 years of digital legacy. From a small setup to a global powerhouse.",
+        "image": "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80&w=800",
+        "date": "1w ago",
+        "likes": "1.1k",
+        "url": "https://www.instagram.com/ikfdigital/"
+      },
+      {
+        "platform": "Facebook",
+        "icon": "fa-facebook-f",
+        "user": "IKF Community",
+        "handle": "@ikfdigital",
+        "text": "Welcoming our latest batch of inductees! You're now part of a legacy that spans over 2 decades.",
+        "image": "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&q=80&w=800",
+        "date": "3d ago",
+        "likes": "640",
+        "url": "https://www.facebook.com/IKFDigital/"
+      },
+      {
+        "platform": "Facebook",
+        "icon": "fa-facebook-f",
+        "user": "IKF Community",
+        "handle": "@ikfdigital",
+        "text": "IKF Community: Rebranding a tech giant - A case study on impact and strategy.",
+        "image": "https://images.unsplash.com/photo-1434626881859-194d67b2b86f?auto=format&fit=crop&q=80&w=800",
+        "date": "1w ago",
+        "likes": "820",
+        "url": "https://www.facebook.com/IKFDigital/"
+      },
+      {
+        "platform": "Facebook",
+        "icon": "fa-facebook-f",
+        "user": "IKF Community",
+        "handle": "@ikfdigital",
+        "text": "Join our upcoming webinar on AI-powered personalization and e-commerce growth.",
+        "image": "https://images.unsplash.com/photo-1540317580384-e5d43616b9aa?auto=format&fit=crop&q=80&w=800",
+        "date": "2w ago",
+        "likes": "410",
+        "url": "https://www.facebook.com/IKFDigital/"
       }
     ]
   },
