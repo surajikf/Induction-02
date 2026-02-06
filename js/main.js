@@ -38,7 +38,7 @@ window.startApp = function (targetSection = 'intro') {
     });
 };
 
-$(document).ready(function () {
+$(document).ready(async function () {
     try {
         console.log('Initializing App...');
 
@@ -49,7 +49,7 @@ $(document).ready(function () {
         }
 
         // 2. Initialize Navigation & Progress
-        if (window.AppNavigation) window.AppNavigation.init();
+        if (window.AppNavigation) await window.AppNavigation.init();
         if (window.AppProgress) window.AppProgress.init();
 
         // 3. Handle "Start Journey" Button (Redundant listener for safety)
@@ -101,10 +101,18 @@ $(document).ready(function () {
             const x = (window.innerWidth - e.pageX * 2) / 100;
             const y = (window.innerHeight - e.pageY * 2) / 100;
 
+            // Move sidebar floating icons
             $('.hero-floating').each(function (index) {
                 const speed = $(this).data('speed') || 1;
                 $(this).css('transform', `translateX(${x * speed}px) translateY(${y * speed}px)`);
             });
+
+            // Move floating background icons with parallax effect
+            $('#hero-section img[alt="LinkedIn"]').css('transform', `translate(${x * 1.5}px, ${y * 1.5}px)`);
+            $('#hero-section img[alt="Facebook"]').css('transform', `translate(${x * 2}px, ${y * 2}px)`);
+            $('#hero-section img[alt="Instagram"]').css('transform', `translate(${x * 1.8}px, ${y * 1.8}px)`);
+            $('#hero-section img[alt="Heart"]').css('transform', `translate(${x * 1.3}px, ${y * 1.3}px)`);
+            $('#hero-section img[alt="YouTube"]').css('transform', `translate(${x * 2.2}px, ${y * 2.2}px)`);
         });
 
         // 8. Smart Typing Effect for Hero Badge

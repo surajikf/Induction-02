@@ -1,0 +1,147 @@
+{
+    "version": "1.0.0",
+    "lastUpdated": "2026-02-06T14:16:00+05:30",
+    "images": {
+        "logos": [
+            {
+                "id": "ikf-logo",
+                "path": "images/IKFLOGO/logo.svg",
+                "alt": "IKF Logo",
+                "category": "branding",
+                "usedIn": [
+                    "sidebar",
+                    "header"
+                ]
+            }
+        ],
+        "avatars": [
+            {
+                "id": "ashish-avatar",
+                "path": "images/avatars/ashish_real.jpg",
+                "alt": "Ashish Dalia",
+                "category": "team",
+                "usedIn": [
+                    "management",
+                    "anniversary"
+                ]
+            },
+            {
+                "id": "jayraj-avatar",
+                "path": "images/avatars/jayraj.png",
+                "alt": "Jayraj Mehta",
+                "category": "team",
+                "usedIn": [
+                    "management",
+                    "anniversary"
+                ]
+            },
+            {
+                "id": "anuja-avatar",
+                "path": "images/avatars/anuja.png",
+                "alt": "Anuja Kapoor",
+                "category": "team",
+                "usedIn": [
+                    "management"
+                ]
+            },
+            {
+                "id": "avatar-marketing-male",
+                "path": "images/avatars/avatar_marketing_male.png",
+                "alt": "Marketing Team Member",
+                "category": "team",
+                "usedIn": [
+                    "directory",
+                    "anniversary",
+                    "birthdays"
+                ]
+            },
+            {
+                "id": "avatar-creative-female",
+                "path": "images/avatars/avatar_creative_female.png",
+                "alt": "Creative Team Member",
+                "category": "team",
+                "usedIn": [
+                    "directory",
+                    "anniversary",
+                    "birthdays"
+                ]
+            },
+            {
+                "id": "avatar-dev-male",
+                "path": "images/avatars/avatar_dev_male.png",
+                "alt": "Development Team Member",
+                "category": "team",
+                "usedIn": [
+                    "directory",
+                    "anniversary",
+                    "birthdays"
+                ]
+            }
+        ],
+        "icons": [
+            {
+                "id": "icon-linkedin",
+                "path": "images/icon_linkedin.png",
+                "alt": "LinkedIn Icon",
+                "category": "social",
+                "usedIn": [
+                    "hero"
+                ]
+            },
+            {
+                "id": "icon-facebook",
+                "path": "images/icon_facebook.png",
+                "alt": "Facebook Icon",
+                "category": "social",
+                "usedIn": [
+                    "hero"
+                ]
+            },
+            {
+                "id": "icon-instagram",
+                "path": "images/icon_instagram.png",
+                "alt": "Instagram Icon",
+                "category": "social",
+                "usedIn": [
+                    "hero"
+                ]
+            },
+            {
+                "id": "icon-youtube",
+                "path": "images/icon_youtube.png",
+                "alt": "YouTube Icon",
+                "category": "social",
+                "usedIn": [
+                    "hero"
+                ]
+            },
+            {
+                "id": "icon-heart",
+                "path": "images/icon_heart.png",
+                "alt": "Heart Icon",
+                "category": "social",
+                "usedIn": [
+                    "hero"
+                ]
+            }
+        ]
+    },
+    "uploadHistory": [],
+    "categories": [
+        "branding",
+        "team",
+        "social",
+        "general"
+    ],
+    "settings": {
+        "maxFileSize": 5242880,
+        "allowedFormats": [
+            "jpg",
+            "jpeg",
+            "png",
+            "svg",
+            "webp"
+        ],
+        "compressionQuality": 85
+    }
+}

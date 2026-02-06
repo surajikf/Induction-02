@@ -3,10 +3,13 @@
  */
 
 window.AppNavigation = {
-    sections: {}, // Will be populated with template content
+    contentData: null,
 
-    init: function () {
+    init: async function () {
         const self = this;
+
+        // Load content from JSON
+        await this.loadContent();
 
         // Handle Sidebar Clicks
         $(document).on('click', '.nav-link', function (e) {
@@ -23,6 +26,20 @@ window.AppNavigation = {
 
         // Initialize Employees Data
         this.initEmployees();
+    },
+
+    /**
+     * Loads content from JSON file
+     */
+    loadContent: async function () {
+        try {
+            const response = await fetch('data/content.json');
+            this.contentData = await response.json();
+            console.log('Content loaded successfully');
+        } catch (error) {
+            console.error('Error loading content:', error);
+            // Fallback for missing content will be handled in templates
+        }
     },
 
     /**
@@ -114,11 +131,17 @@ window.AppNavigation = {
      * Directory Logic
      */
     initEmployees: function () {
-        this.employees = [
-            { id: 'ashish', name: 'Ashish Dalia', role: 'Managing Director', dept: 'Management', img: 'images/avatars/ashish_real.jpg', skills: ['Visionary', 'Strategy', 'Leadership'] },
-            { id: 'jayraj', name: 'Jayraj Mehta', role: 'Director', dept: 'Management', img: 'images/avatars/jayraj.png', skills: ['Operations', 'Tech Integration', 'Scale'] },
-            { id: 'anuja', name: 'Anuja Kapoor', role: 'Director', dept: 'Management', img: 'images/avatars/anuja.png', skills: ['Creative Direction', 'Brand Strategy', 'Storytelling'] },
+        // Use dynamic data from management leaders if available, otherwise use hardcoded defaults
+        const dynamicLeaders = (this.contentData?.management?.leaders || []).map(leader => ({
+            id: leader.id,
+            name: leader.name,
+            role: leader.role,
+            dept: 'Management',
+            img: leader.image,
+            skills: [leader.skill]
+        }));
 
+        const hardcodedEmployees = [
             // Smart Avatars Distributed
             { id: 'emp1', name: 'Vikram Singh', role: 'Sr. Brand Strategist', dept: 'Digital Marketing', img: 'images/avatars/avatar_marketing_male.png', skills: ['Brand Positioning', 'Market Analysis', 'Campaign Strategy'] },
             { id: 'emp2', name: 'Priya Sharma', role: 'Client Servicing', dept: 'Digital Marketing', img: 'images/avatars/avatar_creative_female.png', skills: ['CRM', 'Negotiation', 'Project Mgmt'] },
@@ -136,6 +159,16 @@ window.AppNavigation = {
             { id: 'emp14', name: 'Swati Kulkarni', role: 'Backend Developer', dept: 'Web Development', img: 'images/avatars/avatar_creative_female.png', skills: ['Python', 'Django', 'AWS'] },
             { id: 'emp15', name: 'Rajesh Chavan', role: 'Operations Head', dept: 'Management', img: 'images/avatars/avatar_marketing_male.png', skills: ['Resource Planning', 'Process Flow', 'Logistics'] }
         ];
+
+        // Combine them, avoiding duplicates if any by ID
+        this.employees = [...dynamicLeaders];
+        const leaderIds = new Set(dynamicLeaders.map(l => l.id));
+
+        hardcodedEmployees.forEach(emp => {
+            if (!leaderIds.has(emp.id)) {
+                this.employees.push(emp);
+            }
+        });
     },
 
     renderDirectoryGrid: function (filteredList = null) {
@@ -144,69 +177,52 @@ window.AppNavigation = {
         if (!grid) return;
 
         grid.innerHTML = list.map((emp, index) => `
-            <div class="employee-card group relative bg-white rounded-[2.5rem] p-6 hover:-translate-y-2 transition-all duration-500 overflow-visible z-10 hover:z-20"
+            <div class="employee-card card-clean group cursor-pointer p-6"
                  onclick="AppNavigation.showLeaderModal('${emp.id === 'ashish' || emp.id === 'jayraj' || emp.id === 'anuja' ? emp.id : 'leadership'}', '${emp.name}', '${emp.role}')"
-                 style="animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) backwards ${index * 60}ms">
+                 style="animation: fadeInUp 0.5s ease-out backwards ${index * 50}ms">
                 
-                <!-- Glow Effect Behind Card -->
-                <div class="absolute inset-4 bg-ikf-blue/20 rounded-[2rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
-                
-                <!-- Card Body -->
-                <div class="relative bg-white border border-slate-100 rounded-[2.5rem] p-6 h-full flex flex-col shadow-sm group-hover:shadow-2xl transition-all duration-300 overflow-hidden">
+                <!-- Avatar Section -->
+                <div class="relative mb-5 mx-auto w-24 h-24">
+                    <div class="w-full h-full rounded-full p-0.5 bg-gradient-to-br from-slate-100 to-slate-200 shadow-md">
+                        <img src="${emp.img}" class="w-full h-full object-cover rounded-full bg-white" alt="${emp.name}">
+                    </div>
                     
-                    <!-- Top Gradient Decoration -->
-                    <div class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-slate-50 to-transparent opacity-50"></div>
-                    <div class="absolute top-4 right-4 text-[10px] font-black uppercase text-slate-300 tracking-widest group-hover:text-ikf-blue transition-colors">IKF-ID-${Math.floor(Math.random() * 9000) + 1000}</div>
+                    <!-- Status Dot -->
+                    <div class="absolute bottom-1 right-1 w-4 h-4 bg-white rounded-full flex items-center justify-center shadow-sm">
+                        <div class="w-2.5 h-2.5 bg-green-500 rounded-full subtle-pulse"></div>
+                    </div>
+                </div>
 
-                    <!-- Avatar Section -->
-                    <div class="relative mb-6 mx-auto w-28 h-28 transform transition-transform duration-500 group-hover:scale-105">
-                        <!-- Rotating Ring -->
-                        <div class="absolute -inset-2 rounded-full border border-dashed border-ikf-blue/30 opacity-0 group-hover:opacity-100 animate-spin-slow transition-opacity"></div>
-                        
-                        <div class="w-full h-full rounded-full p-1 bg-white shadow-lg relative z-10">
-                            <img src="${emp.img}" class="w-full h-full object-cover rounded-full" alt="${emp.name}">
-                        </div>
-                        
-                        <!-- Status Dot -->
-                        <div class="absolute bottom-2 right-2 w-5 h-5 bg-white rounded-full flex items-center justify-center z-20 shadow-sm">
-                            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                        </div>
+                <!-- Content -->
+                <div class="text-center">
+                    <h4 class="text-lg font-bold text-slate-800 mb-1.5 group-hover:text-ikf-blue transition-colors">${emp.name}</h4>
+                    <div class="inline-block px-3 py-1 rounded-lg bg-slate-50 border border-slate-200 mb-4">
+                        <p class="text-[10px] font-semibold uppercase tracking-wide text-slate-500">${emp.role}</p>
                     </div>
 
-                    <!-- Content -->
-                    <div class="text-center relative z-10 flex-1 flex flex-col">
-                        <h4 class="text-xl font-black text-slate-800 mb-1 group-hover:text-ikf-blue transition-colors">${emp.name}</h4>
-                        <div class="inline-block mx-auto px-3 py-1 rounded-full bg-slate-50 border border-slate-100 mb-4 group-hover:bg-ikf-yellow/10 group-hover:border-ikf-yellow/20 transition-colors">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 group-hover:text-ikf-yellow transition-colors">${emp.role}</p>
-                        </div>
-
-                        <!-- Skills Chips -->
-                        <div class="flex flex-wrap justify-center gap-2 mt-auto">
-                            ${(emp.skills || []).slice(0, 3).map(skill =>
-            `<span class="px-2.5 py-1 bg-slate-50 text-[9px] font-bold text-slate-500 rounded-md border border-slate-100 hover:bg-ikf-blue hover:text-white hover:border-ikf-blue transition-colors cursor-default">${skill}</span>`
+                    <!-- Skills Chips -->
+                    <div class="flex flex-wrap justify-center gap-2">
+                        ${(emp.skills || []).slice(0, 3).map(skill =>
+            `<span class="px-2.5 py-1 bg-slate-100 text-[9px] font-medium text-slate-600 rounded-md border border-slate-200 hover:bg-ikf-blue hover:text-white hover:border-ikf-blue transition-colors">${skill}</span>`
         ).join('')}
-                        </div>
                     </div>
+                </div>
 
-                    <!-- View Profile Slide-up Overlay -->
-                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ikf-blue via-ikf-blue/95 to-transparent pt-12 pb-6 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center z-20">
-                        <span class="text-white font-black uppercase text-xs tracking-[0.2em] flex items-center gap-2">
-                            View Profile <i class="fas fa-arrow-right"></i>
-                        </span>
-                    </div>
+                <!-- View Profile Indicator -->
+                <div class="mt-4 pt-4 border-t border-slate-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span class="text-ikf-blue font-semibold text-xs flex items-center justify-center gap-2">
+                        View Profile <i class="fas fa-arrow-right text-[10px]"></i>
+                    </span>
                 </div>
             </div>
         `).join('') + `
-            <!-- 'Join Us' Card (Creative) -->
-            <div class="group relative bg-slate-50 rounded-[2.5rem] p-1 h-full min-h-[360px] cursor-pointer hover:-translate-y-2 transition-transform duration-500 z-0">
-                <div class="absolute inset-0 border-2 border-dashed border-slate-200 rounded-[2.5rem] group-hover:border-ikf-yellow transition-colors duration-500"></div>
-                <div class="h-full flex flex-col items-center justify-center p-8 relative z-10">
-                    <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-6 group-hover:scale-110 transition-transform duration-500 group-hover:rotate-6 group-hover:shadow-xl">
-                        <i class="fas fa-plus text-3xl text-slate-300 group-hover:text-ikf-yellow transition-colors"></i>
-                    </div>
-                    <h4 class="text-xl font-black text-slate-400 group-hover:text-slate-800 transition-colors mb-2">You?</h4>
-                    <p class="text-xs text-slate-400 font-medium text-center max-w-[150px] leading-relaxed">We are always looking for the next visionary.</p>
+            <!-- 'Join Us' Card -->
+            <div class="card-clean group cursor-pointer p-8 flex flex-col items-center justify-center min-h-[280px]">
+                <div class="w-16 h-16 bg-slate-100 rounded-xl flex items-center justify-center shadow-sm mb-5 group-hover:bg-ikf-yellow/10 group-hover:shadow-md transition-all">
+                    <i class="fas fa-plus text-2xl text-slate-400 group-hover:text-ikf-yellow transition-colors"></i>
                 </div>
+                <h4 class="text-lg font-bold text-slate-600 group-hover:text-slate-800 transition-colors mb-2">Join Our Team</h4>
+                <p class="text-xs text-slate-500 text-center max-w-[160px] leading-relaxed">We're always looking for talented individuals</p>
             </div>
         `;
     },
@@ -300,17 +316,32 @@ window.AppNavigation = {
     getTemplate: function (sectionId) {
         switch (sectionId) {
             case 'intro':
+                const introData = this.contentData?.intro || {
+                    badge: "Onboarding Portal",
+                    title: 'Welcome to <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">I Knowledge Factory.</span>',
+                    subtitle: "Where strategy meets digital craftsmanship. We've been shaping the internet since 2000.",
+                    mission: {
+                        title: "The Mission",
+                        content: "IKF is a multidisciplinary agency that blends strategy, design, and performance marketing to help brands thrive across digital ecosystems. We survive market shifts by staying true to our core: <span class=\"text-ikf-blue font-bold\">Human Intelligence.</span>",
+                        badges: ["25+ Years", "360° Digital", "Pune HQ"]
+                    },
+                    stats: {
+                        strategies: { number: "800+", label: "Deployed Successfully" },
+                        clients: { number: "1.5k+", label: "Happy Clients" }
+                    },
+                    footer: "Explore the sidebar to begin your induction journey."
+                };
                 return `
                     <div class="max-w-7xl mx-auto py-8 fade-in">
                         <!-- Hero Header -->
                         <div class="mb-16 flex flex-col md:flex-row items-end justify-between gap-8 border-b border-slate-100 pb-12">
                             <div class="max-w-3xl">
-                                <span class="text-ikf-yellow font-bold uppercase tracking-[0.2em] text-xs mb-4 block">Onboarding Portal</span>
+                                <span class="text-ikf-yellow font-bold uppercase tracking-[0.2em] text-xs mb-4 block">${introData.badge}</span>
                                 <h1 class="text-4xl md:text-6xl font-extrabold text-slate-800 tracking-tight leading-tight mb-6">
-                                    Welcome to <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">I Knowledge Factory.</span>
+                                    ${introData.title}
                                 </h1>
                                 <p class="text-slate-500 text-lg md:text-xl font-medium leading-relaxed max-w-2xl">
-                                    Where strategy meets digital craftsmanship. We've been shaping the internet since 2000.
+                                    ${introData.subtitle}
                                 </p>
                             </div>
                             <div class="hidden md:block">
@@ -329,21 +360,17 @@ window.AppNavigation = {
                                 <div class="bg-white rounded-[2rem] p-10 shadow-sm border border-slate-100 h-full relative overflow-hidden group hover:shadow-md transition-shadow duration-300">
                                     <div class="absolute top-0 right-0 w-64 h-64 bg-ikf-blue/5 rounded-full -mr-20 -mt-20 transition-transform group-hover:scale-105 duration-700"></div>
                                     
-                                    <h3 class="text-2xl font-bold text-slate-800 mb-6 relative z-10">The Mission</h3>
+                                    <h3 class="text-2xl font-bold text-slate-800 mb-6 relative z-10">${introData.mission.title}</h3>
                                     <p class="text-slate-500 leading-relaxed mb-8 relative z-10 text-lg">
-                                        IKF is a multidisciplinary agency that blends strategy, design, and performance marketing to help brands thrive across digital ecosystems. We survive market shifts by staying true to our core: <span class="text-ikf-blue font-bold">Human Intelligence.</span>
+                                        ${introData.mission.content}
                                     </p>
 
                                     <div class="flex flex-wrap gap-4 relative z-10">
-                                        <div class="px-5 py-3 rounded-xl bg-slate-50 border border-slate-100 text-sm font-bold text-slate-600">
-                                            <i class="fas fa-check text-ikf-yellow mr-2"></i> 25+ Years
-                                        </div>
-                                        <div class="px-5 py-3 rounded-xl bg-slate-50 border border-slate-100 text-sm font-bold text-slate-600">
-                                            <i class="fas fa-check text-ikf-yellow mr-2"></i> 360° Digital
-                                        </div>
-                                        <div class="px-5 py-3 rounded-xl bg-slate-50 border border-slate-100 text-sm font-bold text-slate-600">
-                                            <i class="fas fa-check text-ikf-yellow mr-2"></i> Pune HQ
-                                        </div>
+                                        ${(introData.mission.badges || []).map(badge => `
+                                            <div class="px-5 py-3 rounded-xl bg-slate-50 border border-slate-100 text-sm font-bold text-slate-600">
+                                                <i class="fas fa-check text-ikf-yellow mr-2"></i> ${badge}
+                                            </div>
+                                        `).join('')}
                                     </div>
                                 </div>
                             </div>
@@ -357,8 +384,8 @@ window.AppNavigation = {
                                     </div>
                                     <div class="relative z-10">
                                         <p class="text-ikf-yellow font-bold uppercase tracking-wider text-xs mb-2">Strategies</p>
-                                        <h4 class="text-5xl font-extrabold mb-1">800+</h4>
-                                        <p class="text-blue-200 text-sm">Deployed Successfully</p>
+                                        <h4 class="text-5xl font-extrabold mb-1">${introData.stats.strategies.number}</h4>
+                                        <p class="text-blue-200 text-sm">${introData.stats.strategies.label}</p>
                                     </div>
                                 </div>
 
@@ -366,8 +393,8 @@ window.AppNavigation = {
                                 <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden flex-1 group hover:border-ikf-blue/30 transition-colors">
                                     <div class="relative z-10">
                                         <p class="text-slate-400 font-bold uppercase tracking-wider text-xs mb-2">Global Presence</p>
-                                        <h4 class="text-5xl font-extrabold text-slate-800 mb-1">1.5k+</h4>
-                                        <p class="text-slate-500 text-sm">Happy Clients</p>
+                                        <h4 class="text-5xl font-extrabold text-slate-800 mb-1">${introData.stats.clients.number}</h4>
+                                        <p class="text-slate-500 text-sm">${introData.stats.clients.label}</p>
                                     </div>
                                 </div>
                             </div>
@@ -376,7 +403,7 @@ window.AppNavigation = {
                         <!-- Footer Note (Subtle) -->
                         <div class="flex items-center gap-2 text-slate-400 text-xs font-medium pl-2">
                             <i class="fas fa-info-circle"></i>
-                            <p>Explore the sidebar to begin your induction journey.</p>
+                            <p>${introData.footer}</p>
                         </div>
                     </div>`;
 
@@ -566,112 +593,137 @@ window.AppNavigation = {
 
             case 'org-chart':
                 return `
-                    <div class="max-w-7xl mx-auto py-6 fade-in">
-                        <div class="mb-16">
-                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">System Architecture</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">The Ecosystem <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Hierarchy</span></h1>
+                    <div class="max-w-7xl mx-auto py-8 fade-in">
+                        <!-- Header -->
+                        <div class="mb-12 text-center">
+                            <span class="text-ikf-yellow font-bold uppercase tracking-[0.2em] text-xs mb-3 block">Our Structure</span>
+                            <h1 class="text-4xl md:text-5xl font-black text-slate-800 tracking-tight mb-4">
+                                How We're <span class="text-ikf-blue">Organized</span>
+                            </h1>
+                            <p class="text-slate-500 text-lg max-w-2xl mx-auto">
+                                A simple overview of our departments and what they do
+                            </p>
                         </div>
-                        
-                        <div class="bg-white p-12 lg:p-12 rounded-[3.5rem] premium-card overflow-x-auto min-h-[700px] flex justify-center">
-                            <div class="org-container relative pt-10 min-w-[800px]">
-                                <!-- Root Node -->
-                                <div class="flex justify-center mb-24">
-                                    <div class="org-node active group relative" data-dept="board">
-                                        <div class="org-node-inner p-6 bg-ikf-blue text-white rounded-[2rem] shadow-2xl border-2 border-ikf-yellow/30 text-center w-64 relative z-10 hover:scale-105 transition-transform">
-                                            <p class="text-[10px] text-ikf-yellow font-black uppercase tracking-widest mb-1">Steering</p>
-                                            <p class="text-lg font-black">Board of Directors</p>
-                                            <p class="text-[10px] opacity-50 uppercase font-bold mt-1">Strategic Command</p>
-                                        </div>
-                                        <div class="w-0.5 h-24 bg-gradient-to-b from-ikf-yellow to-ikf-blue absolute left-1/2 -bottom-24"></div>
+
+                        <!-- Leadership Section -->
+                        <div class="mb-12">
+                            <div class="bg-gradient-to-br from-ikf-blue to-slate-800 rounded-2xl p-8 text-white text-center shadow-lg">
+                                <div class="inline-flex items-center gap-3 mb-3">
+                                    <i class="fas fa-crown text-ikf-yellow text-2xl"></i>
+                                    <h2 class="text-2xl font-bold">Leadership Team</h2>
+                                </div>
+                                <p class="text-blue-200 text-sm max-w-xl mx-auto">
+                                    Our Board of Directors provides strategic guidance and vision for the company
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Departments Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            
+                            <!-- Web Development -->
+                            <div class="card-clean p-6 group">
+                                <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors">
+                                    <i class="fas fa-laptop-code text-2xl text-blue-600"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-slate-800 mb-2">Web Development</h3>
+                                <p class="text-sm text-slate-500 mb-4">Building high-performance websites and web applications</p>
+                                <div class="space-y-2">
+                                    <div class="text-xs text-slate-600 flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
+                                        <span>Website Design</span>
+                                    </div>
+                                    <div class="text-xs text-slate-600 flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
+                                        <span>E-Commerce</span>
+                                    </div>
+                                    <div class="text-xs text-slate-600 flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
+                                        <span>Maintenance</span>
                                     </div>
                                 </div>
+                            </div>
 
-                                <!-- Specialized Units -->
-                                <div class="flex justify-between gap-8 relative px-4">
-                                    <!-- Connection Line -->
-                                    <div class="absolute top-0 left-32 right-32 h-0.5 bg-ikf-blue/10"></div>
-                                    
-                                    <!-- Web Development -->
-                                    <div class="flex flex-col items-center w-52">
-                                        <div class="w-0.5 h-10 bg-ikf-blue/10"></div>
-                                        <div class="org-node group w-full" onclick="AppNavigation.toggleDept('web')">
-                                            <div class="org-node-inner p-5 bg-slate-50 border-2 border-transparent rounded-[1.5rem] group-hover:border-ikf-yellow group-hover:bg-white group-hover:shadow-xl transition-all text-center cursor-pointer relative overflow-hidden">
-                                                <i class="fas fa-laptop-code text-2xl text-ikf-blue mb-2 opacity-20 group-hover:opacity-100 transition-opacity"></i>
-                                                <p class="font-black text-ikf-blue uppercase text-[10px] tracking-wider">Web Development</p>
-                                                <div class="flex items-center justify-center gap-2 text-ikf-yellow pt-3 border-t border-slate-200/50 mt-2">
-                                                    <span class="text-[8px] font-black tracking-widest uppercase">Explore</span>
-                                                    <i class="fas fa-chevron-down text-[8px] transition-transform group-hover:rotate-180"></i>
-                                                </div>
-                                            </div>
-                                            <div id="dept-web" class="hidden mt-4 space-y-2">
-                                                <div class="p-2 bg-white rounded-lg text-[9px] font-bold text-slate-500 border border-slate-100 text-center shadow-sm animate-fadeIn">Website Designing</div>
-                                                <div class="p-2 bg-white rounded-lg text-[9px] font-bold text-slate-500 border border-slate-100 text-center shadow-sm animate-fadeIn">E-Commerce</div>
-                                                <div class="p-2 bg-white rounded-lg text-[9px] font-bold text-slate-500 border border-slate-100 text-center shadow-sm animate-fadeIn">Landing Pages</div>
-                                                <div class="p-2 bg-white rounded-lg text-[9px] font-bold text-slate-500 border border-slate-100 text-center shadow-sm animate-fadeIn">Maintenance</div>
-                                            </div>
-                                        </div>
+                            <!-- Digital Marketing -->
+                            <div class="card-clean p-6 group">
+                                <div class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-100 transition-colors">
+                                    <i class="fas fa-bullhorn text-2xl text-green-600"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-slate-800 mb-2">Digital Marketing</h3>
+                                <p class="text-sm text-slate-500 mb-4">Driving growth through strategic digital campaigns</p>
+                                <div class="space-y-2">
+                                    <div class="text-xs text-slate-600 flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
+                                        <span>Social Media</span>
                                     </div>
+                                    <div class="text-xs text-slate-600 flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
+                                        <span>SEO</span>
+                                    </div>
+                                    <div class="text-xs text-slate-600 flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
+                                        <span>Performance Marketing</span>
+                                    </div>
+                                </div>
+                            </div>
 
-                                    <!-- Digital Marketing -->
-                                    <div class="flex flex-col items-center w-52">
-                                        <div class="w-0.5 h-10 bg-ikf-blue/10"></div>
-                                        <div class="org-node group w-full" onclick="AppNavigation.toggleDept('marketing')">
-                                            <div class="org-node-inner p-5 bg-slate-50 border-2 border-transparent rounded-[1.5rem] group-hover:border-ikf-yellow group-hover:bg-white group-hover:shadow-xl transition-all text-center cursor-pointer relative overflow-hidden">
-                                                <i class="fas fa-bullhorn text-2xl text-ikf-blue mb-2 opacity-20 group-hover:opacity-100 transition-opacity"></i>
-                                                <p class="font-black text-ikf-blue uppercase text-[10px] tracking-wider">Digital Marketing</p>
-                                                <div class="flex items-center justify-center gap-2 text-ikf-yellow pt-3 border-t border-slate-200/50 mt-2">
-                                                    <span class="text-[8px] font-black tracking-widest uppercase">Explore</span>
-                                                    <i class="fas fa-chevron-down text-[8px] transition-transform group-hover:rotate-180"></i>
-                                                </div>
-                                            </div>
-                                            <div id="dept-marketing" class="hidden mt-4 space-y-2">
-                                                <div class="p-2 bg-white rounded-lg text-[9px] font-bold text-slate-500 border border-slate-100 text-center shadow-sm animate-fadeIn">Social Media</div>
-                                                <div class="p-2 bg-white rounded-lg text-[9px] font-bold text-slate-500 border border-slate-100 text-center shadow-sm animate-fadeIn">SEO</div>
-                                                <div class="p-2 bg-white rounded-lg text-[9px] font-bold text-slate-500 border border-slate-100 text-center shadow-sm animate-fadeIn">Performance Marketing</div>
-                                            </div>
-                                        </div>
+                            <!-- Branding & Creative -->
+                            <div class="card-clean p-6 group">
+                                <div class="w-14 h-14 bg-purple-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-100 transition-colors">
+                                    <i class="fas fa-palette text-2xl text-purple-600"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-slate-800 mb-2">Branding & Creative</h3>
+                                <p class="text-sm text-slate-500 mb-4">Creating compelling visual identities and content</p>
+                                <div class="space-y-2">
+                                    <div class="text-xs text-slate-600 flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
+                                        <span>Video Production</span>
                                     </div>
+                                    <div class="text-xs text-slate-600 flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
+                                        <span>Content Marketing</span>
+                                    </div>
+                                    <div class="text-xs text-slate-600 flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
+                                        <span>Corporate Branding</span>
+                                    </div>
+                                </div>
+                            </div>
 
-                                    <!-- Branding Collaterals -->
-                                    <div class="flex flex-col items-center w-52">
-                                        <div class="w-0.5 h-10 bg-ikf-blue/10"></div>
-                                        <div class="org-node group w-full" onclick="AppNavigation.toggleDept('branding')">
-                                            <div class="org-node-inner p-5 bg-slate-50 border-2 border-transparent rounded-[1.5rem] group-hover:border-ikf-yellow group-hover:bg-white group-hover:shadow-xl transition-all text-center cursor-pointer relative overflow-hidden">
-                                                <i class="fas fa-palette text-2xl text-ikf-blue mb-2 opacity-20 group-hover:opacity-100 transition-opacity"></i>
-                                                <p class="font-black text-ikf-blue uppercase text-[10px] tracking-wider">Branding Collaterals</p>
-                                                <div class="flex items-center justify-center gap-2 text-ikf-yellow pt-3 border-t border-slate-200/50 mt-2">
-                                                    <span class="text-[8px] font-black tracking-widest uppercase">Explore</span>
-                                                    <i class="fas fa-chevron-down text-[8px] transition-transform group-hover:rotate-180"></i>
-                                                </div>
-                                            </div>
-                                            <div id="dept-branding" class="hidden mt-4 space-y-2">
-                                                <div class="p-2 bg-white rounded-lg text-[9px] font-bold text-slate-500 border border-slate-100 text-center shadow-sm animate-fadeIn">Video Production</div>
-                                                <div class="p-2 bg-white rounded-lg text-[9px] font-bold text-slate-500 border border-slate-100 text-center shadow-sm animate-fadeIn">Content Marketing</div>
-                                                <div class="p-2 bg-white rounded-lg text-[9px] font-bold text-slate-500 border border-slate-100 text-center shadow-sm animate-fadeIn">Photoshoot</div>
-                                                <div class="p-2 bg-white rounded-lg text-[9px] font-bold text-slate-500 border border-slate-100 text-center shadow-sm animate-fadeIn">Corporate Kit</div>
-                                            </div>
-                                        </div>
+                            <!-- Application Development -->
+                            <div class="card-clean p-6 group">
+                                <div class="w-14 h-14 bg-orange-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-orange-100 transition-colors">
+                                    <i class="fas fa-server text-2xl text-orange-600"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-slate-800 mb-2">Application Development</h3>
+                                <p class="text-sm text-slate-500 mb-4">Custom software solutions for business needs</p>
+                                <div class="space-y-2">
+                                    <div class="text-xs text-slate-600 flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
+                                        <span>Cloud Telephony</span>
                                     </div>
+                                    <div class="text-xs text-slate-600 flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
+                                        <span>Task Management</span>
+                                    </div>
+                                    <div class="text-xs text-slate-600 flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
+                                        <span>Custom Apps</span>
+                                    </div>
+                                </div>
+                            </div>
 
-                                    <!-- Application Dev -->
-                                    <div class="flex flex-col items-center w-52">
-                                        <div class="w-0.5 h-10 bg-ikf-blue/10"></div>
-                                        <div class="org-node group w-full" onclick="AppNavigation.toggleDept('app')">
-                                            <div class="org-node-inner p-5 bg-slate-50 border-2 border-transparent rounded-[1.5rem] group-hover:border-ikf-yellow group-hover:bg-white group-hover:shadow-xl transition-all text-center cursor-pointer relative overflow-hidden">
-                                                <i class="fas fa-server text-2xl text-ikf-blue mb-2 opacity-20 group-hover:opacity-100 transition-opacity"></i>
-                                                <p class="font-black text-ikf-blue uppercase text-[10px] tracking-wider">Application Dev</p>
-                                                <div class="flex items-center justify-center gap-2 text-ikf-yellow pt-3 border-t border-slate-200/50 mt-2">
-                                                    <span class="text-[8px] font-black tracking-widest uppercase">Explore</span>
-                                                    <i class="fas fa-chevron-down text-[8px] transition-transform group-hover:rotate-180"></i>
-                                                </div>
-                                            </div>
-                                            <div id="dept-app" class="hidden mt-4 space-y-2">
-                                                <div class="p-2 bg-white rounded-lg text-[9px] font-bold text-slate-500 border border-slate-100 text-center shadow-sm animate-fadeIn">Cloud Telephony</div>
-                                                <div class="p-2 bg-white rounded-lg text-[9px] font-bold text-slate-500 border border-slate-100 text-center shadow-sm animate-fadeIn">Task Delegation</div>
-                                                <div class="p-2 bg-white rounded-lg text-[9px] font-bold text-slate-500 border border-slate-100 text-center shadow-sm animate-fadeIn">Custom App Dev</div>
-                                            </div>
-                                        </div>
-                                    </div>
+                        </div>
+
+                        <!-- Info Footer -->
+                        <div class="mt-12 p-6 bg-slate-50 rounded-xl border border-slate-200">
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-info-circle text-ikf-blue text-lg mt-0.5"></i>
+                                <div>
+                                    <h4 class="font-bold text-slate-800 mb-1 text-sm">How We Work Together</h4>
+                                    <p class="text-slate-600 text-sm leading-relaxed">
+                                        All departments collaborate closely to deliver comprehensive digital solutions. Our integrated approach ensures seamless project execution from strategy to deployment.
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -679,147 +731,112 @@ window.AppNavigation = {
 
             case 'departments':
                 return `
-                    <div class="max-w-7xl mx-auto py-6 fade-in">
-                        <div class="mb-16">
-                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Execution Engine</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">Our Specialized <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Units</span></h1>
-                            <p class="mt-4 text-slate-400 max-w-2xl">Explore our four pillars of digital excellence. Click on any specialized service to visit its dedicated page on our main website.</p>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-20">
-                            <!-- Unit 1: Web Development -->
-                            <div class="bg-white rounded-[2.5rem] premium-card overflow-hidden group hover:shadow-2xl hover:shadow-ikf-blue/10 transition-all duration-500 border border-slate-100/50">
-                                <div class="h-48 bg-slate-50 relative flex items-center justify-center overflow-hidden">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-ikf-blue opacity-0 group-hover:opacity-5 transition-opacity duration-500"></div>
-                                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-ikf-blue/5 rounded-full blur-2xl group-hover:bg-ikf-yellow/10 transition-colors duration-500"></div>
-                                    
-                                    <i class="fas fa-laptop-code text-6xl text-slate-200 group-hover:text-ikf-blue group-hover:scale-110 transition-all duration-500"></i>
-                                    <div class="absolute bottom-4 left-6 px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-[9px] font-black uppercase tracking-widest text-slate-400 border border-slate-100">Unit 01</div>
-                                    <a href="https://www.ikf.co.in/website-development-company-pune/" target="_blank" class="absolute top-4 right-6 w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-300 hover:text-white hover:bg-ikf-blue transition-all shadow-sm group/link transform translate-x-12 group-hover:translate-x-0" title="Visit Web Dev Page">
-                                        <i class="fas fa-external-link-alt text-xs"></i>
-                                    </a>
-                                </div>
-                                <div class="p-10 relative">
-                                    <h3 class="text-2xl font-black text-ikf-blue mb-3 group-hover:text-ikf-yellow transition-colors">Web Development</h3>
-                                    <p class="text-slate-500 text-sm leading-relaxed mb-6 line-clamp-2">High-performance custom websites. We build digital assets that don't just exist but perform, ensuring speed, security, and scalability.</p>
-                                    
-                                    <div class="space-y-4">
-                                        <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Quick Access Modules</p>
-                                        <div class="flex flex-wrap gap-2">
-                                            <a href="https://www.ikf.co.in/web-design-company-pune/" target="_blank" class="px-4 py-2 bg-slate-50 hover:bg-ikf-blue hover:text-white rounded-xl text-[10px] font-bold text-slate-500 transition-all border border-slate-100 flex items-center gap-2 group/tag">
-                                                Website Design <i class="fas fa-arrow-right opacity-0 group-hover/tag:opacity-100 -ml-2 group-hover/tag:ml-0 transition-all"></i>
-                                            </a>
-                                            <a href="https://www.ikf.co.in/e-commerce-website-development-company-pune/" target="_blank" class="px-4 py-2 bg-slate-50 hover:bg-ikf-blue hover:text-white rounded-xl text-[10px] font-bold text-slate-500 transition-all border border-slate-100 flex items-center gap-2 group/tag">
-                                                E-Commerce <i class="fas fa-arrow-right opacity-0 group-hover/tag:opacity-100 -ml-2 group-hover/tag:ml-0 transition-all"></i>
-                                            </a>
-                                            <a href="https://www.ikf.co.in/website-maintenance-services-pune/" target="_blank" class="px-4 py-2 bg-slate-50 hover:bg-ikf-blue hover:text-white rounded-xl text-[10px] font-bold text-slate-500 transition-all border border-slate-100 flex items-center gap-2 group/tag">
-                                                Maintenance <i class="fas fa-arrow-right opacity-0 group-hover/tag:opacity-100 -ml-2 group-hover/tag:ml-0 transition-all"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Unit 2: Digital Marketing -->
-                            <div class="bg-white rounded-[2.5rem] premium-card overflow-hidden group hover:shadow-2xl hover:shadow-ikf-blue/10 transition-all duration-500 border border-slate-100/50">
-                                <div class="h-48 bg-slate-50 relative flex items-center justify-center overflow-hidden">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-ikf-blue opacity-0 group-hover:opacity-5 transition-opacity duration-500"></div>
-                                    <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-purple-500/5 rounded-full blur-2xl group-hover:bg-ikf-yellow/10 transition-colors duration-500"></div>
-
-                                    <i class="fas fa-bullhorn text-6xl text-slate-200 group-hover:text-ikf-blue group-hover:scale-110 transition-all duration-500"></i>
-                                    <div class="absolute bottom-4 left-6 px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-[9px] font-black uppercase tracking-widest text-slate-400 border border-slate-100">Unit 02</div>
-                                    <a href="https://www.ikf.co.in/digital-marketing-company-pune/" target="_blank" class="absolute top-4 right-6 w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-300 hover:text-white hover:bg-ikf-blue transition-all shadow-sm group/link transform translate-x-12 group-hover:translate-x-0" title="Visit Digital Marketing Page">
-                                        <i class="fas fa-external-link-alt text-xs"></i>
-                                    </a>
-                                </div>
-                                <div class="p-10 relative">
-                                    <h3 class="text-2xl font-black text-ikf-blue mb-3 group-hover:text-ikf-yellow transition-colors">Digital Marketing</h3>
-                                    <p class="text-slate-500 text-sm leading-relaxed mb-6 line-clamp-2">Data-driven growth strategies. From SEO to Social Media, we ensure your brand reaches the right audience at the right time.</p>
-                                    
-                                    <div class="space-y-4">
-                                        <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Quick Access Modules</p>
-                                        <div class="flex flex-wrap gap-2">
-                                            <a href="https://www.ikf.co.in/seo-company-pune/" target="_blank" class="px-4 py-2 bg-slate-50 hover:bg-ikf-blue hover:text-white rounded-xl text-[10px] font-bold text-slate-500 transition-all border border-slate-100 flex items-center gap-2 group/tag">
-                                                SEO <i class="fas fa-arrow-right opacity-0 group-hover/tag:opacity-100 -ml-2 group-hover/tag:ml-0 transition-all"></i>
-                                            </a>
-                                            <a href="https://www.ikf.co.in/social-media-marketing-services-pune/" target="_blank" class="px-4 py-2 bg-slate-50 hover:bg-ikf-blue hover:text-white rounded-xl text-[10px] font-bold text-slate-500 transition-all border border-slate-100 flex items-center gap-2 group/tag">
-                                                Social Media <i class="fas fa-arrow-right opacity-0 group-hover/tag:opacity-100 -ml-2 group-hover/tag:ml-0 transition-all"></i>
-                                            </a>
-                                            <a href="https://www.ikf.co.in/ppc-management-services-company-in-pune/" target="_blank" class="px-4 py-2 bg-slate-50 hover:bg-ikf-blue hover:text-white rounded-xl text-[10px] font-bold text-slate-500 transition-all border border-slate-100 flex items-center gap-2 group/tag">
-                                                Performance Ads <i class="fas fa-arrow-right opacity-0 group-hover/tag:opacity-100 -ml-2 group-hover/tag:ml-0 transition-all"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Unit 3: Branding Collaterals -->
-                            <div class="bg-white rounded-[2.5rem] premium-card overflow-hidden group hover:shadow-2xl hover:shadow-ikf-blue/10 transition-all duration-500 border border-slate-100/50">
-                                <div class="h-48 bg-slate-50 relative flex items-center justify-center overflow-hidden">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-ikf-blue opacity-0 group-hover:opacity-5 transition-opacity duration-500"></div>
-                                    <div class="absolute -right-10 top-0 w-40 h-40 bg-pink-500/5 rounded-full blur-2xl group-hover:bg-ikf-yellow/10 transition-colors duration-500"></div>
-
-                                    <i class="fas fa-palette text-6xl text-slate-200 group-hover:text-ikf-blue group-hover:scale-110 transition-all duration-500"></i>
-                                    <div class="absolute bottom-4 left-6 px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-[9px] font-black uppercase tracking-widest text-slate-400 border border-slate-100">Unit 03</div>
-                                    <a href="https://www.ikf.co.in/branding-collaterals/" target="_blank" class="absolute top-4 right-6 w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-300 hover:text-white hover:bg-ikf-blue transition-all shadow-sm group/link transform translate-x-12 group-hover:translate-x-0" title="Visit Branding Page">
-                                        <i class="fas fa-external-link-alt text-xs"></i>
-                                    </a>
-                                </div>
-                                <div class="p-10 relative">
-                                    <h3 class="text-2xl font-black text-ikf-blue mb-3 group-hover:text-ikf-yellow transition-colors">Branding Collaterals</h3>
-                                    <p class="text-slate-500 text-sm leading-relaxed mb-6 line-clamp-2">Visual storytelling that captivates. From corporate kits to high-end video production, we define how the world sees your brand.</p>
-                                    
-                                    <div class="space-y-4">
-                                        <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Quick Access Modules</p>
-                                        <div class="flex flex-wrap gap-2">
-                                            <a href="https://www.ikf.co.in/video-production-services-company/" target="_blank" class="px-4 py-2 bg-slate-50 hover:bg-ikf-blue hover:text-white rounded-xl text-[10px] font-bold text-slate-500 transition-all border border-slate-100 flex items-center gap-2 group/tag">
-                                                Video Production <i class="fas fa-arrow-right opacity-0 group-hover/tag:opacity-100 -ml-2 group-hover/tag:ml-0 transition-all"></i>
-                                            </a>
-                                            <a href="https://www.ikf.co.in/corporate-photoshoot-services/" target="_blank" class="px-4 py-2 bg-slate-50 hover:bg-ikf-blue hover:text-white rounded-xl text-[10px] font-bold text-slate-500 transition-all border border-slate-100 flex items-center gap-2 group/tag">
-                                                Photoshoot <i class="fas fa-arrow-right opacity-0 group-hover/tag:opacity-100 -ml-2 group-hover/tag:ml-0 transition-all"></i>
-                                            </a>
-                                            <a href="https://www.ikf.co.in/corporate-kit-and-branding-solutions/" target="_blank" class="px-4 py-2 bg-slate-50 hover:bg-ikf-blue hover:text-white rounded-xl text-[10px] font-bold text-slate-500 transition-all border border-slate-100 flex items-center gap-2 group/tag">
-                                                Corporate Kit <i class="fas fa-arrow-right opacity-0 group-hover/tag:opacity-100 -ml-2 group-hover/tag:ml-0 transition-all"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Unit 4: Application Development -->
-                            <div class="bg-white rounded-[2.5rem] premium-card overflow-hidden group hover:shadow-2xl hover:shadow-ikf-blue/10 transition-all duration-500 border border-slate-100/50">
-                                <div class="h-48 bg-slate-50 relative flex items-center justify-center overflow-hidden">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-ikf-blue opacity-0 group-hover:opacity-5 transition-opacity duration-500"></div>
-                                    <div class="absolute -left-10 top-10 w-40 h-40 bg-indigo-500/5 rounded-full blur-2xl group-hover:bg-ikf-yellow/10 transition-colors duration-500"></div>
-
-                                    <i class="fas fa-server text-6xl text-slate-200 group-hover:text-ikf-blue group-hover:scale-110 transition-all duration-500"></i>
-                                    <div class="absolute bottom-4 left-6 px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-[9px] font-black uppercase tracking-widest text-slate-400 border border-slate-100">Unit 04</div>
-                                    <a href="https://www.ikf.co.in/web-application-development-company/" target="_blank" class="absolute top-4 right-6 w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-300 hover:text-white hover:bg-ikf-blue transition-all shadow-sm group/link transform translate-x-12 group-hover:translate-x-0" title="Visit App Dev Page">
-                                        <i class="fas fa-external-link-alt text-xs"></i>
-                                    </a>
-                                </div>
-                                <div class="p-10 relative">
-                                    <h3 class="text-2xl font-black text-ikf-blue mb-3 group-hover:text-ikf-yellow transition-colors">Application Dev</h3>
-                                    <p class="text-slate-500 text-sm leading-relaxed mb-6 line-clamp-2">Enterprise-grade solutions. Empowering businesses with custom web apps, cloud telephony, and automated workflows.</p>
-                                    
-                                    <div class="space-y-4">
-                                        <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Quick Access Modules</p>
-                                        <div class="flex flex-wrap gap-2">
-                                            <a href="https://www.ikf.co.in/web-application-development-agency/" target="_blank" class="px-4 py-2 bg-slate-50 hover:bg-ikf-blue hover:text-white rounded-xl text-[10px] font-bold text-slate-500 transition-all border border-slate-100 flex items-center gap-2 group/tag">
-                                                Custom Web Apps <i class="fas fa-arrow-right opacity-0 group-hover/tag:opacity-100 -ml-2 group-hover/tag:ml-0 transition-all"></i>
-                                            </a>
-                                            <a href="#" class="px-4 py-2 bg-slate-50 hover:bg-ikf-blue hover:text-white rounded-xl text-[10px] font-bold text-slate-500 transition-all border border-slate-100 flex items-center gap-2 group/tag cursor-not-allowed opacity-60">
-                                                Cloud Telephony <i class="fas fa-lock text-[8px] opacity-0 group-hover/tag:opacity-100 -ml-2 group-hover/tag:ml-0 transition-all"></i>
-                                            </a>
-                                            <a href="#" class="px-4 py-2 bg-slate-50 hover:bg-ikf-blue hover:text-white rounded-xl text-[10px] font-bold text-slate-500 transition-all border border-slate-100 flex items-center gap-2 group/tag cursor-not-allowed opacity-60">
-                                                Task Automation <i class="fas fa-lock text-[8px] opacity-0 group-hover/tag:opacity-100 -ml-2 group-hover/tag:ml-0 transition-all"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="max-w-7xl mx-auto py-8 fade-in">
+                        <!-- Header -->
+                        <div class="mb-12 text-center">
+                            <span class="text-ikf-yellow font-bold uppercase tracking-[0.2em] text-xs mb-3 block">Global Impact</span>
+                            <h1 class="text-4xl md:text-5xl font-black text-slate-800 tracking-tight mb-4">
+                                Our <span class="text-ikf-blue">Client Showcase</span>
+                            </h1>
+                            <p class="text-slate-500 text-lg max-w-2xl mx-auto">
+                                We partner with leading national and global brands to create powerful, insight-driven digital experiences.
+                            </p>
                         </div>
 
+                        <!-- Client Categories -->
+                        <div class="space-y-16">
+                            
+                            <!-- Category: Automotive & Industrial -->
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800 mb-8 flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fas fa-car-side"></i></span>
+                                    Automotive & Industrial
+                                </h3>
+                                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                                    ${[
+                        { name: 'Tata Autocomp', logo: 'https://www.ikf.co.in/wp-content/uploads/TataAutoComp.jpg' },
+                        { name: 'Mercedes-Benz School', logo: 'https://www.ikf.co.in/wp-content/uploads/MercedesBenzSchool.jpg' },
+                        { name: 'Force Motors', logo: 'https://www.ikf.co.in/wp-content/uploads/force-motors-logo.jpg' },
+                        { name: 'Kalyani Group', logo: 'https://www.ikf.co.in/wp-content/uploads/Kalyani2.jpg' },
+                        { name: 'Kirloskar', logo: 'https://www.ikf.co.in/wp-content/uploads/Kirloskar.jpg' }
+                    ].map(client => `
+                                        <div class="card-clean p-6 flex flex-col items-center justify-center text-center group hover:border-blue-200 transition-all h-40">
+                                            <div class="h-16 flex items-center justify-center mb-4">
+                                                <img src="${client.logo}" alt="${client.name}" class="h-full w-auto object-contain mix-blend-multiply">
+                                            </div>
+                                            <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest leading-tight">${client.name}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Category: Education & Institutions -->
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800 mb-8 flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center"><i class="fas fa-graduation-cap"></i></span>
+                                    Education & Culture
+                                </h3>
+                                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                                    ${[
+                        { name: 'Symbiosis', logo: 'https://www.ikf.co.in/wp-content/uploads/Symbiosis.jpg' },
+                        { name: 'MIT School', logo: 'https://www.ikf.co.in/wp-content/uploads/MITSchool.jpg' },
+                        { name: 'MIT-WPU', logo: 'https://www.ikf.co.in/wp-content/uploads/MIT-WPU-1.jpg' },
+                        { name: 'MITCON', logo: 'https://www.ikf.co.in/wp-content/uploads/MITCON.jpg' },
+                        { name: 'MIT ADT', logo: 'https://www.ikf.co.in/wp-content/uploads/MIT-ADT-1.jpg' }
+                    ].map(client => `
+                                        <div class="card-clean p-6 flex flex-col items-center justify-center text-center group hover:border-indigo-200 transition-all h-40">
+                                             <div class="h-16 flex items-center justify-center mb-4">
+                                                <img src="${client.logo}" alt="${client.name}" class="h-full w-auto object-contain mix-blend-multiply">
+                                            </div>
+                                            <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest leading-tight">${client.name}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Category: Tech & Enterprise -->
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800 mb-8 flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center"><i class="fas fa-microchip"></i></span>
+                                    Tech & Innovation
+                                </h3>
+                                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                                    ${[
+                        { name: 'Persistent', logo: 'https://www.ikf.co.in/wp-content/uploads/Persistent.jpg' },
+                        { name: 'Bharat Electronics', logo: 'https://www.ikf.co.in/wp-content/uploads/BharatElectronics.jpg' },
+                        { name: 'Poonawalla Group', logo: 'https://www.ikf.co.in/wp-content/uploads/poonawalla-group-jpg.webp' },
+                        { name: 'Mindgate', logo: 'https://www.ikf.co.in/wp-content/uploads/Mindgate.jpg' },
+                        { name: 'ARAI', logo: 'https://www.ikf.co.in/wp-content/uploads/ARAI-1.jpg' }
+                    ].map(client => `
+                                        <div class="card-clean p-6 flex flex-col items-center justify-center text-center group hover:border-emerald-200 transition-all h-40">
+                                             <div class="h-16 flex items-center justify-center mb-4">
+                                                <img src="${client.logo}" alt="${client.name}" class="h-full w-auto object-contain mix-blend-multiply">
+                                            </div>
+                                            <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest leading-tight">${client.name}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Stats Footer -->
+                        <div class="mt-20 p-12 bg-gradient-to-br from-ikf-blue to-slate-900 rounded-[3rem] text-white shadow-xl relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                            <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+                                <div>
+                                    <p class="text-5xl font-black text-ikf-yellow mb-2">1500+</p>
+                                    <p class="text-xs font-bold uppercase tracking-[0.2em] opacity-60">Global Brands</p>
+                                </div>
+                                <div class="md:border-x border-white/10 md:px-12">
+                                    <p class="text-5xl font-black text-ikf-yellow mb-2">25+</p>
+                                    <p class="text-xs font-bold uppercase tracking-[0.2em] opacity-60">Years Excellence</p>
+                                </div>
+                                <div>
+                                    <p class="text-5xl font-black text-ikf-yellow mb-2">Pune</p>
+                                    <p class="text-xs font-bold uppercase tracking-[0.2em] opacity-60">Innovation Hub</p>
+                                </div>
+                            </div>
                         </div>
                     </div>`;
 
@@ -829,29 +846,38 @@ window.AppNavigation = {
                     this.initEmployees();
                 }
 
+                const dirData = this.contentData?.directory || {
+                    badge: "Live Neural Network",
+                    title: "The Collective.",
+                    description: `Accessing biosignatures of ${this.employees ? this.employees.length : '60+'} active agents operating across the IKF ecosystem.`,
+                    stats: [
+                        { label: "Active", value: "100", suffix: "%" },
+                        { label: "Depts", value: "05", suffix: "" }
+                    ],
+                    searchPlaceholder: "Scan for agent name or clearance level..."
+                };
+
                 return `
                     <div class="max-w-7xl mx-auto py-6 fade-in">
                         <!--Creative Header / Dashboard-->
                         <div class="mb-16">
                             <div class="flex flex-col md:flex-row items-end justify-between gap-8 mb-10">
                                 <div>
-                                    <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block animate-pulse">Live Neural Network</span>
+                                    <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block animate-pulse">${dirData.badge}</span>
                                     <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tighter leading-none mb-2">
-                                        The <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Collective.</span>
+                                        ${dirData.title.replace('Collective.', '<span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Collective.</span>')}
                                     </h1>
-                                    <p class="text-slate-400 font-medium max-w-xl text-sm">Accessing biosignatures of ${this.employees ? this.employees.length : '60+'} active agents operating across the IKF ecosystem.</p>
+                                    <p class="text-slate-400 font-medium max-w-xl text-sm">${dirData.description}</p>
                                 </div>
                                 
                                 <!-- Live Stats Ticker -->
                                 <div class="flex gap-4">
-                                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-lg text-center min-w-[100px] hover:-translate-y-1 transition-transform">
-                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Active</p>
-                                        <p class="text-2xl font-black text-ikf-blue">100<span class="text-sm align-top">%</span></p>
-                                    </div>
-                                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-lg text-center min-w-[100px] hover:-translate-y-1 transition-transform">
-                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Depts</p>
-                                        <p class="text-2xl font-black text-ikf-yellow">05</p>
-                                    </div>
+                                    ${(dirData.stats || []).map(stat => `
+                                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-lg text-center min-w-[100px] hover:-translate-y-1 transition-transform">
+                                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">${stat.label}</p>
+                                            <p class="text-2xl font-black text-ikf-blue">${stat.value}<span class="text-sm align-top">${stat.suffix}</span></p>
+                                        </div>
+                                    `).join('')}
                                 </div>
                             </div>
 
@@ -864,7 +890,7 @@ window.AppNavigation = {
                                     </div>
                                     <input type="text" id="directory-search" 
                                         class="block w-full pl-14 pr-6 py-4 bg-slate-50 border-2 border-transparent rounded-3xl text-sm font-bold text-slate-700 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-ikf-blue/20 focus:ring-4 focus:ring-ikf-blue/5 transition-all" 
-                                        placeholder="Scan for agent name or clearance level..." 
+                                        placeholder="${dirData.searchPlaceholder}" 
                                         oninput="AppNavigation.filterDirectory()">
                                     <div class="absolute inset-y-0 right-4 flex items-center">
                                         <span class="px-2 py-1 bg-white rounded-lg text-[10px] font-bold text-slate-300 border border-slate-100 shadow-sm">CTRL + K</span>
@@ -899,76 +925,73 @@ window.AppNavigation = {
                         </div>
 
                         <!--Dynamic Grid-->
-                    <div id="directory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 px-4 sm:px-0">
-                        <!-- Content will be injected by renderDirectory() -->
-                    </div>
-
+                        <div id="directory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 px-4 sm:px-0">
+                            <!-- Content will be injected by renderDirectoryGrid() -->
                         </div>
                     </div>`;
 
             case 'philosophy':
+                const philData = this.contentData?.philosophy || {
+                    badge: "Core Directives",
+                    title: "I • K • F",
+                    subtitle: "The DNA of Our Identity",
+                    pillars: [
+                        { id: "I", title: "Innovation", content: "Obsessive curiosity. We don't just use technology; we blend AI-refined strategies with a human lens to solve business challenges." },
+                        { id: "K", title: "Knowledge", content: "Synthesized wisdom. Over 25 years of mastery in digital ecosystems fuels our strategic consultations and execution." },
+                        { id: "F", title: "Factory", content: "Precision at scale. Our industrialized processes ensure high-impact delivery for 1500+ global clients." }
+                    ]
+                };
                 return `
                     <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
-                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Core Directives</span>
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${philData.badge}</span>
                             <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tighter leading-none mb-4">
-                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">I • K • F</span> <br/><span class="text-slate-400 text-2xl md:text-3xl font-light">The DNA of Our Identity</span>
+                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">${philData.title}</span> <br/><span class="text-slate-400 text-2xl md:text-3xl font-light">${philData.subtitle}</span>
                             </h1>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-20">
-                            <!-- Innovation -->
-                            <div class="premium-card bg-white p-12 group overflow-hidden relative">
-                                <div class="absolute -top-10 -right-10 text-[120px] font-black text-slate-50 group-hover:text-ikf-blue/5 transition-colors">I</div>
-                                <div class="relative z-10">
-                                    <div class="w-16 h-16 bg-ikf-blue text-white rounded-[1.5rem] flex items-center justify-center font-black text-3xl mb-8 shadow-xl shadow-ikf-blue/20">I</div>
-                                    <h3 class="text-2xl font-black text-ikf-blue mb-4">Innovation</h3>
-                                    <p class="text-slate-500 leading-relaxed">
-                                        Obsessive curiosity. We don't just use technology; we blend AI-refined strategies with a human lens to solve business challenges.
-                                    </p>
+                            ${(philData.pillars || []).map(pillar => `
+                                <div class="premium-card bg-white p-12 group overflow-hidden relative">
+                                    <div class="absolute -top-10 -right-10 text-[120px] font-black text-slate-50 group-hover:text-ikf-blue/5 transition-colors">${pillar.id}</div>
+                                    <div class="relative z-10">
+                                        <div class="w-16 h-16 bg-ikf-blue text-white rounded-[1.5rem] flex items-center justify-center font-black text-3xl mb-8 shadow-xl shadow-ikf-blue/20">${pillar.id}</div>
+                                        <h3 class="text-2xl font-black text-ikf-blue mb-4">${pillar.title}</h3>
+                                        <p class="text-slate-500 leading-relaxed">${pillar.content}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- Knowledge -->
-                            <div class="premium-card bg-white p-12 group overflow-hidden relative">
-                                <div class="absolute -top-10 -right-10 text-[120px] font-black text-slate-50 group-hover:text-ikf-blue/5 transition-colors">K</div>
-                                <div class="relative z-10">
-                                    <div class="w-16 h-16 bg-ikf-blue text-white rounded-[1.5rem] flex items-center justify-center font-black text-3xl mb-8 shadow-xl shadow-ikf-blue/20">K</div>
-                                    <h3 class="text-2xl font-black text-ikf-blue mb-4">Knowledge</h3>
-                                    <p class="text-slate-500 leading-relaxed">
-                                        Synthesized wisdom. Over 25 years of mastery in digital ecosystems fuels our strategic consultations and execution.
-                                    </p>
-                                </div>
-                            </div>
-                            <!-- Factory -->
-                            <div class="premium-card bg-white p-12 group overflow-hidden relative">
-                                <div class="absolute -top-10 -right-10 text-[120px] font-black text-slate-50 group-hover:text-ikf-blue/5 transition-colors">F</div>
-                                <div class="relative z-10">
-                                    <div class="w-16 h-16 bg-ikf-blue text-white rounded-[1.5rem] flex items-center justify-center font-black text-3xl mb-8 shadow-xl shadow-ikf-blue/20">F</div>
-                                    <h3 class="text-2xl font-black text-ikf-blue mb-4">Factory</h3>
-                                    <p class="text-slate-500 leading-relaxed">
-                                        Precision at scale. Our industrialized processes ensure high-impact delivery for 1500+ global clients.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
+                            `).join('')}
                         </div>
                     </div>`;
 
             case 'mission':
+                const missData = this.contentData?.mission_vision || {
+                    badge: "Strategic Compass",
+                    title: "Mission & <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow\">Vision</span>",
+                    vision: { title: "The Vision", content: "\"To be a globally respected, multidisciplinary digital agency known for its commitment to excellence and innovation.\"" },
+                    mission: { title: "The Mission", content: "\"To unlock the full growth potential of brands by pioneering new approaches and delivering high-impact digital solutions.\"" },
+                    valuesTitle: "Our Core Values (T.R.I.I.I.P)",
+                    values: [
+                        { icon: "fa-search", title: "Transparent", desc: "Openness in all we do." },
+                        { icon: "fa-heart", title: "Respectful", desc: "Respect begets respect." },
+                        { icon: "fa-lightbulb", title: "Innovative", desc: "Challenge the norm." },
+                        { icon: "fa-bolt", title: "Inspired", desc: "Inspired & Inspiring." },
+                        { icon: "fa-user-tie", title: "Professional", desc: "Excellence in delivery." }
+                    ]
+                };
                 return `
                     <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
-                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Strategic Compass</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">Mission & <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Vision</span></h1>
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${missData.badge}</span>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${missData.title}</h1>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20">
                             <div class="bg-white p-12 lg:p-16 rounded-[3rem] premium-card relative overflow-hidden group">
                                 <div class="absolute top-0 right-0 p-8 opacity-5 transform group-hover:scale-110 transition-transform"><i class="fas fa-eye text-[120px] text-ikf-blue"></i></div>
-                                <h3 class="text-3xl font-black text-ikf-blue mb-6">The Vision</h3>
+                                <h3 class="text-3xl font-black text-ikf-blue mb-6">${missData.vision.title}</h3>
                                 <p class="text-slate-500 text-lg leading-relaxed italic">
-                                    "To be a globally respected, multidisciplinary digital agency known for its commitment to excellence and innovation."
+                                    ${missData.vision.content}
                                 </p>
                                 <div class="mt-10 flex items-center gap-4 text-ikf-yellow">
                                     <div class="h-px flex-1 bg-ikf-yellow/20"></div>
@@ -977,9 +1000,9 @@ window.AppNavigation = {
                             </div>
                             <div class="bg-ikf-blue p-12 lg:p-16 rounded-[3rem] premium-card relative overflow-hidden group text-white">
                                 <div class="absolute top-0 right-0 p-8 opacity-10 transform group-hover:scale-110 transition-transform"><i class="fas fa-rocket text-[120px] text-white"></i></div>
-                                <h3 class="text-3xl font-black mb-6">The Mission</h3>
+                                <h3 class="text-3xl font-black mb-6">${missData.mission.title}</h3>
                                 <p class="text-blue-100 text-lg leading-relaxed">
-                                    "To unlock the full growth potential of brands by pioneering new approaches and delivering high-impact digital solutions."
+                                    ${missData.mission.content}
                                 </p>
                                 <div class="mt-10 flex items-center gap-4 text-ikf-yellow">
                                     <div class="h-px flex-1 bg-white/10"></div>
@@ -989,147 +1012,145 @@ window.AppNavigation = {
                         </div>
 
                         <div class="bg-white p-12 lg:p-20 rounded-[4rem] premium-card mb-16">
-                            <h3 class="text-3xl font-black text-ikf-blue mb-12 text-center uppercase tracking-widest">Our Core Values (T.R.I.I.I.P)</h3>
+                            <h3 class="text-3xl font-black text-ikf-blue mb-12 text-center uppercase tracking-widest">${missData.valuesTitle}</h3>
                             <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
-                                <div class="text-center group">
-                                    <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-ikf-blue group-hover:text-white transition-all shadow-lg">
-                                        <i class="fas fa-search text-xl"></i>
+                                ${(missData.values || []).map(val => `
+                                    <div class="text-center group">
+                                        <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-ikf-blue group-hover:text-white transition-all shadow-lg">
+                                            <i class="fas ${val.icon} text-xl"></i>
+                                        </div>
+                                        <h4 class="font-black text-ikf-blue mb-1 text-sm">${val.title}</h4>
+                                        <p class="text-[10px] text-slate-400 font-medium">${val.desc}</p>
                                     </div>
-                                    <h4 class="font-black text-ikf-blue mb-1 text-sm">Transparent</h4>
-                                    <p class="text-[10px] text-slate-400 font-medium">Openness in all we do.</p>
-                                </div>
-                                <div class="text-center group">
-                                    <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-ikf-blue group-hover:text-white transition-all shadow-lg">
-                                        <i class="fas fa-heart text-xl"></i>
-                                    </div>
-                                    <h4 class="font-black text-ikf-blue mb-1 text-sm">Respectful</h4>
-                                    <p class="text-[10px] text-slate-400 font-medium">Respect begets respect.</p>
-                                </div>
-                                <div class="text-center group">
-                                    <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-ikf-blue group-hover:text-white transition-all shadow-lg">
-                                        <i class="fas fa-lightbulb text-xl"></i>
-                                    </div>
-                                    <h4 class="font-black text-ikf-blue mb-1 text-sm">Innovative</h4>
-                                    <p class="text-[10px] text-slate-400 font-medium">Challenge the norm.</p>
-                                </div>
-                                <div class="text-center group">
-                                    <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-ikf-blue group-hover:text-white transition-all shadow-lg">
-                                        <i class="fas fa-bolt text-xl"></i>
-                                    </div>
-                                    <h4 class="font-black text-ikf-blue mb-1 text-sm">Inspired</h4>
-                                    <p class="text-[10px] text-slate-400 font-medium">Inspired & Inspiring.</p>
-                                </div>
-                                <div class="text-center group">
-                                    <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-ikf-blue group-hover:text-white transition-all shadow-lg">
-                                        <i class="fas fa-user-tie text-xl"></i>
-                                    </div>
-                                    <h4 class="font-black text-ikf-blue mb-1 text-sm">Professional</h4>
-                                    <p class="text-[10px] text-slate-400 font-medium">Excellence in delivery.</p>
-                                </div>
+                                `).join('')}
                             </div>
-                        </div>
-
                         </div>
                     </div>`;
 
             case 'culture':
+                const cultData = this.contentData?.culture || {
+                    badge: "System Core",
+                    title: "The IKF Culture <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow\">Code</span>",
+                    subtitle: "Running on version 4.0. Optimized for high performance, creativity, and human-centric processing.",
+                    stats: [
+                        { icon: "fa-laugh-beam", value: "4.8", suffix: "/5", label: "Happiness Index", color: "blue" },
+                        { icon: "fa-pizza-slice", value: "52", suffix: "+", label: "Friday Parties", color: "yellow" },
+                        { icon: "fa-brain", value: "200", suffix: "h", label: "Learning / Yr", color: "purple" },
+                        { icon: "fa-seedling", value: "0", suffix: "%", label: "Boredom", color: "green" }
+                    ],
+                    mainValue: {
+                        title: "We Debug <br /><span class=\"text-ikf-yellow\">Problems</span>, Not People.",
+                        description: "In a high-pressure agency environment, we prioritize psychological safety. Mistakes are compile errors, not fatal crashes. We fix them together."
+                    },
+                    secondaryValues: [
+                        { icon: "fa-rocket", title: "Growth Mindset", desc: "Fail fast, learn faster.", color: "ikf-blue" },
+                        { icon: "fa-coffee", title: "Fuel Creativity", desc: "Caffeine & Ideas.", color: "ikf-yellow" }
+                    ],
+                    gallery: { title: "Life @ IKF", tag: "#TeamBonding", image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" }
+                };
                 return `
                     <div class="max-w-7xl mx-auto py-6 fade-in">
                         <div class="mb-16 text-center">
-                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">System Core</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">The IKF Culture <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Code</span></h1>
-                            <p class="text-slate-400 mt-4 max-w-2xl mx-auto text-sm font-medium">Running on version 4.0. Optimized for high performance, creativity, and human-centric processing.</p>
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${cultData.badge}</span>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${cultData.title}</h1>
+                            <p class="text-slate-400 mt-4 max-w-2xl mx-auto text-sm font-medium">${cultData.subtitle}</p>
                         </div>
 
                         <!--Culture Stats Grid-->
                         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-                            <div class="p-8 bg-white rounded-[2.5rem] shadow-lg hover:shadow-xl transition-all border border-slate-50 text-center group cursor-pointer hover:-translate-y-2">
-                                <div class="w-16 h-16 rounded-2xl bg-blue-50 text-ikf-blue flex items-center justify-center mx-auto mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-laugh-beam"></i></div>
-                                <h3 class="text-4xl font-black text-slate-800 mb-2">4.8<span class="text-lg text-slate-300">/5</span></h3>
-                                <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Happiness Index</p>
-                            </div>
-                            <div class="p-8 bg-white rounded-[2.5rem] shadow-lg hover:shadow-xl transition-all border border-slate-50 text-center group cursor-pointer hover:-translate-y-2">
-                                <div class="w-16 h-16 rounded-2xl bg-yellow-50 text-ikf-yellow flex items-center justify-center mx-auto mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-pizza-slice"></i></div>
-                                <h3 class="text-4xl font-black text-slate-800 mb-2">52<span class="text-lg text-slate-300">+</span></h3>
-                                <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Friday Parties</p>
-                            </div>
-                            <div class="p-8 bg-white rounded-[2.5rem] shadow-lg hover:shadow-xl transition-all border border-slate-50 text-center group cursor-pointer hover:-translate-y-2">
-                                <div class="w-16 h-16 rounded-2xl bg-purple-50 text-purple-500 flex items-center justify-center mx-auto mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-brain"></i></div>
-                                <h3 class="text-4xl font-black text-slate-800 mb-2">200<span class="text-lg text-slate-300">h</span></h3>
-                                <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Learning / Yr</p>
-                            </div>
-                            <div class="p-8 bg-white rounded-[2.5rem] shadow-lg hover:shadow-xl transition-all border border-slate-50 text-center group cursor-pointer hover:-translate-y-2">
-                                <div class="w-16 h-16 rounded-2xl bg-green-50 text-green-500 flex items-center justify-center mx-auto mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-seedling"></i></div>
-                                <h3 class="text-4xl font-black text-slate-800 mb-2">0<span class="text-lg text-slate-300">%</span></h3>
-                                <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Boredom</p>
-                            </div>
+                            ${(cultData.stats || []).map(stat => `
+                                <div class="p-8 bg-white rounded-[2.5rem] shadow-lg hover:shadow-xl transition-all border border-slate-50 text-center group cursor-pointer hover:-translate-y-2">
+                                    <div class="w-16 h-16 rounded-2xl bg-${stat.color}-50 text-${stat.color === 'ikf-blue' ? 'ikf-blue' : stat.color === 'ikf-yellow' ? 'ikf-yellow' : stat.color + '-500'} flex items-center justify-center mx-auto mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas ${stat.icon}"></i></div>
+                                    <h3 class="text-4xl font-black text-slate-800 mb-2">${stat.value}<span class="text-lg text-slate-300">${stat.suffix}</span></h3>
+                                    <p class="text-xs font-bold uppercase tracking-widest text-slate-400">${stat.label}</p>
+                                </div>
+                            `).join('')}
                         </div>
 
                         <!--Main Culture Modules-->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 h-[600px] md:h-auto">
-                        <!-- Left: Smart Values -->
-                        <div class="md:col-span-2 space-y-6">
-                            <div class="bg-gradient-to-br from-ikf-blue to-slate-900 rounded-[3rem] p-10 md:p-14 text-white relative overflow-hidden group">
-                                <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-ikf-yellow/20 transition-colors duration-700"></div>
-                                <div class="relative z-10">
-                                    <div class="flex items-center gap-4 mb-8">
-                                        <span class="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-mono border border-white/20">values.json</span>
-                                        <div class="h-[1px] flex-1 bg-white/10"></div>
-                                    </div>
-                                    <h3 class="text-3xl md:text-5xl font-black mb-6 leading-tight">We Debug <br /><span class="text-ikf-yellow">Problems</span>, Not People.</h3>
-                                    <p class="text-slate-300 max-w-lg text-sm leading-relaxed mb-8">In a high-pressure agency environment, we prioritize psychological safety. Mistakes are compile errors, not fatal crashes. We fix them together.</p>
-                                    <div class="flex gap-4">
-                                        <div class="flex -space-x-4">
-                                            <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-700"></div>
-                                            <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-600"></div>
-                                            <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-500 flex items-center justify-center text-[10px] font-bold">+</div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 h-[600px] md:h-auto">
+                            <!-- Left: Smart Values -->
+                            <div class="md:col-span-2 space-y-6">
+                                <div class="bg-gradient-to-br from-ikf-blue to-slate-900 rounded-[3rem] p-10 md:p-14 text-white relative overflow-hidden group">
+                                    <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-ikf-yellow/20 transition-colors duration-700"></div>
+                                    <div class="relative z-10">
+                                        <div class="flex items-center gap-4 mb-8">
+                                            <span class="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-mono border border-white/20">values.json</span>
+                                            <div class="h-[1px] flex-1 bg-white/10"></div>
                                         </div>
-                                        <div class="flex items-center gap-2 text-xs font-bold text-ikf-yellow">
-                                            <i class="fas fa-check-circle"></i>
-                                            <span>Collaboration Mode: Active</span>
+                                        <h3 class="text-3xl md:text-5xl font-black mb-6 leading-tight">${cultData.mainValue.title}</h3>
+                                        <p class="text-slate-300 max-w-lg text-sm leading-relaxed mb-8">${cultData.mainValue.description}</p>
+                                        <div class="flex gap-4">
+                                            <div class="flex -space-x-4">
+                                                <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-700"></div>
+                                                <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-600"></div>
+                                                <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-500 flex items-center justify-center text-[10px] font-bold">+</div>
+                                            </div>
+                                            <div class="flex items-center gap-2 text-xs font-bold text-ikf-yellow">
+                                                <i class="fas fa-check-circle"></i>
+                                                <span>Collaboration Mode: Active</span>
+                                            </div>
                                         </div>
                                     </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-6">
+                                    ${(cultData.secondaryValues || []).map(val => `
+                                        <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+                                            <i class="fas ${val.icon} text-3xl text-${val.color} mb-4 group-hover:scale-110 transition-transform block"></i>
+                                            <h4 class="font-black text-lg mb-2">${val.title}</h4>
+                                            <p class="text-xs text-slate-400">${val.desc}</p>
+                                        </div>
+                                    `).join('')}
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-6">
-                                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group">
-                                    <i class="fas fa-rocket text-3xl text-ikf-blue mb-4 group-hover:scale-110 transition-transform block"></i>
-                                    <h4 class="font-black text-lg mb-2">Growth Mindset</h4>
-                                    <p class="text-xs text-slate-400">Fail fast, learn faster.</p>
+                            <!-- Right: Life Gallery (Smart Vertical) -->
+                            <div class="bg-slate-50 rounded-[3rem] p-4 flex flex-col gap-4 overflow-hidden relative border border-slate-100">
+                                <div class="absolute top-8 left-8 z-10 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-black shadow-sm">
+                                    <i class="fas fa-camera text-ikf-blue mr-2"></i> ${cultData.gallery.title}
                                 </div>
-                                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group">
-                                    <i class="fas fa-coffee text-3xl text-ikf-yellow mb-4 group-hover:scale-110 transition-transform block"></i>
-                                    <h4 class="font-black text-lg mb-2">Fuel Creativity</h4>
-                                    <p class="text-xs text-slate-400">Caffeine & Ideas.</p>
+                                <div class="flex-1 rounded-[2.5rem] bg-cover bg-center" style="background-image: url('${cultData.gallery.image}');"></div>
+                                <div class="h-40 rounded-[2.5rem] bg-ikf-yellow/10 flex items-center justify-center relative overflow-hidden group cursor-pointer">
+                                    <div class="absolute inset-0 bg-ikf-yellow/80 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center">
+                                        <span class="text-white font-black uppercase text-xs tracking-widest">View Gallery</span>
+                                    </div>
+                                    <span class="text-ikf-blue/30 font-black text-xl rotate-12 group-hover:rotate-0 transition-transform">${cultData.gallery.tag}</span>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Right: Life Gallery (Smart Vertical) -->
-                        <div class="bg-slate-50 rounded-[3rem] p-4 flex flex-col gap-4 overflow-hidden relative border border-slate-100">
-                            <div class="absolute top-8 left-8 z-10 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-black shadow-sm">
-                                <i class="fas fa-camera text-ikf-blue mr-2"></i> Life @ IKF
-                            </div>
-                            <div class="flex-1 rounded-[2.5rem] bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
-                            <div class="h-40 rounded-[2.5rem] bg-ikf-yellow/10 flex items-center justify-center relative overflow-hidden group cursor-pointer">
-                                <div class="absolute inset-0 bg-ikf-yellow/80 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center">
-                                    <span class="text-white font-black uppercase text-xs tracking-widest">View Gallery</span>
-                                </div>
-                                <span class="text-ikf-blue/30 font-black text-xl rotate-12 group-hover:rotate-0 transition-transform">#TeamBonding</span>
-                            </div>
-                        </div>
-                    </div>
-                    </div >
-                    `;
+                    </div>`;
 
             case 'social':
+                const socData = this.contentData?.social || {
+                    badge: "Digital Command Center",
+                    title: "The <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow\">Ecosystem</span>",
+                    stats: [
+                        { platform: "LinkedIn", icon: "fa-linkedin-in", value: "25k", label: "Connections", trend: "12% vs last month", color: "#0077b5", url: "https://www.linkedin.com/company/i-knowledge-factory-pvt.-ltd./" },
+                        { platform: "Instagram", icon: "fa-instagram", value: "18k", label: "Followers", trend: "8.5% Engagement", color: "#E1306C", url: "https://www.instagram.com/ikfdigital/" },
+                        { platform: "Facebook", icon: "fa-facebook-f", value: "42k", label: "Community", trend: "Stable", color: "#1877F2", url: "https://www.facebook.com/IKFDigital/" },
+                        { platform: "YouTube", icon: "fa-youtube", value: "500k", label: "Views", trend: "New Viral Hit", color: "#FF0000", url: "https://www.youtube.com/c/IKFDigital" }
+                    ],
+                    featured: {
+                        badge: "Latest Transmission",
+                        title: "\"The Future of AI in Marketing\"",
+                        description: "Our Director, Ashish Dalia, breaks down how generative AI is reshaping the agency landscape. Watch the full keynote now.",
+                        linkText: "Watch Video",
+                        linkUrl: "https://www.youtube.com/c/IKFDigital",
+                        image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80"
+                    },
+                    feed: [
+                        { title: "IKF celebrates 23 years of excellence! 🎉", time: "2 hours ago", platform: "Instagram", image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" },
+                        { title: "We are hiring! Join our creative team. 🚀", time: "5 hours ago", platform: "LinkedIn", image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" },
+                        { title: "New case study: Rebranding a tech giant.", time: "1 day ago", platform: "Behance", image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" }
+                    ]
+                };
                 return `
                     <div class="max-w-7xl mx-auto py-6 fade-in">
                         <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
                             <div>
-                                <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Digital Command Center</span>
-                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">The <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Ecosystem</span></h1>
+                                <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${socData.badge}</span>
+                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${socData.title}</h1>
                             </div>
                             <div class="flex items-center gap-2 text-green-500 font-bold text-xs bg-green-50 px-4 py-2 rounded-full border border-green-100 animate-pulse">
                                 <div class="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -1139,75 +1160,37 @@ window.AppNavigation = {
 
                         <!--Live Stats Grid-->
                         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-                            <!-- LinkedIn -->
-                            <a href="https://www.linkedin.com/company/i-knowledge-factory-pvt.-ltd./" target="_blank" class="group bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all relative overflow-hidden">
-                                <div class="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-full -mr-8 -mt-8 group-hover:bg-[#0077b5] transition-colors duration-500"></div>
-                                <i class="fab fa-linkedin-in text-3xl mb-4 text-[#0077b5] group-hover:text-white relative z-10 transition-colors"></i>
-                                <div class="relative z-10">
-                                    <h3 class="text-3xl font-black text-slate-800 mb-1">25k<span class="text-sm font-bold text-slate-400">+</span></h3>
-                                    <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Connections</p>
-                                </div>
-                                <div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-green-500">
-                                    <i class="fas fa-arrow-up"></i> 12% vs last month
-                                </div>
-                            </a>
-
-                            <!-- Instagram -->
-                            <a href="https://www.instagram.com/ikfdigital/" target="_blank" class="group bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all relative overflow-hidden">
-                                <div class="absolute top-0 right-0 w-24 h-24 bg-pink-50 rounded-full -mr-8 -mt-8 group-hover:bg-[#E1306C] transition-colors duration-500"></div>
-                                <i class="fab fa-instagram text-3xl mb-4 text-[#E1306C] group-hover:text-white relative z-10 transition-colors"></i>
-                                <div class="relative z-10">
-                                    <h3 class="text-3xl font-black text-slate-800 mb-1">18k<span class="text-sm font-bold text-slate-400">+</span></h3>
-                                    <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Followers</p>
-                                </div>
-                                <div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-green-500">
-                                    <i class="fas fa-arrow-up"></i> 8.5% Engagement
-                                </div>
-                            </a>
-
-                            <!-- Facebook -->
-                            <a href="https://www.facebook.com/IKFDigital/" target="_blank" class="group bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all relative overflow-hidden">
-                                <div class="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-full -mr-8 -mt-8 group-hover:bg-[#1877F2] transition-colors duration-500"></div>
-                                <i class="fab fa-facebook-f text-3xl mb-4 text-[#1877F2] group-hover:text-white relative z-10 transition-colors"></i>
-                                <div class="relative z-10">
-                                    <h3 class="text-3xl font-black text-slate-800 mb-1">42k<span class="text-sm font-bold text-slate-400">+</span></h3>
-                                    <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Community</p>
-                                </div>
-                                <div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-slate-400">
-                                    <i class="fas fa-minus"></i> Stable
-                                </div>
-                            </a>
-
-                            <!-- YouTube -->
-                            <a href="https://www.youtube.com/c/IKFDigital" target="_blank" class="group bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all relative overflow-hidden">
-                                <div class="absolute top-0 right-0 w-24 h-24 bg-red-50 rounded-full -mr-8 -mt-8 group-hover:bg-[#FF0000] transition-colors duration-500"></div>
-                                <i class="fab fa-youtube text-3xl mb-4 text-[#FF0000] group-hover:text-white relative z-10 transition-colors"></i>
-                                <div class="relative z-10">
-                                    <h3 class="text-3xl font-black text-slate-800 mb-1">500<span class="text-sm font-bold text-slate-400">k</span></h3>
-                                    <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Views</p>
-                                </div>
-                                <div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-green-500">
-                                    <i class="fas fa-arrow-up"></i> New Viral Hit
-                                </div>
-                            </a>
+                            ${(socData.stats || []).map(stat => `
+                                <a href="${stat.url}" target="_blank" class="group bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all relative overflow-hidden">
+                                    <div class="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-full -mr-8 -mt-8 group-hover:bg-[${stat.color}] transition-colors duration-500"></div>
+                                    <i class="fab ${stat.icon} text-3xl mb-4 text-[${stat.color}] group-hover:text-white relative z-10 transition-colors"></i>
+                                    <div class="relative z-10">
+                                        <h3 class="text-3xl font-black text-slate-800 mb-1">${stat.value}<span class="text-sm text-slate-400 font-bold">+</span></h3>
+                                        <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">${stat.label}</p>
+                                    </div>
+                                    <div class="mt-4 flex items-center gap-2 text-[10px] font-bold ${stat.trend.includes('last month') || stat.trend.includes('Engagement') ? 'text-green-500' : 'text-slate-400'}">
+                                        <i class="fas ${stat.trend.includes('vs last month') || stat.trend.includes('Engagement') ? 'fa-arrow-up' : 'fa-minus'}"></i> ${stat.trend}
+                                    </div>
+                                </a>
+                            `).join('')}
                         </div>
 
                         <!--Recent Transmissions(Feed Simulation)-->
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20 md:h-96">
                         <!-- Featured Post -->
                         <div class="lg:col-span-2 bg-gradient-to-br from-slate-900 to-ikf-blue rounded-[3rem] p-10 text-white relative overflow-hidden group">
-                            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80')] bg-cover bg-center opacity-20 group-hover:scale-105 transition-transform duration-700"></div>
+                            <div class="absolute inset-0 bg-[url('${socData.featured.image}')] bg-cover bg-center opacity-20 group-hover:scale-105 transition-transform duration-700"></div>
                             <div class="absolute top-8 right-8 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/20">
-                                Latest Transmission
+                                ${socData.featured.badge}
                             </div>
                             <div class="relative z-10 h-full flex flex-col justify-end">
                                 <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-6">
                                     <i class="fas fa-play text-white ml-1"></i>
                                 </div>
-                                <h3 class="text-2xl md:text-4xl font-black leading-tight mb-4">"The Future of AI in Marketing"</h3>
-                                <p class="text-blue-100 max-w-lg text-sm leading-relaxed mb-8 line-clamp-2">Our Director, Ashish Dalia, breaks down how generative AI is reshaping the agency landscape. Watch the full keynote now.</p>
-                                <a href="https://www.youtube.com/c/IKFDigital" target="_blank" class="inline-flex items-center gap-3 text-xs font-bold uppercase tracking-widest hover:text-ikf-yellow transition-colors">
-                                    Watch Video <i class="fas fa-arrow-right"></i>
+                                <h3 class="text-2xl md:text-4xl font-black leading-tight mb-4">${socData.featured.title}</h3>
+                                <p class="text-blue-100 max-w-lg text-sm leading-relaxed mb-8 line-clamp-2">${socData.featured.description}</p>
+                                <a href="${socData.featured.linkUrl}" target="_blank" class="inline-flex items-center gap-3 text-xs font-bold uppercase tracking-widest hover:text-ikf-yellow transition-colors">
+                                    ${socData.featured.linkText} <i class="fas fa-arrow-right"></i>
                                 </a>
                             </div>
                         </div>
@@ -1216,240 +1199,149 @@ window.AppNavigation = {
                         <div class="bg-white rounded-[3rem] p-8 border border-slate-100 shadow-sm flex flex-col">
                             <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6">Recent Activity</h4>
                             <div class="flex-1 space-y-6 overflow-hidden">
-                                <div class="flex gap-4 group cursor-pointer">
-                                    <div class="w-12 h-12 rounded-xl bg-slate-100 flex-shrink-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80')"></div>
-                                    <div>
-                                        <p class="text-xs font-bold text-slate-700 leading-tight mb-1 group-hover:text-ikf-blue transition-colors">IKF celebrates 23 years of excellence! 🎉</p>
-                                        <p class="text-[10px] text-slate-400">2 hours ago • Instagram</p>
+                                ${(socData.feed || []).map(item => `
+                                    <div class="flex gap-4 group cursor-pointer">
+                                        <div class="w-12 h-12 rounded-xl bg-slate-100 flex-shrink-0 bg-cover bg-center" style="background-image: url('${item.image}')"></div>
+                                        <div>
+                                            <p class="text-xs font-bold text-slate-700 leading-tight mb-1 group-hover:text-ikf-blue transition-colors">${item.title}</p>
+                                            <p class="text-[10px] text-slate-400">${item.time} • ${item.platform}</p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="flex gap-4 group cursor-pointer">
-                                    <div class="w-12 h-12 rounded-xl bg-slate-100 flex-shrink-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80')"></div>
-                                    <div>
-                                        <p class="text-xs font-bold text-slate-700 leading-tight mb-1 group-hover:text-ikf-blue transition-colors">We are hiring! Join our creative team. 🚀</p>
-                                        <p class="text-[10px] text-slate-400">5 hours ago • LinkedIn</p>
-                                    </div>
-                                </div>
-                                <div class="flex gap-4 group cursor-pointer">
-                                    <div class="w-12 h-12 rounded-xl bg-slate-100 flex-shrink-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80')"></div>
-                                    <div>
-                                        <p class="text-xs font-bold text-slate-700 leading-tight mb-1 group-hover:text-ikf-blue transition-colors">New case study: Rebranding a tech giant.</p>
-                                        <p class="text-[10px] text-slate-400">1 day ago • Behance</p>
-                                    </div>
-                                </div>
+                                `).join('')}
                             </div>
                         </div>
                     </div>
+                </div>`;
 
+            case 'referral':
+                const refData = this.contentData?.referral || {
+                    badge: "Talent Acquisition Protocol",
+                    title: "The <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow\">Referral</span> Engine",
+                    subtitle: "Help us build the next generation of IKF. Your network is our greatest asset.",
+                    rewardHeading: "Tiered Rewards Program",
+                    rewards: [
+                        { icon: "fa-gift", amount: "₹5,000", label: "Junior Level", color: "blue" },
+                        { icon: "fa-crown", amount: "₹10,000", label: "Mid Level", color: "yellow" },
+                        { icon: "fa-gem", amount: "₹20,000", label: "Senior/Lead", color: "purple" }
+                    ],
+                    process: [
+                        { step: "01", title: "Identify", desc: "Spot a talent in your network." },
+                        { step: "02", title: "Submit", desc: "Share their CV via our portal." },
+                        { step: "03", title: "Track", desc: "Follow the interview progress." },
+                        { step: "04", title: "Earn", desc: "Get rewarded after 3 months." }
+                    ],
+                    cta: {
+                        title: "Ready to refer?",
+                        buttonText: "Open Referral Form",
+                        link: "https://forms.gle/referral-example"
+                    }
+                };
+                return `
+                    <div class="max-w-6xl mx-auto py-6 fade-in">
+                        <div class="mb-16">
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${refData.badge}</span>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight mb-4">${refData.title}</h1>
+                            <p class="text-slate-400 max-w-xl text-sm font-medium">${refData.subtitle}</p>
+                        </div>
+
+                        <!--Rewards Showcase-->
+                        <div class="bg-white rounded-[3rem] p-8 md:p-16 shadow-xl shadow-ikf-blue/5 border border-slate-50 mb-16 overflow-hidden relative">
+                            <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-ikf-yellow/5 rounded-full"></div>
+                            <h3 class="text-2xl font-black text-ikf-blue mb-12 flex items-center gap-4">
+                                ${refData.rewardHeading}
+                                <div class="h-px flex-1 bg-slate-100"></div>
+                            </h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                                ${(refData.rewards || []).map(reward => `
+                                    <div class="p-8 rounded-[2rem] bg-slate-50 border border-slate-100 group hover:bg-ikf-blue hover:text-white transition-all">
+                                        <i class="fas ${reward.icon} text-3xl text-ikf-yellow mb-6"></i>
+                                        <h4 class="text-4xl font-black mb-2">${reward.amount}</h4>
+                                        <p class="text-[10px] uppercase font-bold tracking-widest opacity-60">${reward.label}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!--Process Grid-->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-20">
+                            ${(refData.process || []).map(step => `
+                                <div class="bg-white p-8 rounded-[2rem] border border-slate-100 relative group overflow-hidden">
+                                    <span class="absolute -right-4 -top-4 text-7xl font-black text-slate-50 group-hover:text-ikf-blue/5 transition-colors">${step.step}</span>
+                                    <div class="relative z-10">
+                                        <h4 class="font-black text-ikf-blue mb-2">${step.title}</h4>
+                                        <p class="text-xs text-slate-400 font-medium">${step.desc}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <!--CTA Section-->
+                        <div class="bg-ikf-blue rounded-[3rem] p-12 text-center text-white relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-r from-ikf-blue to-slate-900 opacity-50"></div>
+                            <div class="relative z-10">
+                                <h3 class="text-3xl font-black mb-6">${refData.cta.title}</h3>
+                                <a href="${refData.cta.link}" target="_blank" class="inline-flex items-center gap-4 px-10 py-5 bg-ikf-yellow text-ikf-blue font-black uppercase tracking-widest text-sm rounded-2xl hover:scale-105 transition-transform shadow-xl shadow-ikf-yellow/20">
+                                    <i class="fas fa-paper-plane"></i> ${refData.cta.buttonText}
+                                </a>
+                            </div>
                         </div>
                     </div>`;
 
-            case 'referral':
-                return `
-                    <div class="max-w-6xl mx-auto py-6 fade-in">
-                        <div class="mb-16 text-center">
-                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Talent Acquisition Protocol</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">The Bounty <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Board</span></h1>
-                            <p class="text-slate-400 mt-4 max-w-lg mx-auto text-sm font-medium">Earn rewards by expanding our intelligence network. Quality over quantity.</p>
-                        </div>
-
-                        <!--Bounty Tiers-->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 px-4">
-                            <!-- Tier 1 -->
-                            <div class="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-xl hover:-translate-y-2 transition-transform duration-500 relative overflow-hidden group">
-                                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-100 transition-opacity">
-                                    <i class="fas fa-medal text-8xl text-indigo-100"></i>
-                                </div>
-                                <div class="relative z-10">
-                                    <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-6 text-2xl font-black">1</div>
-                                    <h3 class="text-2xl font-black text-slate-800 mb-2">Junior Agent</h3>
-                                    <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">0-2 Years Exp</p>
-                                    <div class="text-4xl font-black text-ikf-blue mb-1">₹5,000</div>
-                                    <p class="text-[10px] text-slate-400">Successfully Hired</p>
-                                </div>
-                                <div class="mt-8 pt-8 border-t border-slate-100">
-                                    <div class="flex items-center gap-3 text-xs font-bold text-slate-500">
-                                        <i class="fas fa-user-tag text-indigo-500"></i>
-                                        <span>exec / junior designer</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Tier 2 -->
-                            <div class="bg-gradient-to-br from-ikf-blue to-blue-900 rounded-[3rem] p-10 shadow-2xl hover:-translate-y-2 transition-transform duration-500 relative overflow-hidden group text-white transform md:scale-105 z-10 border-4 border-white">
-                                <div class="absolute top-0 right-0 p-6 opacity-20">
-                                    <i class="fas fa-star text-8xl text-white"></i>
-                                </div>
-                                <div class="relative z-10">
-                                    <span class="absolute top-0 right-0 bg-ikf-yellow text-ikf-blue text-[10px] font-black px-3 py-1 rounded-bl-xl uppercase tracking-widest">Most Popular</span>
-                                    <div class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-6 text-2xl font-black">2</div>
-                                    <h3 class="text-2xl font-black mb-2">Specialist</h3>
-                                    <p class="text-xs font-bold uppercase tracking-widest text-blue-200 mb-6">2-5 Years Exp</p>
-                                    <div class="text-5xl font-black text-ikf-yellow mb-1">₹15,000</div>
-                                    <p class="text-[10px] text-blue-200">Successfully Hired</p>
-                                </div>
-                                <div class="mt-8 pt-8 border-t border-white/10">
-                                    <div class="flex items-center gap-3 text-xs font-bold text-blue-100">
-                                        <i class="fas fa-user-shield text-ikf-yellow"></i>
-                                        <span>manager / lead dev</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Tier 3 -->
-                            <div class="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-xl hover:-translate-y-2 transition-transform duration-500 relative overflow-hidden group">
-                                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-100 transition-opacity">
-                                    <i class="fas fa-crown text-8xl text-yellow-100"></i>
-                                </div>
-                                <div class="relative z-10">
-                                    <div class="w-16 h-16 rounded-2xl bg-yellow-50 text-yellow-600 flex items-center justify-center mb-6 text-2xl font-black">3</div>
-                                    <h3 class="text-2xl font-black text-slate-800 mb-2">Architect</h3>
-                                    <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">5+ Years Exp</p>
-                                    <div class="text-4xl font-black text-ikf-blue mb-1">₹25,000</div>
-                                    <p class="text-[10px] text-slate-400">Successfully Hired</p>
-                                </div>
-                                <div class="mt-8 pt-8 border-t border-slate-100">
-                                    <div class="flex items-center gap-3 text-xs font-bold text-slate-500">
-                                        <i class="fas fa-chess-king text-yellow-500"></i>
-                                        <span>director / head</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!--Process Flow "Smart Path" -->
-                    <div class="bg-slate-50 rounded-[4rem] p-12 lg:p-16 relative overflow-hidden">
-                        <div class="absolute left-1/2 top-0 bottom-0 w-[1px] bg-slate-200 -translate-x-1/2 hidden md:block"></div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
-                            <div class="text-right pr-0 md:pr-12 md:pt-12">
-                                <div class="inline-block p-6 bg-white rounded-[2rem] shadow-lg mb-4 hover:scale-105 transition-transform">
-                                    <i class="fas fa-fingerprint text-3xl text-ikf-blue"></i>
-                                </div>
-                                <h3 class="text-xl font-black text-slate-800">1. Identify</h3>
-                                <p class="text-xs text-slate-500 mt-2 font-medium">Locate a candidate matching our cultural code.</p>
-                            </div>
-                            <div class="text-left pl-0 md:pl-12"></div>
-
-                            <div class="text-right pr-0 md:pr-12"></div>
-                            <div class="text-left pl-0 md:pl-12 md:pt-4">
-                                <div class="inline-block p-6 bg-white rounded-[2rem] shadow-lg mb-4 hover:scale-105 transition-transform">
-                                    <i class="fas fa-file-export text-3xl text-ikf-yellow"></i>
-                                </div>
-                                <h3 class="text-xl font-black text-slate-800">2. Submit</h3>
-                                <p class="text-xs text-slate-500 mt-2 font-medium">Forward coordinates (CV) to HR via secure channel.</p>
-                            </div>
-
-                            <div class="text-right pr-0 md:pr-12 md:pb-12">
-                                <div class="inline-block p-6 bg-white rounded-[2rem] shadow-lg mb-4 hover:scale-105 transition-transform">
-                                    <i class="fas fa-wallet text-3xl text-green-500"></i>
-                                </div>
-                                <h3 class="text-xl font-black text-slate-800">3. Reward</h3>
-                                <p class="text-xs text-slate-500 mt-2 font-medium">Payment released upon 3-month survival confirmation.</p>
-                            </div>
-                            <div class="text-left pl-0 md:pl-12"></div>
-                        </div>
-
-                        <!-- Central Node -->
-                        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-ikf-blue rounded-full border-4 border-white shadow-xl hidden md:block"></div>
-                        <div class="absolute left-1/2 top-[20%] -translate-x-1/2 w-4 h-4 bg-slate-300 rounded-full border-2 border-white hidden md:block"></div>
-                        <div class="absolute left-1/2 bottom-[20%] -translate-x-1/2 w-4 h-4 bg-slate-300 rounded-full border-2 border-white hidden md:block"></div>
-                    </div>
-                    </div > `;
-
             case 'anniversary':
+                const annivData = this.contentData?.anniversaries || {
+                    badge: "Legacy System",
+                    title: "Hall of <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow\">Fame</span>",
+                    totalExperience: "142",
+                    milestones: [
+                        { years: "10+", label: "Titan", title: "Founding Pillars", people: [{ name: "Ashish Dalia", role: "Founder", img: "images/avatars/ashish_real.jpg" }, { name: "Jayraj Mehta", role: "Director", img: "images/avatars/jayraj.png" }] },
+                        { years: "5+", label: "Core", title: "The Architects", people: [{ name: "Vikram Singh", role: "Sr. Strategist", img: "images/avatars/avatar_marketing_male.png" }] },
+                        { years: "1+", label: "Rising", title: "Rising Stars", people: [{ name: "Sneha Patel", role: "Designer", img: "images/avatars/avatar_creative_female.png" }, { name: "Rahul Verma", role: "Tech Lead", img: "images/avatars/avatar_dev_male.png" }] }
+                    ]
+                };
                 return `
                     <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16 flex flex-col md:flex-row items-center justify-between gap-8">
                             <div>
-                                <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Legacy System</span>
-                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">Hall of <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Fame</span></h1>
+                                <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${annivData.badge}</span>
+                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${annivData.title}</h1>
                             </div>
                             <div class="bg-slate-900 text-white px-8 py-4 rounded-[2rem] flex items-center gap-4 shadow-xl">
                                 <div class="text-right">
                                     <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Total Experience</p>
-                                    <p class="text-2xl font-black text-ikf-yellow">142<span class="text-sm text-white"> Years</span></p>
+                                    <p class="text-2xl font-black text-ikf-yellow">${annivData.totalExperience}<span class="text-sm text-white"> Years</span></p>
                                 </div>
                                 <i class="fas fa-hourglass-half text-3xl text-slate-700"></i>
                             </div>
                         </div>
 
-                        <!--Milestone Track-->
-                        <!--Smart Milestone Grid-->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-                            <!-- 10 Years -->
-                            <div class="p-8 bg-white rounded-[2.5rem] border border-slate-50 shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all group flex flex-col items-center text-center relative overflow-hidden">
-                                <div class="absolute inset-x-0 top-0 h-2 bg-slate-900"></div>
-                                <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6 text-slate-900 border-4 border-slate-900 relative">
-                                    <span class="text-3xl font-black">10+</span>
-                                    <div class="absolute -bottom-3 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Titan</div>
-                                </div>
-                                <h3 class="text-xl font-black text-slate-800 mb-4">Founding Pillars</h3>
-                                <div class="space-y-3 w-full">
-                                    <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
-                                        <img src="images/avatars/ashish_real.jpg" class="w-10 h-10 rounded-xl object-cover">
-                                        <div class="text-left">
-                                            <p class="text-xs font-bold">Ashish Dalia</p>
-                                            <p class="text-[9px] text-slate-400">Founder</p>
-                                        </div>
+                            ${(annivData.milestones || []).map(m => `
+                                <div class="p-8 bg-white rounded-[2.5rem] border border-slate-50 shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all group flex flex-col items-center text-center relative overflow-hidden">
+                                    <div class="absolute inset-x-0 top-0 h-2 bg-slate-900"></div>
+                                    <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6 text-slate-900 border-4 border-slate-900 relative">
+                                        <span class="text-3xl font-black">${m.years}</span>
+                                        <div class="absolute -bottom-3 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full">${m.label}</div>
                                     </div>
-                                    <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
-                                        <img src="images/avatars/jayraj.png" class="w-10 h-10 rounded-xl object-cover">
-                                        <div class="text-left">
-                                            <p class="text-xs font-bold">Jayraj Mehta</p>
-                                            <p class="text-[9px] text-slate-400">Director</p>
-                                        </div>
+                                    <h3 class="text-xl font-black text-slate-800 mb-4">${m.title}</h3>
+                                    <div class="space-y-3 w-full">
+                                        ${(m.people || []).map(p => `
+                                            <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
+                                                <img src="${p.img}" class="w-10 h-10 rounded-xl object-cover">
+                                                <div class="text-left">
+                                                    <p class="text-xs font-bold">${p.name}</p>
+                                                    <p class="text-[9px] text-slate-400">${p.role}</p>
+                                                </div>
+                                            </div>
+                                        `).join('')}
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- 5 Years -->
-                            <div class="p-8 bg-white rounded-[2.5rem] border border-slate-50 shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all group flex flex-col items-center text-center relative overflow-hidden">
-                                <div class="absolute inset-x-0 top-0 h-2 bg-ikf-blue"></div>
-                                <div class="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mb-6 text-ikf-blue border-4 border-ikf-blue relative">
-                                    <span class="text-3xl font-black">5+</span>
-                                    <div class="absolute -bottom-3 bg-ikf-blue text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Core</div>
-                                </div>
-                                <h3 class="text-xl font-black text-slate-800 mb-4">The Architects</h3>
-                                <div class="space-y-3 w-full">
-                                    <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
-                                        <img src="images/avatars/avatar_marketing_male.png" class="w-10 h-10 rounded-xl object-cover">
-                                        <div class="text-left">
-                                            <p class="text-xs font-bold">Vikram Singh</p>
-                                            <p class="text-[9px] text-slate-400">Sr. Strategist</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 1 Year -->
-                            <div class="p-8 bg-white rounded-[2.5rem] border border-slate-50 shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all group flex flex-col items-center text-center relative overflow-hidden">
-                                <div class="absolute inset-x-0 top-0 h-2 bg-ikf-yellow"></div>
-                                <div class="w-24 h-24 bg-yellow-50 rounded-full flex items-center justify-center mb-6 text-ikf-yellow border-4 border-ikf-yellow relative">
-                                    <span class="text-3xl font-black">1+</span>
-                                    <div class="absolute -bottom-3 bg-ikf-yellow text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Rising</div>
-                                </div>
-                                <h3 class="text-xl font-black text-slate-800 mb-4">Rising Stars</h3>
-                                <div class="space-y-3 w-full">
-                                    <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
-                                        <img src="images/avatars/avatar_creative_female.png" class="w-10 h-10 rounded-xl object-cover">
-                                        <div class="text-left">
-                                            <p class="text-xs font-bold">Sneha Patel</p>
-                                            <p class="text-[9px] text-slate-400">Designer</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
-                                        <img src="images/avatars/avatar_dev_male.png" class="w-10 h-10 rounded-xl object-cover">
-                                        <div class="text-left">
-                                            <p class="text-xs font-bold">Rahul Verma</p>
-                                            <p class="text-[9px] text-slate-400">Tech Lead</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            `).join('')}
                         </div>
 
-                        <!-- System Terminal Footer -->
                         <div class="bg-slate-900 rounded-[3rem] p-10 md:p-14 text-center relative overflow-hidden flex flex-col items-center justify-center">
                             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-                            <div class="relative z-10 w-full max-w-lg mb-8 text-left">
+                            <div class="relative z-10 w-full max-w-lg text-left">
                                 <div class="bg-slate-800 rounded-t-xl p-3 flex gap-2">
                                     <div class="w-3 h-3 rounded-full bg-red-500"></div>
                                     <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
@@ -1460,88 +1352,51 @@ window.AppNavigation = {
                                     <p class="mb-2"><span class="text-green-400">✔</span> core_values_integrity: <span class="text-ikf-yellow">100%</span></p>
                                     <p class="mb-2"><span class="text-green-400">✔</span> knowledge_transfer: <span class="text-ikf-yellow">active</span></p>
                                     <p class="text-slate-500">// Join the league. Build your legacy.</p>
-                                </div>
                             </div>
-                        </div>
-                    </div>
-
                         </div>
                     </div>`;
 
             case 'birthdays':
+                const bdayData = this.contentData?.birthdays || {
+                    badge: "Solar Returns",
+                    title: "Party <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow\">Protocol</span>",
+                    upcoming: [
+                        { name: "Priya Sharma", date: "Feb 14", dept: "Creative Dept", status: "Wishing Pending", img: "images/avatars/avatar_creative_female.png" },
+                        { name: "Rohan D.", date: "Feb 22", dept: "Development", status: "Wishing Pending", img: "images/avatars/avatar_dev_male.png" },
+                        { name: "Amit K.", date: "Mar 05", dept: "SEO Team", status: "Upcoming", img: "images/avatars/avatar_marketing_male.png" }
+                    ]
+                };
                 return `
                     <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-12 flex items-end justify-between">
                             <div>
-                                <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Solar Returns</span>
-                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">Party <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Protocol</span></h1>
-                            </div>
-                            <div class="hidden md:block">
-                                <div class="px-6 py-2 bg-white rounded-full border border-slate-100 shadow-sm text-xs font-bold text-slate-500">
-                                    Next Event: <span class="text-ikf-blue">2 Days</span>
-                                </div>
+                                <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${bdayData.badge}</span>
+                                <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${bdayData.title}</h1>
                             </div>
                         </div>
 
-                        <!--Upcoming Birthdays Horizontal Scroll-->
-                        <!--Upcoming Birthdays Smart Grid-->
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-                            <!-- Card 1 -->
-                            <div class="bg-white rounded-[2.5rem] border border-slate-50 p-6 flex items-center gap-4 hover:shadow-lg transition-all group cursor-default">
-                                <div class="w-20 h-20 rounded-2xl bg-slate-100 relative overflow-hidden">
-                                    <img src="images/avatars/avatar_creative_female.png" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
-                                </div>
-                                <div>
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <span class="bg-pink-100 text-pink-500 text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full">Feb 14</span>
+                            ${(bdayData.upcoming || []).map(b => `
+                                <div class="bg-white rounded-[2.5rem] border border-slate-50 p-6 flex items-center gap-4 hover:shadow-lg transition-all group cursor-default">
+                                    <div class="w-20 h-20 rounded-2xl bg-slate-100 relative overflow-hidden">
+                                        <img src="${b.img}" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
                                     </div>
-                                    <h3 class="text-lg font-black text-slate-800">Priya Sharma</h3>
-                                    <p class="text-xs text-slate-400 mb-2">Creative Dept</p>
-                                    <div class="flex items-center gap-1 text-[10px] text-ikf-blue font-bold">
-                                        <i class="fas fa-gift"></i> Wishing Pending
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Card 2 -->
-                            <div class="bg-white rounded-[2.5rem] border border-slate-50 p-6 flex items-center gap-4 hover:shadow-lg transition-all group cursor-default">
-                                <div class="w-20 h-20 rounded-2xl bg-slate-100 relative overflow-hidden">
-                                    <img src="images/avatars/avatar_dev_male.png" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
-                                </div>
-                                <div>
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <span class="bg-blue-100 text-blue-500 text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full">Feb 22</span>
-                                    </div>
-                                    <h3 class="text-lg font-black text-slate-800">Rohan D.</h3>
-                                    <p class="text-xs text-slate-400 mb-2">Development</p>
-                                    <div class="flex items-center gap-1 text-[10px] text-ikf-blue font-bold">
-                                        <i class="fas fa-gift"></i> Wishing Pending
+                                    <div>
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span class="bg-pink-100 text-pink-500 text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full">${b.date}</span>
+                                        </div>
+                                        <h3 class="text-lg font-black text-slate-800">${b.name}</h3>
+                                        <p class="text-xs text-slate-400 mb-2">${b.dept}</p>
+                                        <div class="flex items-center gap-1 text-[10px] text-ikf-blue font-bold">
+                                            <i class="fas ${b.status === 'Upcoming' ? 'fa-clock' : 'fa-gift'}"></i> ${b.status}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- Card 3 -->
-                            <div class="bg-white rounded-[2.5rem] border border-slate-50 p-6 flex items-center gap-4 hover:shadow-lg transition-all group cursor-default opacity-60 hover:opacity-100">
-                                <div class="w-20 h-20 rounded-2xl bg-slate-100 relative overflow-hidden grayscale group-hover:grayscale-0 transition-all">
-                                    <img src="images/avatars/avatar_marketing_male.png" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
-                                </div>
-                                <div>
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <span class="bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full">Mar 05</span>
-                                    </div>
-                                    <h3 class="text-lg font-black text-slate-800">Amit K.</h3>
-                                    <p class="text-xs text-slate-400 mb-2">SEO Team</p>
-                                    <div class="flex items-center gap-1 text-[10px] text-slate-400 font-bold">
-                                        <i class="fas fa-clock"></i> Upcoming
-                                    </div>
-                                </div>
-                            </div>
+                            `).join('')}
                         </div>
-                        
-                        <!-- Celebration Terminal -->
+
                         <div class="bg-slate-900 rounded-[3rem] p-10 text-center relative overflow-hidden flex flex-col items-center justify-center">
                             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-                            
                             <div class="relative z-10 w-full max-w-lg mb-8 text-left">
                                 <div class="bg-slate-800 rounded-t-xl p-3 flex gap-2">
                                     <div class="w-3 h-3 rounded-full bg-red-500"></div>
@@ -1554,43 +1409,40 @@ window.AppNavigation = {
                                     <p class="text-slate-500">// Click below to broadcast network wishes</p>
                                 </div>
                             </div>
-
                             <button onclick="alert('Broadcasting wishes to the specific channels... 🎈')" class="relative z-10 px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl text-white font-black uppercase tracking-[0.2em] shadow-lg hover:shadow-pink-500/30 hover:scale-105 transition-all flex items-center gap-4">
                                 <i class="fas fa-bullhorn animate-pulse"></i> Broadcast Wishes
                             </button>
                         </div>
-
-                        </div>
                     </div>`;
 
             case 'holidays':
+                const holidayData = this.contentData?.holidays || {
+                    badge: "Global Calendar",
+                    title: "Holidays <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow\">2025-26</span>",
+                    list: [
+                        { name: "Republic Day", date: "JANUARY 26", type: "Mandatory" },
+                        { name: "Independence Day", date: "AUGUST 15", type: "Mandatory" },
+                        { name: "Gandhi Jayanti", date: "OCTOBER 02", type: "Mandatory" },
+                        { name: "Diwali (Priti/Padwa)", date: "NOVEMBER", type: "Regional" }
+                    ]
+                };
                 return `
                     <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
-                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Global Calendar</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">Holidays <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">2025-26</span></h1>
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${holidayData.badge}</span>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${holidayData.title}</h1>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20">
                             <div class="bg-white p-12 lg:p-16 rounded-[3.5rem] premium-card">
                                 <h3 class="text-2xl font-black text-ikf-blue mb-10">Strategic Resets</h3>
                                 <div class="space-y-6">
-                                    <div class="flex items-center justify-between p-6 bg-slate-50 rounded-2xl group hover:bg-ikf-blue hover:text-white transition-all">
-                                        <div><p class="font-black text-sm uppercase mb-1">Republic Day</p><p class="text-xs opacity-50 font-bold">JANUARY 26</p></div>
-                                        <div class="text-[10px] font-black uppercase tracking-widest bg-ikf-yellow text-white px-3 py-1 rounded-full">Mandatory</div>
-                                    </div>
-                                    <div class="flex items-center justify-between p-6 bg-slate-50 rounded-2xl group hover:bg-ikf-blue hover:text-white transition-all">
-                                        <div><p class="font-black text-sm uppercase mb-1">Independence Day</p><p class="text-xs opacity-50 font-bold">AUGUST 15</p></div>
-                                        <div class="text-[10px] font-black uppercase tracking-widest bg-ikf-yellow text-white px-3 py-1 rounded-full">Mandatory</div>
-                                    </div>
-                                    <div class="flex items-center justify-between p-6 bg-slate-50 rounded-2xl group hover:bg-ikf-blue hover:text-white transition-all">
-                                        <div><p class="font-black text-sm uppercase mb-1">Gandhi Jayanti</p><p class="text-xs opacity-50 font-bold">OCTOBER 02</p></div>
-                                        <div class="text-[10px] font-black uppercase tracking-widest bg-ikf-yellow text-white px-3 py-1 rounded-full">Mandatory</div>
-                                    </div>
-                                    <div class="flex items-center justify-between p-6 bg-slate-50 rounded-2xl group hover:bg-ikf-blue hover:text-white transition-all">
-                                        <div><p class="font-black text-sm uppercase mb-1">Diwali (Priti/Padwa)</p><p class="text-xs opacity-50 font-bold">NOVEMBER</p></div>
-                                        <div class="text-[10px] font-black uppercase tracking-widest bg-ikf-yellow text-white px-3 py-1 rounded-full">Regional</div>
-                                    </div>
+                                    ${(holidayData.list || []).map(h => `
+                                        <div class="flex items-center justify-between p-6 bg-slate-50 rounded-2xl group hover:bg-ikf-blue hover:text-white transition-all">
+                                            <div><p class="font-black text-sm uppercase mb-1">${h.name}</p><p class="text-xs opacity-50 font-bold">${h.date}</p></div>
+                                            <div class="text-[10px] font-black uppercase tracking-widest bg-ikf-yellow text-white px-3 py-1 rounded-full">${h.type}</div>
+                                        </div>
+                                    `).join('')}
                                 </div>
                             </div>
                             <div class="bg-slate-900 p-12 lg:p-16 rounded-[3.5rem] premium-card text-white relative overflow-hidden flex flex-col justify-center">
@@ -1607,46 +1459,36 @@ window.AppNavigation = {
                                 </div>
                             </div>
                         </div>
-
-                        </div>
                     </div>`;
 
             case 'attendance':
+                const attendData = this.contentData?.attendance || {
+                    badge: "Operation Hours",
+                    title: "Sync & <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow\">Flow</span>",
+                    cards: [
+                        { icon: "fa-calendar-alt", title: "Work Week", line1: "Monday - Friday", line2: "Occasional Strategic Saturdays" },
+                        { icon: "fa-stopwatch", title: "Core Hours", line1: "09:30 AM - 06:15 PM", line2: "8.75 Hours of Productive Sync" },
+                        { icon: "fa-fingerprint", title: "Digital Log", line1: "Bio-Auth / App Sync", line2: "Automated Attendance Tracking" }
+                    ]
+                };
                 return `
                     <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
-                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Operation Hours</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">Sync & <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Flow</span></h1>
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${attendData.badge}</span>
+                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${attendData.title}</h1>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-                            <!-- Card 1 -->
-                            <div class="bg-white p-12 rounded-[2.5rem] premium-card text-center group">
-                                <div class="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:bg-ikf-blue group-hover:text-white transition-all shadow-lg">
-                                    <i class="fas fa-calendar-alt text-2xl"></i>
+                            ${(attendData.cards || []).map(card => `
+                                <div class="bg-white p-12 rounded-[2.5rem] premium-card text-center group">
+                                    <div class="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:bg-ikf-blue group-hover:text-white transition-all shadow-lg">
+                                        <i class="fas ${card.icon} text-2xl"></i>
+                                    </div>
+                                    <h4 class="text-xl font-black text-ikf-blue mb-2">${card.title}</h4>
+                                    <p class="text-sm font-bold text-slate-400 uppercase tracking-widest leading-none">${card.line1}</p>
+                                    <p class="text-[10px] text-slate-300 mt-4 font-medium uppercase tracking-tighter">${card.line2}</p>
                                 </div>
-                                <h4 class="text-xl font-black text-ikf-blue mb-2">Work Week</h4>
-                                <p class="text-sm font-bold text-slate-400 uppercase tracking-widest leading-none">Monday - Friday</p>
-                                <p class="text-[10px] text-slate-300 mt-4 font-medium uppercase tracking-tighter">Occasional Strategic Saturdays</p>
-                            </div>
-                            <!-- Card 2 -->
-                            <div class="bg-white p-12 rounded-[2.5rem] premium-card text-center group">
-                                <div class="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:bg-ikf-blue group-hover:text-white transition-all shadow-lg">
-                                    <i class="fas fa-stopwatch text-2xl"></i>
-                                </div>
-                                <h4 class="text-xl font-black text-ikf-blue mb-2">Core Hours</h4>
-                                <p class="text-sm font-bold text-slate-400 uppercase tracking-widest leading-none">09:30 AM - 06:15 PM</p>
-                                <p class="text-[10px] text-slate-300 mt-4 font-medium uppercase tracking-tighter">8.75 Hours of Productive Sync</p>
-                            </div>
-                            <!-- Card 3 -->
-                            <div class="bg-white p-12 rounded-[2.5rem] premium-card text-center group">
-                                <div class="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:bg-ikf-blue group-hover:text-white transition-all shadow-lg">
-                                    <i class="fas fa-fingerprint text-2xl"></i>
-                                </div>
-                                <h4 class="text-xl font-black text-ikf-blue mb-2">Digital Log</h4>
-                                <p class="text-sm font-bold text-slate-400 uppercase tracking-widest leading-none">Bio-Auth / App Sync</p>
-                                <p class="text-[10px] text-slate-300 mt-4 font-medium uppercase tracking-tighter">Automated Attendance Tracking</p>
-                            </div>
+                            `).join('')}
                         </div>
 
                         <div class="bg-slate-900 p-12 lg:p-20 rounded-[4rem] premium-card text-white flex flex-col md:flex-row items-center gap-16 relative overflow-hidden">
@@ -1665,13 +1507,15 @@ window.AppNavigation = {
                             </div>
                             <div class="w-full md:w-96 aspect-square bg-white/5 backdrop-blur-3xl rounded-[3rem] border-4 border-white/5 z-10 shadow-2xl flex items-center justify-center text-white/20 text-4xl font-black italic">PORTAL</div>
                         </div>
-
-                        </div>
                     </div>`;
 
-
-
             case 'policies':
+                const policyStats = this.contentData?.policies?.stats || [
+                    { icon: "fa-hourglass-start", value: "06", unit: "mo", label: "Probation" },
+                    { icon: "fa-history", value: "90", unit: "days", label: "Notice Period" },
+                    { icon: "fa-wallet", value: "10", unit: "th", label: "Payout Date" },
+                    { icon: "fa-file-contract", value: "Auto", unit: "", label: "PF & TDS" }
+                ];
                 return `
                     <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
@@ -1679,39 +1523,18 @@ window.AppNavigation = {
                             <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">The <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Commitment</span></h1>
                         </div>
 
-                        <!-- Smart Stats Grid -->
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
-                            <!-- Probation -->
-                            <div class="p-8 bg-white rounded-[2.5rem] text-center border border-slate-50 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all group cursor-default">
-                                <div class="w-16 h-16 mx-auto bg-blue-50 rounded-2xl flex items-center justify-center text-ikf-blue mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-hourglass-start"></i></div>
-                                <h3 class="text-3xl font-black text-slate-800 mb-1">06<span class="text-sm text-slate-400 font-bold ml-1">mo</span></h3>
-                                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Probation</p>
-                            </div>
-                            <!-- Notice -->
-                            <div class="p-8 bg-white rounded-[2.5rem] text-center border border-slate-50 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all group cursor-default">
-                                <div class="w-16 h-16 mx-auto bg-blue-50 rounded-2xl flex items-center justify-center text-ikf-blue mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-history"></i></div>
-                                <h3 class="text-3xl font-black text-slate-800 mb-1">90<span class="text-sm text-slate-400 font-bold ml-1">days</span></h3>
-                                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Notice Period</p>
-                            </div>
-                            <!-- Payday -->
-                            <div class="p-8 bg-white rounded-[2.5rem] text-center border border-slate-50 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all group cursor-default">
-                                <div class="w-16 h-16 mx-auto bg-yellow-50 rounded-2xl flex items-center justify-center text-ikf-yellow mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-wallet"></i></div>
-                                <h3 class="text-3xl font-black text-slate-800 mb-1">10<span class="text-sm text-slate-400 font-bold ml-1">th</span></h3>
-                                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Payout Date</p>
-                            </div>
-                            <!-- Compliance -->
-                            <div class="p-8 bg-white rounded-[2.5rem] text-center border border-slate-50 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all group cursor-default">
-                                <div class="w-16 h-16 mx-auto bg-green-50 rounded-2xl flex items-center justify-center text-green-500 mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas fa-file-contract"></i></div>
-                                <h3 class="text-2xl font-black text-slate-800 mb-2 pt-1">Auto</h3>
-                                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">PF & TDS</p>
-                            </div>
+                            ${(policyStats || []).map(stat => `
+                                <div class="p-8 bg-white rounded-[2.5rem] text-center border border-slate-50 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all group cursor-default">
+                                    <div class="w-16 h-16 mx-auto bg-blue-50 rounded-2xl flex items-center justify-center text-ikf-blue mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas ${stat.icon}"></i></div>
+                                    <h3 class="text-3xl font-black text-slate-800 mb-1">${stat.value}${stat.unit ? `<span class="text-sm text-slate-400 font-bold ml-1">${stat.unit}</span>` : ''}</h3>
+                                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">${stat.label}</p>
+                                </div>
+                            `).join('')}
                         </div>
 
-                        <!-- Smart Acknowledgment Console -->
                         <div class="bg-slate-900 rounded-[3rem] p-10 md:p-14 text-center relative overflow-hidden flex flex-col items-center justify-center">
                             <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-                            
-                            <!-- Terminal Visual -->
                             <div class="relative z-10 w-full max-w-lg mb-10 text-left">
                                 <div class="bg-slate-800 rounded-t-xl p-3 flex gap-2">
                                     <div class="w-3 h-3 rounded-full bg-red-500"></div>
@@ -1726,23 +1549,12 @@ window.AppNavigation = {
                                 </div>
                             </div>
 
-                            <div class="relative z-10 w-full max-w-md">
-                                <label class="group relative flex items-center p-1 bg-gradient-to-r from-ikf-blue to-ikf-yellow rounded-2xl cursor-pointer hover:shadow-[0_0_40px_rgba(217,164,23,0.3)] transition-all transform hover:scale-[1.02]">
-                                    <div class="bg-slate-900 rounded-xl px-2 py-4 w-full h-full flex items-center justify-center gap-4 group-hover:bg-slate-800 transition-colors">
-                                        <input type="checkbox" id="final-ack-check" class="w-6 h-6 rounded-md border-slate-600 bg-slate-800 text-ikf-yellow focus:ring-offset-slate-900 focus:ring-ikf-yellow" onchange="AppNavigation.handleAcknowledgement(this)">
-                                        <span class="font-bold text-white uppercase tracking-[0.2em] text-sm">Execute Protocol</span>
-                                    </div>
-                                </label>
-
-                                <div id="completion-message" class="hidden mt-8 w-full p-4 bg-green-500/10 border border-green-500/20 rounded-xl animate-fade-in-up backdrop-blur-sm">
-                                    <div class="flex items-center justify-center gap-3 text-green-400">
-                                        <i class="fas fa-check-circle text-xl"></i>
-                                        <span class="font-bold tracking-widest text-xs uppercase">Deployment Successful</span>
-                                    </div>
-                                </div>
-                            </div>
+                            <label class="flex items-center gap-4 cursor-pointer group">
+                                <input type="checkbox" class="w-6 h-6 rounded-lg border-2 border-white/20 bg-white/5 text-ikf-yellow focus:ring-ikf-yellow transition-all">
+                                <span class="text-white text-sm font-bold uppercase tracking-widest group-hover:text-ikf-yellow transition-colors">I acknowledge and accept the protocol</span>
+                            </label>
                         </div>
-                    </div > `;
+                    </div>`;
 
             default:
                 return `
@@ -1751,7 +1563,7 @@ window.AppNavigation = {
                         <h2 class="text-2xl font-bold text-ikf-blue">Module Under Construction</h2>
                         <p class="text-slate-500 mt-2 text-lg">We are building high-quality content for <span class="font-bold text-ikf-yellow italic">${sectionId}</span>.</p>
                         <button onclick="AppNavigation.navigateTo('intro')" class="mt-8 text-ikf-blue font-bold hover:underline"><i class="fas fa-arrow-left mr-2"></i> Back to Intro</button>
-                    </div > `;
+                    </div>`;
         }
     }
 };

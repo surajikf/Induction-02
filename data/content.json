@@ -1,0 +1,352 @@
+{
+  "hero": {
+    "badge": "Your Future Starts Here",
+    "title": {
+      "line1": "Transforming",
+      "highlight1": "Ideas",
+      "line2": "Into",
+      "highlight2": "Reality"
+    },
+    "subtitle": "Welcome to <strong>I Knowledge Factory</strong>. Explore our legacy, understand our DNA, and become part of our 25-year journey of digital excellence.",
+    "cta": "Start Your Induction",
+    "stats": {
+      "years": "25+ Years",
+      "team": "150+ Team"
+    }
+  },
+  "intro": {
+    "badge": "Onboarding Portal",
+    "title": "Welcome to <span class=\"gradient\">I Knowledge Factory.</span>",
+    "subtitle": "Where strategy meets digital craftsmanship. We've been shaping the internet since 2000.",
+    "mission": {
+      "title": "The Mission",
+      "content": "IKF is a multidisciplinary agency that blends strategy, design, and performance marketing to help brands thrive across digital ecosystems. We survive market shifts by staying true to our core: <strong>Human Intelligence.</strong>",
+      "badges": ["25+ Years", "360° Digital", "Pune HQ"]
+    },
+    "stats": {
+      "strategies": {
+        "number": "800+",
+        "label": "Deployed Successfully"
+      },
+      "clients": {
+        "number": "1.5k+",
+        "label": "Happy Clients"
+      }
+    },
+    "footer": "Explore the sidebar to begin your induction journey."
+  },
+  "management": {
+    "badge": "System Architects",
+    "title": "The <span class=\"gradient\">Visionaries</span>",
+    "subtitle": "Guiding the IKF mainframes with over <strong>75 years</strong> of combined digital intelligence.",
+    "leaders": [
+      {
+        "id": "ashish",
+        "name": "Ashish Dalia",
+        "role": "The Architect (CEO)",
+        "image": "images/avatars/ashish_real.jpg",
+        "skill": "Strategy",
+        "skillLevel": "98%",
+        "note": "Welcome to IKF! With over 25 years of digital excellence, we've grown alongside the internet itself. Our journey from a boutique setup to a multidisciplinary agency has been driven by one core philosophy: Innovation, Knowledge, and Factory. We help global brands thrive across digital ecosystems using AI-refined strategies without losing the human lens. Your role here is crucial in maintaining our legacy of delivering high-impact solutions for our 1500+ clients."
+      },
+      {
+        "id": "jayraj",
+        "name": "Jayraj Mehta",
+        "role": "The Engine (Director)",
+        "image": "images/avatars/jayraj.png",
+        "skill": "Operations",
+        "skillLevel": "99%",
+        "note": "Jayraj oversees strategic operations and technological integration, ensuring that the Factory operates at peak industrial precision. His focus on process optimization drives our ability to deliver consistent quality at scale."
+      },
+      {
+        "id": "anuja",
+        "name": "Anuja Kapoor",
+        "role": "The Soul (Director)",
+        "image": "images/avatars/anuja.png",
+        "skill": "Creativity",
+        "skillLevel": "100%",
+        "note": "Anuja leads the creative and brand strategy units, focusing on human-centric digital storytelling. Her vision bridges the gap between data-driven performance and emotional brand connection."
+      }
+    ]
+  },
+  "philosophy": {
+    "badge": "Core Directives",
+    "title": "<span class=\"gradient\">I • K • F</span>",
+    "subtitle": "The DNA of Our Identity",
+    "pillars": [
+      {
+        "letter": "I",
+        "title": "Innovation",
+        "description": "Obsessive curiosity. We don't just use technology; we blend AI-refined strategies with a human lens to solve business challenges."
+      },
+      {
+        "letter": "K",
+        "title": "Knowledge",
+        "description": "Synthesized wisdom. Over 25 years of mastery in digital ecosystems fuels our strategic consultations and execution."
+      },
+      {
+        "letter": "F",
+        "title": "Factory",
+        "description": "Precision at scale. Our industrialized processes ensure high-impact delivery for 1500+ global clients."
+      }
+    ]
+  },
+  "mission": {
+    "badge": "Strategic Compass",
+    "title": "Mission & <span class=\"gradient\">Vision</span>",
+    "vision": {
+      "title": "The Vision",
+      "content": "To be a globally respected, multidisciplinary digital agency known for its commitment to excellence and innovation."
+    },
+    "missionStatement": {
+      "title": "The Mission",
+      "content": "To unlock the full growth potential of brands by pioneering new approaches and delivering high-impact digital solutions."
+    },
+    "coreValues": {
+      "title": "Our Core Values (T.R.I.I.I.P)",
+      "values": [
+        {"name": "Transparent", "description": "Openness in all we do."},
+        {"name": "Respectful", "description": "Respect begets respect."},
+        {"name": "Innovative", "description": "Challenge the norm."},
+        {"name": "Inspired", "description": "Inspired & Inspiring."},
+        {"name": "Professional", "description": "Excellence in delivery."}
+      ]
+    }
+  },
+  "culture": {
+    "badge": "System Core",
+    "title": "The IKF Culture <span class=\"gradient\">Code</span>",
+    "subtitle": "Running on version 4.0. Optimized for high performance, creativity, and human-centric processing.",
+    "stats": [
+      {"value": "4.8/5", "label": "Happiness Index"},
+      {"value": "52+", "label": "Friday Parties"},
+      {"value": "200h", "label": "Learning / Yr"},
+      {"value": "0%", "label": "Boredom"}
+    ],
+    "mainMessage": {
+      "title": "We Debug <span class=\"highlight\">Problems</span>, Not People.",
+      "description": "In a high-pressure agency environment, we prioritize psychological safety. Mistakes are compile errors, not fatal crashes. We fix them together.",
+      "status": "Collaboration Mode: Active"
+    },
+    "values": [
+      {"title": "Growth Mindset", "description": "Fail fast, learn faster."},
+      {"title": "Fuel Creativity", "description": "Caffeine & Ideas."}
+    ]
+  },
+  "social": {
+    "badge": "Digital Command Center",
+    "title": "The <span class=\"gradient\">Ecosystem</span>",
+    "liveStatus": "Live Sync: Active",
+    "platforms": [
+      {
+        "name": "LinkedIn",
+        "url": "https://www.linkedin.com/company/i-knowledge-factory-pvt.-ltd./",
+        "stat": "25k+",
+        "label": "Connections",
+        "growth": "12% vs last month"
+      },
+      {
+        "name": "Instagram",
+        "url": "https://www.instagram.com/ikfdigital/",
+        "stat": "18k+",
+        "label": "Followers",
+        "growth": "8.5% Engagement"
+      },
+      {
+        "name": "Facebook",
+        "url": "https://www.facebook.com/IKFDigital/",
+        "stat": "42k+",
+        "label": "Community",
+        "growth": "Stable"
+      },
+      {
+        "name": "YouTube",
+        "url": "https://www.youtube.com/c/IKFDigital",
+        "stat": "500k",
+        "label": "Views",
+        "growth": "New Viral Hit"
+      }
+    ],
+    "featuredPost": {
+      "title": "The Future of AI in Marketing",
+      "description": "Our Director, Ashish Dalia, breaks down how generative AI is reshaping the agency landscape. Watch the full keynote now.",
+      "cta": "Watch Video"
+    },
+    "recentActivity": [
+      {"text": "IKF celebrates 23 years of excellence! 🎉", "time": "2 hours ago", "platform": "Instagram"},
+      {"text": "We are hiring! Join our creative team. 🚀", "time": "5 hours ago", "platform": "LinkedIn"},
+      {"text": "New case study: Rebranding a tech giant.", "time": "1 day ago", "platform": "Behance"}
+    ]
+  },
+  "referral": {
+    "badge": "Talent Acquisition Protocol",
+    "title": "The Bounty <span class=\"gradient\">Board</span>",
+    "subtitle": "Earn rewards by expanding our intelligence network. Quality over quantity.",
+    "tiers": [
+      {
+        "level": "1",
+        "title": "Junior Agent",
+        "experience": "0-2 Years Exp",
+        "reward": "₹5,000",
+        "label": "Successfully Hired",
+        "roles": "exec / junior designer"
+      },
+      {
+        "level": "2",
+        "title": "Specialist",
+        "experience": "2-5 Years Exp",
+        "reward": "₹15,000",
+        "label": "Successfully Hired",
+        "roles": "manager / lead dev",
+        "featured": true
+      },
+      {
+        "level": "3",
+        "title": "Architect",
+        "experience": "5+ Years Exp",
+        "reward": "₹25,000",
+        "label": "Successfully Hired",
+        "roles": "director / head"
+      }
+    ],
+    "process": [
+      {"step": "1. Identify", "description": "Locate a candidate matching our cultural code."},
+      {"step": "2. Submit", "description": "Forward coordinates (CV) to HR via secure channel."},
+      {"step": "3. Reward", "description": "Payment released upon 3-month survival confirmation."}
+    ]
+  },
+  "anniversary": {
+    "badge": "Legacy System",
+    "title": "Hall of <span class=\"gradient\">Fame</span>",
+    "totalExperience": "142 Years",
+    "milestones": [
+      {
+        "years": "10+",
+        "badge": "Titan",
+        "title": "Founding Pillars",
+        "members": [
+          {"name": "Ashish Dalia", "role": "Founder", "image": "images/avatars/ashish_real.jpg"},
+          {"name": "Jayraj Mehta", "role": "Director", "image": "images/avatars/jayraj.png"}
+        ]
+      },
+      {
+        "years": "5+",
+        "badge": "Core",
+        "title": "The Architects",
+        "members": [
+          {"name": "Vikram Singh", "role": "Sr. Strategist", "image": "images/avatars/avatar_marketing_male.png"}
+        ]
+      },
+      {
+        "years": "1+",
+        "badge": "Rising",
+        "title": "Rising Stars",
+        "members": [
+          {"name": "Sneha Patel", "role": "Designer", "image": "images/avatars/avatar_creative_female.png"},
+          {"name": "Rahul Verma", "role": "Tech Lead", "image": "images/avatars/avatar_dev_male.png"}
+        ]
+      }
+    ],
+    "terminal": {
+      "command": "system_check --legacy",
+      "output": [
+        "core_values_integrity: 100%",
+        "knowledge_transfer: active",
+        "// Join the league. Build your legacy."
+      ]
+    }
+  },
+  "birthdays": {
+    "badge": "Solar Returns",
+    "title": "Party <span class=\"gradient\">Protocol</span>",
+    "nextEvent": "2 Days",
+    "upcoming": [
+      {"name": "Priya Sharma", "date": "Feb 14", "dept": "Creative Dept", "image": "images/avatars/avatar_creative_female.png"},
+      {"name": "Rohan D.", "date": "Feb 22", "dept": "Development", "image": "images/avatars/avatar_dev_male.png"},
+      {"name": "Amit K.", "date": "Mar 05", "dept": "SEO Team", "image": "images/avatars/avatar_marketing_male.png"}
+    ],
+    "terminal": {
+      "command": "execute_party_protocol.sh",
+      "output": [
+        "cake_logistics: scheduled",
+        "// Click below to broadcast network wishes"
+      ]
+    },
+    "cta": "Broadcast Wishes"
+  },
+  "holidays": {
+    "badge": "Global Calendar",
+    "title": "Holidays <span class=\"gradient\">2025-26</span>",
+    "strategicResets": [
+      {"name": "Republic Day", "date": "JANUARY 26", "type": "Mandatory"},
+      {"name": "Independence Day", "date": "AUGUST 15", "type": "Mandatory"},
+      {"name": "Gandhi Jayanti", "date": "OCTOBER 02", "type": "Mandatory"},
+      {"name": "Diwali (Priti/Padwa)", "date": "NOVEMBER", "type": "Regional"}
+    ],
+    "policy": {
+      "title": "Execution Protocol",
+      "description": "IKF publishes its final holiday list at the start of every calendar year. Regional variations between Pune, Mumbai, and Noida offices are detailed in the official HR circular.",
+      "compensatory": "Holidays falling on Sundays are not carried forward as per agency standards."
+    }
+  },
+  "attendance": {
+    "badge": "Operation Hours",
+    "title": "Sync & <span class=\"gradient\">Flow</span>",
+    "schedule": [
+      {
+        "title": "Work Week",
+        "value": "Monday - Friday",
+        "note": "Occasional Strategic Saturdays"
+      },
+      {
+        "title": "Core Hours",
+        "value": "09:30 AM - 06:15 PM",
+        "note": "8.75 Hours of Productive Sync"
+      },
+      {
+        "title": "Digital Log",
+        "value": "Bio-Auth / App Sync",
+        "note": "Automated Attendance Tracking"
+      }
+    ],
+    "punctuality": {
+      "title": "The Punctuality DNA",
+      "description": "Precision is our product. At IKF, synchronization starts with timing. Ensuring you're logged in by 09:30 AM helps the entire Factory begin its creative and technical operations without friction.",
+      "rules": [
+        "Entry: 09:30 AM SHARP",
+        "Grace: 15 Mins (Max 3/Month)"
+      ]
+    }
+  },
+  "policies": {
+    "badge": "Legal Framework",
+    "title": "The <span class=\"gradient\">Commitment</span>",
+    "stats": [
+      {"value": "06mo", "label": "Probation"},
+      {"value": "90days", "label": "Notice Period"},
+      {"value": "10th", "label": "Payout Date"},
+      {"value": "Auto", "label": "PF & TDS"}
+    ],
+    "terminal": {
+      "command": "initializing_handshake_protocol...",
+      "output": [
+        "policies_loaded: true",
+        "user_understanding: waiting_for_input...",
+        "// Check the box below to execute contract"
+      ]
+    },
+    "acknowledgement": "Execute Protocol",
+    "completionMessage": "Deployment Successful"
+  },
+  "directory": {
+    "badge": "Live Neural Network",
+    "title": "The <span class=\"gradient\">Collective.</span>",
+    "subtitle": "Accessing biosignatures of active agents operating across the IKF ecosystem.",
+    "stats": {
+      "active": "100%",
+      "departments": "05"
+    },
+    "searchPlaceholder": "Scan for agent name or clearance level...",
+    "filterLabel": "All Ecosystems"
+  }
+}

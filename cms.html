@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IKF Induction CMS</title>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ikf: {
+                            blue: '#0E0057',
+                            yellow: '#d9a417'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .cms-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .cms-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .cms-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .cms-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .editor-toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: white;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .content-preview {
+            border: 2px dashed #cbd5e1;
+            min-height: 200px;
+            transition: all 0.3s;
+        }
+
+        .content-preview:hover {
+            border-color: #d9a417;
+            background: #fffbeb;
+        }
+
+        .image-upload-zone {
+            border: 3px dashed #cbd5e1;
+            transition: all 0.3s;
+        }
+
+        .image-upload-zone.dragover {
+            border-color: #d9a417;
+            background: #fffbeb;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50">
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen"
+        class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-ikf-blue to-slate-900">
+        <div class="w-full max-w-md">
+            <div class="bg-white rounded-3xl p-10 shadow-2xl">
+                <div class="text-center mb-8">
+                    <div class="w-20 h-20 bg-ikf-blue rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-lock text-white text-3xl"></i>
+                    </div>
+                    <h1 class="text-3xl font-black text-ikf-blue mb-2">IKF CMS</h1>
+                    <p class="text-slate-500 text-sm font-medium">Content Management System</p>
+                </div>
+
+                <form id="login-form" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Password</label>
+                        <input type="password" id="cms-password"
+                            class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-ikf-blue focus:ring-4 focus:ring-ikf-blue/10 outline-none transition-all font-medium"
+                            placeholder="Enter CMS password" required>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-ikf-blue hover:bg-ikf-yellow text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-3">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Access CMS
+                    </button>
+                </form>
+
+                <div class="mt-6 p-4 bg-slate-50 rounded-xl">
+                    <p class="text-xs text-slate-500 text-center">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Default password: <code
+                            class="bg-white px-2 py-1 rounded font-mono text-ikf-blue">admin123</code>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CMS INTERFACE -->
+    <div id="cms-interface" class="hidden">
+        <!-- HEADER -->
+        <header class="bg-white border-b-2 border-slate-200 sticky top-0 z-50 shadow-sm">
+            <div class="px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-ikf-blue rounded-xl flex items-center justify-center">
+                        <i class="fas fa-edit text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-black text-ikf-blue">IKF CMS</h1>
+                        <p class="text-xs text-slate-500 font-medium">Content Management System</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <button id="save-all-btn"
+                        class="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
+                        <i class="fas fa-save"></i>
+                        Save All Changes
+                    </button>
+
+                    <button id="preview-btn"
+                        class="px-6 py-3 bg-ikf-yellow hover:bg-yellow-600 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
+                        <i class="fas fa-eye"></i>
+                        Preview
+                    </button>
+
+                    <button id="logout-btn"
+                        class="px-4 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl transition-all flex items-center gap-2">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <div class="flex h-[calc(100vh-80px)]">
+            <!-- SIDEBAR -->
+            <aside class="w-80 bg-white border-r-2 border-slate-200 overflow-y-auto cms-scrollbar">
+                <div class="p-6">
+                    <h2 class="text-sm font-black uppercase tracking-wider text-slate-400 mb-4">Content Sections</h2>
+
+                    <nav id="cms-nav" class="space-y-2">
+                        <!-- Navigation will be populated by JavaScript -->
+                    </nav>
+                </div>
+
+                <div class="p-6 border-t-2 border-slate-100">
+                    <h2 class="text-sm font-black uppercase tracking-wider text-slate-400 mb-4">Image Manager</h2>
+                    <button id="image-manager-btn"
+                        class="w-full px-4 py-3 bg-ikf-blue hover:bg-ikf-yellow text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2">
+                        <i class="fas fa-images"></i>
+                        Manage Images
+                    </button>
+                </div>
+            </aside>
+
+            <!-- CONTENT EDITOR -->
+            <main class="flex-1 overflow-y-auto cms-scrollbar bg-slate-50">
+                <div id="editor-container" class="p-8">
+                    <!-- Welcome Screen -->
+                    <div id="welcome-screen" class="max-w-4xl mx-auto text-center py-20">
+                        <div
+                            class="w-32 h-32 bg-ikf-blue/10 rounded-full flex items-center justify-center mx-auto mb-8">
+                            <i class="fas fa-rocket text-ikf-blue text-5xl"></i>
+                        </div>
+                        <h2 class="text-4xl font-black text-ikf-blue mb-4">Welcome to IKF CMS</h2>
+                        <p class="text-xl text-slate-500 mb-8 max-w-2xl mx-auto">
+                            Select a section from the sidebar to start editing content or manage images.
+                        </p>
+                        <div class="grid grid-cols-3 gap-6 max-w-3xl mx-auto mt-12">
+                            <div class="p-6 bg-white rounded-2xl border-2 border-slate-100">
+                                <i class="fas fa-edit text-3xl text-ikf-blue mb-4"></i>
+                                <h3 class="font-bold text-slate-800 mb-2">Edit Content</h3>
+                                <p class="text-sm text-slate-500">Update text across all sections</p>
+                            </div>
+                            <div class="p-6 bg-white rounded-2xl border-2 border-slate-100">
+                                <i class="fas fa-images text-3xl text-ikf-yellow mb-4"></i>
+                                <h3 class="font-bold text-slate-800 mb-2">Manage Images</h3>
+                                <p class="text-sm text-slate-500">Upload and replace images</p>
+                            </div>
+                            <div class="p-6 bg-white rounded-2xl border-2 border-slate-100">
+                                <i class="fas fa-eye text-3xl text-green-500 mb-4"></i>
+                                <h3 class="font-bold text-slate-800 mb-2">Live Preview</h3>
+                                <p class="text-sm text-slate-500">See changes instantly</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Content Editor -->
+                    <div id="content-editor" class="hidden max-w-5xl mx-auto">
+                        <!-- Content will be populated by JavaScript -->
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- IMAGE MANAGER MODAL -->
+    <div id="image-manager-modal"
+        class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-6xl max-h-[90vh] overflow-hidden shadow-2xl">
+            <div class="p-6 border-b-2 border-slate-200 flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-black text-ikf-blue">Image Manager</h2>
+                    <p class="text-sm text-slate-500 font-medium">Upload and manage images</p>
+                </div>
+                <button id="close-image-manager"
+                    class="w-12 h-12 bg-slate-100 hover:bg-red-500 hover:text-white rounded-xl transition-all flex items-center justify-center">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <div class="p-8 overflow-y-auto max-h-[calc(90vh-100px)] cms-scrollbar">
+                <!-- Upload Zone -->
+                <div id="upload-zone" class="image-upload-zone rounded-2xl p-12 mb-8 text-center cursor-pointer">
+                    <i class="fas fa-cloud-upload-alt text-6xl text-slate-300 mb-4"></i>
+                    <h3 class="text-xl font-bold text-slate-700 mb-2">Drag & Drop Images Here</h3>
+                    <p class="text-slate-500 mb-4">or click to browse</p>
+                    <input type="file" id="image-upload-input" class="hidden" accept="image/*" multiple>
+                    <button onclick="document.getElementById('image-upload-input').click()"
+                        class="px-6 py-3 bg-ikf-blue hover:bg-ikf-yellow text-white font-bold rounded-xl transition-all">
+                        Choose Files
+                    </button>
+                </div>
+
+                <!-- Image Gallery -->
+                <div>
+                    <h3 class="text-lg font-black text-slate-800 mb-4">Current Images</h3>
+                    <div id="image-gallery" class="grid grid-cols-4 gap-4">
+                        <!-- Images will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/cms-app.js"></script>
+</body>
+
+</html>
