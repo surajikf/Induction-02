@@ -1316,53 +1316,107 @@ window.AppNavigation = {
                     { step: "2. Submit", description: "Forward coordinates (CV) to HR via secure channel." }
                 ];
 
+                const refPolicies = refData.policies || [
+                    { title: "Eligibility", description: "All active employees are eligible except HR and Leadership teams." },
+                    { title: "Payout", description: "Rewards are processed after 90 days of successful candidate probation." }
+                ];
+
                 return `
-                        < div class="max-w-6xl mx-auto py-6 fade-in" >
-                        <div class="mb-16">
-                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${refData.badge || 'Talent Acquisition Protocol'}</span>
-                            <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight mb-4">${refData.title || 'The <span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Bounty</span> Board'}</h1>
-                            <p class="text-slate-400 max-w-xl text-sm font-medium">${refData.subtitle || 'Help us build the next generation of IKF.'}</p>
+                    <div class="max-w-6xl mx-auto py-12 px-6 fade-in">
+                        <!-- Header Section -->
+                        <div class="mb-20 text-center lg:text-left relative">
+                            <div class="absolute -top-10 -left-10 text-[120px] font-black text-slate-50 -z-10 select-none">IKF</div>
+                            <span class="bg-[#0E0057] text-white px-5 py-2 rounded-sm text-[10px] font-black uppercase tracking-[0.4em] mb-6 inline-block">
+                                ${refData.badge || 'Ambassador Protocol'}
+                            </span>
+                            <h1 class="text-5xl md:text-7xl font-black text-[#0E0057] leading-none tracking-tighter mb-6">
+                                Referral <span class="text-[#d9a417]">Program</span>
+                            </h1>
+                            <p class="text-xl text-slate-400 font-medium max-w-2xl leading-relaxed">
+                                ${refData.subtitle || 'Connect high-caliber talent with our industrial excellence and earn professional rewards.'}
+                            </p>
                         </div>
 
-                        <!--Rewards Showcase-- >
-                        <div class="bg-white rounded-[3rem] p-8 md:p-16 shadow-xl shadow-ikf-blue/5 border border-slate-50 mb-16 overflow-hidden relative">
-                            <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-ikf-yellow/5 rounded-full"></div>
-                            <h3 class="text-2xl font-black text-ikf-blue mb-12 flex items-center gap-4">
-                                Tiered Rewards Program
-                                <div class="h-px flex-1 bg-slate-100"></div>
-                            </h3>
+                        <!-- Rewards Tiers -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
+                            ${(Array.isArray(tiers) ? tiers : []).map((tier, idx) => {
+                    const isFeatured = tier.featured || idx === 1;
+                    const borderClass = isFeatured ? 'border-[#d9a417] shadow-xl ring-4 ring-[#d9a417]/5' : 'border-slate-100 shadow-sm';
+                    const colorClass = isFeatured ? 'text-[#d9a417]' : 'text-[#0E0057]';
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
-                                ${(Array.isArray(tiers) ? tiers : []).map(tier => `
-                                    <div class="p-8 rounded-[2rem] bg-slate-50 border border-slate-100 group hover:bg-ikf-blue hover:text-white transition-all">
-                                        <i class="fas ${tier.featured ? 'fa-gem' : 'fa-gift'} text-3xl text-ikf-yellow mb-6"></i>
-                                        <h4 class="text-4xl font-black mb-2">${tier.reward}</h4>
-                                        <p class="text-[10px] uppercase font-bold tracking-widest opacity-60">${tier.title} • ${tier.experience}</p>
+                    return `
+                                    <div class="group bg-white p-10 rounded-[3rem] border-2 ${borderClass} relative overflow-hidden transition-all duration-500 hover:-translate-y-2">
+                                        <div class="absolute -right-4 -bottom-4 text-[120px] font-black opacity-[0.03] group-hover:opacity-[0.06] transition-opacity select-none pointer-events-none">
+                                            0${idx + 1}
+                                        </div>
+                                        
+                                        <div class="flex items-center justify-between mb-8">
+                                            <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-slate-50 shadow-inner group-hover:bg-[#0E0057] group-hover:text-white transition-all">
+                                                <i class="fas ${isFeatured ? 'fa-gem' : 'fa-award'} text-xl"></i>
+                                            </div>
+                                            <span class="text-[9px] font-black uppercase tracking-widest text-slate-300">Tier L${tier.level || idx + 1}</span>
+                                        </div>
+
+                                        <h3 class="text-3xl font-black mb-1 ${colorClass}">${tier.reward}</h3>
+                                        <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">${tier.title}</p>
+                                        
+                                        <div class="space-y-3 pt-6 border-t border-slate-50">
+                                            <div class="flex items-center gap-3 text-xs font-semibold text-slate-500">
+                                                <i class="fas fa-check-circle text-[#d9a417] text-[10px]"></i>
+                                                <span>${tier.experience}</span>
+                                            </div>
+                                            <div class="flex items-center gap-3 text-xs font-semibold text-slate-500">
+                                                <i class="fas fa-check-circle text-[#d9a417] text-[10px]"></i>
+                                                <span>${tier.roles || 'Strategic Roles'}</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                `).join('')}
+                                `;
+                }).join('')}
+                        </div>
+
+                        <!-- Process Section -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-24">
+                            <div class="bg-white p-12 lg:p-16 rounded-[4rem] border border-slate-100 shadow-sm">
+                                <h3 class="text-3xl font-black text-[#0E0057] mb-12">The Protocol</h3>
+                                <div class="space-y-12">
+                                    ${(Array.isArray(refProcess) ? refProcess : []).map((step, idx) => `
+                                        <div class="flex gap-6 relative group">
+                                            <div class="flex-shrink-0 w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center font-black text-[#0E0057] relative z-10 group-hover:bg-[#d9a417] group-hover:text-white transition-all">
+                                                0${idx + 1}
+                                            </div>
+                                            ${idx < refProcess.length - 1 ? '<div class="absolute left-6 top-12 w-px h-12 bg-slate-100"></div>' : ''}
+                                            <div>
+                                                <h4 class="text-xl font-bold text-[#0E0057] mb-2">${step.title || step.step}</h4>
+                                                <p class="text-slate-400 text-sm font-medium leading-relaxed">${step.description || step.desc}</p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <div class="bg-[#0E0057] p-12 lg:p-16 rounded-[4rem] text-white relative overflow-hidden group">
+                                <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
+                                <h3 class="text-3xl font-black mb-12 relative z-10">Program Policies</h3>
+                                <div class="space-y-8 relative z-10">
+                                    ${(Array.isArray(refPolicies) ? refPolicies : []).map(policy => `
+                                        <div>
+                                            <h4 class="text-xs font-black uppercase tracking-widest text-[#d9a417] mb-2">${policy.title}</h4>
+                                            <p class="text-blue-100/70 text-sm font-medium leading-relaxed">${policy.description}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
                             </div>
                         </div>
 
-                        <!--Process Grid-- >
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
-                            ${(Array.isArray(refProcess) ? refProcess : []).map(step => `
-                                <div class="bg-white p-8 rounded-[2rem] border border-slate-100 relative group overflow-hidden">
-                                     <span class="absolute -right-4 -top-4 text-7xl font-black text-slate-50 group-hover:text-ikf-blue/5 transition-colors">${typeof step.step === 'string' ? step.step.split('.')[0] : step.step}</span>
-                                    <div class="relative z-10">
-                                        <h4 class="font-black text-ikf-blue mb-2">${typeof step.step === 'string' ? step.step.split('.')[1] || step.step : step.step}</h4>
-                                        <p class="text-xs text-slate-400 font-medium">${step.description || step.desc || ''}</p>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-
-                        <!--CTA Section-- >
-                        <div class="bg-ikf-blue rounded-[3rem] p-12 text-center text-white relative overflow-hidden">
-                            <div class="absolute inset-0 bg-gradient-to-r from-ikf-blue to-slate-900 opacity-50"></div>
-                            <div class="relative z-10">
-                                <h3 class="text-3xl font-black mb-6">Ready to refer?</h3>
-                                <a href="https://forms.gle/referral-example" target="_blank" class="inline-flex items-center gap-4 px-10 py-5 bg-ikf-yellow text-ikf-blue font-black uppercase tracking-widest text-sm rounded-2xl hover:scale-105 transition-transform shadow-xl shadow-ikf-yellow/20">
-                                    <i class="fas fa-paper-plane"></i> Submit Application
+                        <!-- CTA Section -->
+                        <div class="bg-slate-50 rounded-[4rem] p-12 md:p-20 text-center border-2 border-dashed border-slate-200">
+                            <div class="max-w-2xl mx-auto">
+                                <h2 class="text-3xl md:text-5xl font-black text-[#0E0057] mb-8 leading-tight">Ready to expand our intelligence network?</h2>
+                                <p class="text-slate-400 font-medium mb-12">Submit your candidate's details through our secure acquisition portal.</p>
+                                <a href="https://forms.gle/referral-example" target="_blank" class="inline-flex items-center gap-4 px-12 py-6 bg-[#0E0057] text-white font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-[#d9a417] transition-all shadow-xl shadow-blue-900/10 group">
+                                    <i class="fas fa-paper-plane group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+                                    Initialize Submission
                                 </a>
                             </div>
                         </div>
@@ -1376,7 +1430,7 @@ window.AppNavigation = {
                 ];
 
                 return `
-                        < div class="max-w-6xl mx-auto py-6 fade-in" >
+                    < div class="max-w-6xl mx-auto py-6 fade-in" >
                         <div class="mb-16 flex flex-col md:flex-row items-center justify-between gap-8">
                             <div>
                                 <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${annivData.badge || 'Legacy System'}</span>
@@ -1441,7 +1495,7 @@ window.AppNavigation = {
                 const bdayTerminal = bdayData.terminal || { command: "execute_party_protocol.sh", output: ["cake_logistics: scheduled"] };
 
                 return `
-                        < div class="max-w-6xl mx-auto py-6 fade-in" >
+                    < div class="max-w-6xl mx-auto py-6 fade-in" >
                         <div class="mb-12 flex items-end justify-between">
                             <div>
                                 <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${bdayData.badge || 'Solar Returns'}</span>
@@ -1486,7 +1540,7 @@ window.AppNavigation = {
                                 <i class="fas fa-bullhorn animate-pulse"></i> ${bdayData.cta || 'Broadcast Wishes'}
                             </button>
                         </div>
-                    </div>`;
+                    </div > `;
 
             case 'holidays':
                 const holidayData = this.contentData?.holidays || {};
@@ -1501,7 +1555,7 @@ window.AppNavigation = {
                 };
 
                 return `
-                        < div class="max-w-6xl mx-auto py-6 fade-in" >
+                    < div class="max-w-6xl mx-auto py-6 fade-in" >
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${holidayData.badge || 'Global Calendar'}</span>
                             <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${holidayData.title || 'Holidays 2025-26'}</h1>
@@ -1532,7 +1586,7 @@ window.AppNavigation = {
                                 </div>
                             </div>
                         </div>
-                    </div>`;
+                    </div > `;
 
             case 'attendance':
                 const attendData = this.contentData?.attendance || {};
@@ -1543,7 +1597,7 @@ window.AppNavigation = {
                 const punctuality = attendData.punctuality || { title: "The Punctuality DNA", description: "Precision is our product.", rules: ["Entry: 09:30 AM"] };
 
                 return `
-                        < div class="max-w-6xl mx-auto py-6 fade-in" >
+                    < div class="max-w-6xl mx-auto py-6 fade-in" >
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${attendData.badge || 'Operation Hours'}</span>
                             <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${attendData.title || 'Sync & Flow'}</h1>
@@ -1583,7 +1637,7 @@ window.AppNavigation = {
                             </div>
                             <div class="w-full md:w-96 aspect-square bg-white/5 backdrop-blur-3xl rounded-[3rem] border-4 border-white/5 z-10 shadow-2xl flex items-center justify-center text-white/20 text-4xl font-black italic">PORTAL</div>
                         </div>
-                    </div>`;
+                    </div > `;
 
             case 'policies':
                 const policyData = this.contentData?.policies || {};
@@ -1594,7 +1648,7 @@ window.AppNavigation = {
                 const policyTerminal = policyData.terminal || { command: "initializing_handshake_protocol...", output: ["policies_loaded: true"] };
 
                 return `
-                        < div class="max-w-6xl mx-auto py-6 fade-in" >
+                    < div class="max-w-6xl mx-auto py-6 fade-in" >
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${policyData.badge || 'Legal Framework'}</span>
                             <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tight">${policyData.title || 'The Commitment'}</h1>
@@ -1632,16 +1686,16 @@ window.AppNavigation = {
                                 <span class="text-white text-sm font-bold uppercase tracking-widest group-hover:text-ikf-yellow transition-colors">I acknowledge and accept the protocol</span>
                             </label>
                         </div>
-                    </div>`;
+                    </div > `;
 
             default:
                 return `
-                        <div class="max-w-4xl mx-auto py-20 text-center">
+                    < div class="max-w-4xl mx-auto py-20 text-center" >
                         <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6"><i class="fas fa-tools text-2xl text-slate-400"></i></div>
                         <h2 class="text-2xl font-bold text-ikf-blue">Module Under Construction</h2>
                         <p class="text-slate-500 mt-2 text-lg">We are building high-quality content for <span class="font-bold text-ikf-yellow italic">${sectionId}</span>.</p>
                         <button onclick="AppNavigation.navigateTo('intro')" class="mt-8 text-ikf-blue font-bold hover:underline"><i class="fas fa-arrow-left mr-2"></i> Back to Intro</button>
-                    </div>`;
+                    </div > `;
         }
     }
 };

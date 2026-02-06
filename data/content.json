@@ -233,25 +233,25 @@
     ]
   },
   "referral": {
-    "badge": "Talent Acquisition Protocol",
-    "title": "The Bounty <span class=\"gradient\">Board</span>",
-    "subtitle": "Earn rewards by expanding our intelligence network. Quality over quantity.",
+    "badge": "Ambassador Protocol",
+    "title": "Referral <span class=\"gradient\">Program</span>",
+    "subtitle": "Expand our collective intelligence. Connect high-caliber talent with IKF's industrial excellence.",
     "tiers": [
       {
         "level": "1",
-        "title": "Junior Agent",
+        "title": "Junior Associate",
         "experience": "0-2 Years Exp",
         "reward": "₹5,000",
-        "label": "Successfully Hired",
-        "roles": "exec / junior designer"
+        "label": "Successful Placement",
+        "roles": "Exec / Junior Designer"
       },
       {
         "level": "2",
         "title": "Specialist",
         "experience": "2-5 Years Exp",
         "reward": "₹15,000",
-        "label": "Successfully Hired",
-        "roles": "manager / lead dev",
+        "label": "Successful Placement",
+        "roles": "Manager / Lead Dev",
         "featured": true
       },
       {
@@ -259,22 +259,40 @@
         "title": "Architect",
         "experience": "5+ Years Exp",
         "reward": "₹25,000",
-        "label": "Successfully Hired",
-        "roles": "director / head"
+        "label": "Successful Placement",
+        "roles": "Director / Head"
+      }
+    ],
+    "policies": [
+      {
+        "title": "Eligibility",
+        "description": "All active agents of the IKF ecosystem are eligible to participate, excluding the Strategic Leadership and HR units."
+      },
+      {
+        "title": "Payout Terms",
+        "description": "Rewards are processed upon the successful 90-day completion (Probation Handshake) of the referred candidate."
+      },
+      {
+        "title": "Submission",
+        "description": "CVs must be submitted via the official portal link below to ensure tracking within the Talent Acquisition system."
+      },
+      {
+        "title": "Duplicate Policy",
+        "description": "In case of duplicate referrals, the first timestamped submission will be recognized as the official source."
       }
     ],
     "process": [
       {
         "step": "1. Identify",
-        "description": "Locate a candidate matching our cultural code."
+        "description": "Locate high-impact talent matching our cultural and technical DNA."
       },
       {
         "step": "2. Submit",
-        "description": "Forward coordinates (CV) to HR via secure channel."
+        "description": "Transmit coordinates (CV) to global HR via the secure submission node."
       },
       {
-        "step": "3. Reward",
-        "description": "Payment released upon 3-month survival confirmation."
+        "step": "3. Onboard",
+        "description": "Candidate undergoes industrial verification and cultural integration."
       }
     ]
   },
