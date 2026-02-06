@@ -1074,18 +1074,37 @@ window.AppNavigation = {
                             </div>
                         </div>
 
-                        <div class="bg-white p-12 lg:p-20 rounded-[4rem] premium-card mb-16">
-                            <h3 class="text-3xl font-black text-ikf-blue mb-12 text-center uppercase tracking-widest">${missData.valuesTitle}</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
-                                ${(Array.isArray(missData.values) ? missData.values : []).map(val => `
-                                    <div class="text-center group">
-                                        <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-ikf-blue group-hover:text-white transition-all shadow-lg">
-                                            <i class="fas ${val.icon} text-xl"></i>
+                        <div class="bg-slate-50 p-12 lg:p-24 rounded-[4rem] mb-16">
+                            <div class="max-w-4xl mx-auto text-center mb-20">
+                                <h3 class="text-4xl md:text-5xl font-black text-[#0E0057] mb-6">${missData.valuesTitle}</h3>
+                                <p class="text-slate-400 font-medium text-lg leading-relaxed">The foundational principles that drive our creative spirit and industrialized precision.</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                ${(Array.isArray(missData.values) ? missData.values : []).map((val, idx) => {
+                    const firstLetter = val.title.charAt(0);
+                    return `
+                                        <div class="bg-white p-10 rounded-[3rem] shadow-sm hover:shadow-2xl transition-all duration-500 group relative overflow-hidden h-full flex flex-col justify-between hover:-translate-y-2">
+                                            <!-- Massive BG Letter -->
+                                            <div class="absolute -right-4 -bottom-6 text-[140px] font-black pointer-events-none opacity-[0.03] group-hover:opacity-[0.07] transition-all transform group-hover:scale-110 text-[#0E0057] select-none">
+                                                ${firstLetter}
+                                            </div>
+                                            
+                                            <div class="relative z-10">
+                                                <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-[#d9a417] group-hover:text-white transition-all shadow-inner">
+                                                    <i class="fas ${val.icon} text-2xl"></i>
+                                                </div>
+                                                <h4 class="text-3xl font-black text-[#0E0057] mb-4">${val.title}</h4>
+                                                <p class="text-slate-500 text-lg font-medium leading-relaxed">${val.desc}</p>
+                                            </div>
+                                            
+                                            <div class="mt-8 pt-6 border-t border-slate-50 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Protocol Core</span>
+                                                <div class="w-2 h-2 rounded-full bg-[#d9a417]"></div>
+                                            </div>
                                         </div>
-                                        <h4 class="font-black text-ikf-blue mb-1 text-sm">${val.title}</h4>
-                                        <p class="text-[10px] text-slate-400 font-medium">${val.desc}</p>
-                                    </div>
-                                `).join('')}
+                                    `;
+                }).join('')}
                             </div>
                         </div>
                     </div>`;
