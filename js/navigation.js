@@ -865,17 +865,17 @@ window.AppNavigation = {
                                 <div>
                                     <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block animate-pulse">${dirData.badge}</span>
                                     <h1 class="text-4xl md:text-6xl font-extrabold text-ikf-blue tracking-tighter leading-none mb-2">
-                                        ${dirData.title.replace('Collective.', '<span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Collective.</span>')}
+                                        ${(dirData.title || "The Collective.").replace('Collective.', '<span class="text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow">Collective.</span>')}
                                     </h1>
-                                    <p class="text-slate-400 font-medium max-w-xl text-sm">${dirData.description}</p>
+                                    <p class="text-slate-400 font-medium max-w-xl text-sm">${dirData.description || dirData.subtitle || ""}</p>
                                 </div>
                                 
                                 <!-- Live Stats Ticker -->
                                 <div class="flex gap-4">
-                                    ${(dirData.stats || []).map(stat => `
+                                    ${(Array.isArray(dirData.stats) ? dirData.stats : []).map(stat => `
                                         <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-lg text-center min-w-[100px] hover:-translate-y-1 transition-transform">
                                             <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">${stat.label}</p>
-                                            <p class="text-2xl font-black text-ikf-blue">${stat.value}<span class="text-sm align-top">${stat.suffix}</span></p>
+                                            <p class="text-2xl font-black text-ikf-blue">${stat.value}<span class="text-sm align-top">${stat.suffix || ""}</span></p>
                                         </div>
                                     `).join('')}
                                 </div>
@@ -951,7 +951,7 @@ window.AppNavigation = {
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-20">
-                            ${(philData.pillars || []).map(pillar => `
+                            ${(Array.isArray(philData.pillars) ? philData.pillars : []).map(pillar => `
                                 <div class="premium-card bg-white p-12 group overflow-hidden relative">
                                     <div class="absolute -top-10 -right-10 text-[120px] font-black text-slate-50 group-hover:text-ikf-blue/5 transition-colors">${pillar.id}</div>
                                     <div class="relative z-10">
@@ -1014,7 +1014,7 @@ window.AppNavigation = {
                         <div class="bg-white p-12 lg:p-20 rounded-[4rem] premium-card mb-16">
                             <h3 class="text-3xl font-black text-ikf-blue mb-12 text-center uppercase tracking-widest">${missData.valuesTitle}</h3>
                             <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
-                                ${(missData.values || []).map(val => `
+                                ${(Array.isArray(missData.values) ? missData.values : []).map(val => `
                                     <div class="text-center group">
                                         <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-ikf-blue group-hover:text-white transition-all shadow-lg">
                                             <i class="fas ${val.icon} text-xl"></i>
@@ -1058,7 +1058,7 @@ window.AppNavigation = {
 
                         <!--Culture Stats Grid-->
                         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-                            ${(cultData.stats || []).map(stat => `
+                            ${(Array.isArray(cultData.stats) ? cultData.stats : []).map(stat => `
                                 <div class="p-8 bg-white rounded-[2.5rem] shadow-lg hover:shadow-xl transition-all border border-slate-50 text-center group cursor-pointer hover:-translate-y-2">
                                     <div class="w-16 h-16 rounded-2xl bg-${stat.color}-50 text-${stat.color === 'ikf-blue' ? 'ikf-blue' : stat.color === 'ikf-yellow' ? 'ikf-yellow' : stat.color + '-500'} flex items-center justify-center mx-auto mb-6 text-2xl group-hover:scale-110 transition-transform"><i class="fas ${stat.icon}"></i></div>
                                     <h3 class="text-4xl font-black text-slate-800 mb-2">${stat.value}<span class="text-lg text-slate-300">${stat.suffix}</span></h3>
@@ -1095,7 +1095,7 @@ window.AppNavigation = {
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-6">
-                                    ${(cultData.secondaryValues || []).map(val => `
+                                    ${(Array.isArray(cultData.secondaryValues) ? cultData.secondaryValues : []).map(val => `
                                         <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group">
                                             <i class="fas ${val.icon} text-3xl text-${val.color} mb-4 group-hover:scale-110 transition-transform block"></i>
                                             <h4 class="font-black text-lg mb-2">${val.title}</h4>
@@ -1157,7 +1157,7 @@ window.AppNavigation = {
 
                         <!--Live Stats Grid-->
                         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-                            ${stats.map(stat => {
+                            ${(Array.isArray(stats) ? stats : []).map(stat => {
                     const platformColors = {
                         'LinkedIn': '#0077b5',
                         'Instagram': '#E1306C',
@@ -1208,7 +1208,7 @@ window.AppNavigation = {
                             <div class="bg-white rounded-[3rem] p-8 border border-slate-100 shadow-sm flex flex-col">
                                 <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6">Recent Activity</h4>
                                 <div class="flex-1 space-y-6 overflow-hidden">
-                                    ${feed.map(item => `
+                                    ${(Array.isArray(feed) ? feed : []).map(item => `
                                         <div class="flex gap-4 group cursor-pointer">
                                             <div class="w-12 h-12 rounded-xl bg-slate-100 flex-shrink-0 bg-cover bg-center" style="background-image: url('${item.image || 'https://images.unsplash.com/photo-1531482615713-2afd69097998'}')"></div>
                                             <div>
@@ -1251,7 +1251,7 @@ window.AppNavigation = {
                             </h3>
 
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
-                                ${tiers.map(tier => `
+                                ${(Array.isArray(tiers) ? tiers : []).map(tier => `
                                     <div class="p-8 rounded-[2rem] bg-slate-50 border border-slate-100 group hover:bg-ikf-blue hover:text-white transition-all">
                                         <i class="fas ${tier.featured ? 'fa-gem' : 'fa-gift'} text-3xl text-ikf-yellow mb-6"></i>
                                         <h4 class="text-4xl font-black mb-2">${tier.reward}</h4>
@@ -1263,7 +1263,7 @@ window.AppNavigation = {
 
                         <!--Process Grid-->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
-                            ${refProcess.map(step => `
+                            ${(Array.isArray(refProcess) ? refProcess : []).map(step => `
                                 <div class="bg-white p-8 rounded-[2rem] border border-slate-100 relative group overflow-hidden">
                                      <span class="absolute -right-4 -top-4 text-7xl font-black text-slate-50 group-hover:text-ikf-blue/5 transition-colors">${typeof step.step === 'string' ? step.step.split('.')[0] : step.step}</span>
                                     <div class="relative z-10">
@@ -1310,7 +1310,7 @@ window.AppNavigation = {
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-                            ${milestones.map(m => `
+                            ${(Array.isArray(milestones) ? milestones : []).map(m => `
                                 <div class="p-8 bg-white rounded-[2.5rem] border border-slate-50 shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all group flex flex-col items-center text-center relative overflow-hidden">
                                     <div class="absolute inset-x-0 top-0 h-2 bg-slate-900"></div>
                                     <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6 text-slate-900 border-4 border-slate-900 relative">
@@ -1319,7 +1319,7 @@ window.AppNavigation = {
                                     </div>
                                     <h3 class="text-xl font-black text-slate-800 mb-4">${m.title}</h3>
                                     <div class="space-y-3 w-full">
-                                        ${(m.members || m.people || []).map(p => `
+                                        ${(Array.isArray(m.members || m.people) ? (m.members || m.people) : []).map(p => `
                                             <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
                                                 <img src="${p.image || p.img || 'images/avatars/avatar_dev_male.png'}" class="w-10 h-10 rounded-xl object-cover">
                                                 <div class="text-left">
@@ -1368,7 +1368,7 @@ window.AppNavigation = {
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-                            ${upcoming.map(b => `
+                            ${(Array.isArray(upcoming) ? upcoming : []).map(b => `
                                 <div class="bg-white rounded-[2.5rem] border border-slate-50 p-6 flex items-center gap-4 hover:shadow-lg transition-all group cursor-default">
                                     <div class="w-20 h-20 rounded-2xl bg-slate-100 relative overflow-hidden">
                                         <img src="${b.image || b.img || 'images/avatars/avatar_dev_male.png'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
@@ -1429,7 +1429,7 @@ window.AppNavigation = {
                             <div class="bg-white p-12 lg:p-16 rounded-[3.5rem] premium-card">
                                 <h3 class="text-2xl font-black text-ikf-blue mb-10">Strategic Resets</h3>
                                 <div class="space-y-6">
-                                    ${strategicResets.map(h => `
+                                    ${(Array.isArray(strategicResets) ? strategicResets : []).map(h => `
                                         <div class="flex items-center justify-between p-6 bg-slate-50 rounded-2xl group hover:bg-ikf-blue hover:text-white transition-all">
                                             <div><p class="font-black text-sm uppercase mb-1">${h.name}</p><p class="text-xs opacity-50 font-bold">${h.date}</p></div>
                                             <div class="text-[10px] font-black uppercase tracking-widest bg-ikf-yellow text-white px-3 py-1 rounded-full">${h.type}</div>
@@ -1468,7 +1468,7 @@ window.AppNavigation = {
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-                            ${schedule.map((card, idx) => {
+                            ${(Array.isArray(schedule) ? schedule : []).map((card, idx) => {
                     const icons = ["fa-calendar-alt", "fa-stopwatch", "fa-fingerprint"];
                     return `
                                     <div class="bg-white p-12 rounded-[2.5rem] premium-card text-center group">
@@ -1519,7 +1519,7 @@ window.AppNavigation = {
                         </div>
 
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
-                            ${policyStats.map((stat, idx) => {
+                            ${(Array.isArray(policyStats) ? policyStats : []).map((stat, idx) => {
                     const icons = ["fa-hourglass-start", "fa-history", "fa-wallet", "fa-file-contract"];
                     return `
                                     <div class="p-8 bg-white rounded-[2.5rem] text-center border border-slate-50 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all group cursor-default">

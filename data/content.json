@@ -462,11 +462,19 @@
   "directory": {
     "badge": "Live Neural Network",
     "title": "The <span class=\"gradient\">Collective.</span>",
-    "subtitle": "Accessing biosignatures of active agents operating across the IKF ecosystem.",
-    "stats": {
-      "active": "100%",
-      "departments": "05"
-    },
+    "description": "Accessing biosignatures of active agents operating across the IKF ecosystem.",
+    "stats": [
+      {
+        "label": "Active",
+        "value": "100",
+        "suffix": "%"
+      },
+      {
+        "label": "Depts",
+        "value": "05",
+        "suffix": ""
+      }
+    ],
     "searchPlaceholder": "Scan for agent name or clearance level...",
     "filterLabel": "All Ecosystems"
   }
