@@ -942,99 +942,86 @@ window.AppNavigation = {
                 };
 
                 return `
-                    <div class="h-screen w-full flex flex-col bg-[#0E0057] overflow-hidden lg:h-[calc(100vh-120px)] rounded-[3rem] p-4 lg:p-8 m-0 lg:m-4 fade-in">
-                        <!-- Blueprint Overlay -->
-                        <div class="absolute inset-0 blueprint-grid opacity-10 pointer-events-none z-0"></div>
-                        
-                        <!-- Header Overlay (Minimal) -->
-                        <div class="relative z-20 flex justify-between items-end mb-8 px-6">
-                            <div>
-                                <span class="bg-[#d9a417] text-[#0E0057] px-4 py-1 rounded-sm text-[8px] font-black uppercase tracking-[0.4em] mb-3 inline-block">
-                                    ${pData.badge || 'Core Directives'}
-                                </span>
-                                <h1 class="text-4xl md:text-5xl font-black text-white leading-none tracking-tighter">
-                                    The <span class="text-[#d9a417]">DNA</span> of IKF
-                                </h1>
-                            </div>
-                            <div class="hidden lg:block text-right">
-                                <p class="text-slate-400 text-xs font-medium max-w-[200px] leading-tight">
-                                    Interactive Portal: Hover over a pillar to traverse our core philosophy.
-                                </p>
-                            </div>
+                    <div class="max-w-6xl mx-auto py-12 px-6 fade-in selection:bg-ikf-yellow selection:text-white">
+                        <!-- Header Section -->
+                        <div class="mb-20 text-center lg:text-left relative">
+                            <div class="absolute -top-10 -left-10 text-[120px] font-black text-slate-50 -z-10 select-none">IKF</div>
+                            <span class="bg-[#0E0057] text-white px-5 py-2 rounded-sm text-[10px] font-black uppercase tracking-[0.4em] mb-6 inline-block">
+                                ${pData.badge || 'Core Directives'}
+                            </span>
+                            <h1 class="text-5xl md:text-7xl font-black text-[#0E0057] leading-none tracking-tighter mb-6">
+                                The <span class="text-[#d9a417]">Philosophy</span>
+                            </h1>
+                            <p class="text-xl text-slate-400 font-medium max-w-2xl leading-relaxed">
+                                ${pData.subtitle || 'Engineering growth through master-level digital strategies and industrialized precision.'}
+                            </p>
                         </div>
 
-                        <!-- Interactive Canvas -->
-                        <div class="flex-1 flex flex-col lg:flex-row gap-4 relative z-10 overflow-hidden">
+                        <!-- Pillars Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
                             ${(Array.isArray(pData.pillars) ? pData.pillars : []).map((pillar, idx) => {
                     const pLetter = pillar.letter || pillar.id || "?";
                     const isYellow = pLetter === 'K';
-                    const activeColor = isYellow ? '#d9a417' : '#ffffff';
+                    const colorClass = isYellow ? 'text-[#d9a417]' : 'text-[#0E0057]';
+                    const borderClass = isYellow ? 'border-[#d9a417]' : 'border-[#0E0057]/10';
 
                     return `
-                                    <div class="panel-interactive relative bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 overflow-hidden group cursor-pointer">
-                                        <!-- Vertical Massive Letter (Background) -->
-                                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                            <span class="text-[120px] lg:text-[280px] font-black opacity-10 group-hover:opacity-5 transition-opacity duration-700" style="color: ${activeColor}">
+                                    <div class="group bg-white p-10 rounded-[3rem] border ${borderClass} shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 relative overflow-hidden">
+                                        <!-- Decorative Background Letter -->
+                                        <div class="absolute -right-4 -bottom-4 text-[120px] font-black opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-700 select-none pointer-events-none ${colorClass}">
+                                            ${pLetter}
+                                        </div>
+                                        
+                                        <div class="flex items-center gap-4 mb-8">
+                                            <div class="w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xl shadow-inner ${isYellow ? 'bg-[#d9a417] text-white' : 'bg-[#0E0057] text-white'}">
                                                 ${pLetter}
-                                            </span>
+                                            </div>
+                                            <span class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Pillar 0${idx + 1}</span>
                                         </div>
 
-                                        <div class="panel-mask"></div>
+                                        <h3 class="text-3xl font-black mb-6 ${colorClass}">${pillar.title || ''}</h3>
+                                        <p class="text-slate-500 text-sm leading-relaxed font-medium mb-10">
+                                            ${pillar.description || pillar.content || ''}
+                                        </p>
 
-                                        <div class="absolute inset-0 p-8 lg:p-12 flex flex-col items-center lg:items-start text-center lg:text-left justify-between">
-                                            <!-- Panel Header -->
-                                            <div class="w-full">
-                                                <div class="flex items-center justify-center lg:justify-start gap-4 mb-6">
-                                                    <div class="w-2 h-2 rounded-full shadow-[0_0_10px_rgba(217,164,23,0.5)]" style="background: ${activeColor}"></div>
-                                                    <span class="text-[10px] font-black uppercase tracking-[0.4em]" style="color: ${activeColor}">Pillar 0${idx + 1}</span>
-                                                </div>
-                                                <h2 class="text-4xl lg:text-6xl font-black transition-all duration-500 group-hover:translate-x-2" style="color: ${activeColor}">
-                                                    ${pillar.title || ''}
-                                                </h2>
-                                            </div>
-
-                                            <!-- Panel Expanded Content -->
-                                            <div class="panel-content w-full max-w-md">
-                                                <p class="text-white/60 text-base lg:text-xl font-medium leading-relaxed mb-10">
-                                                    ${pillar.description || pillar.content || ''}
-                                                </p>
-                                                
-                                                <div class="grid grid-cols-2 gap-6 p-6 bg-white/5 rounded-3xl border border-white/5">
-                                                    <div>
-                                                        <span class="block text-[8px] font-black text-[#d9a417] uppercase tracking-widest mb-1">Status</span>
-                                                        <span class="text-xs font-bold text-white uppercase">Operational</span>
-                                                    </div>
-                                                    <div>
-                                                        <span class="block text-[8px] font-black text-[#d9a417] uppercase tracking-widest mb-1">Efficiency</span>
-                                                        <span class="text-xs font-bold text-white uppercase">100% Mastery</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Panel Footer (Initial State Visibility) -->
-                                            <div class="w-full flex items-center justify-between opacity-40 group-hover:opacity-100 transition-opacity">
-                                                <div class="h-[1px] flex-1 bg-white/20 mr-4"></div>
-                                                <i class="fas fa-plus text-xs" style="color: ${activeColor}"></i>
-                                            </div>
+                                        <div class="pt-6 border-t border-slate-50 flex justify-between items-center">
+                                            <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest">Protocol v25.0</span>
+                                            <i class="fas fa-chevron-right text-xs opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all ${colorClass}"></i>
                                         </div>
                                     </div>
                                 `;
                 }).join('')}
                         </div>
 
-                        <!-- Minimal Manifesto Strip -->
-                        <div class="relative z-20 mt-8 py-4 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-                            <p class="text-white/30 text-[10px] font-bold uppercase tracking-[0.3em]">
-                                Beyond Services, <span class="text-[#d9a417]">We Build Legacies.</span>
-                            </p>
-                            <div class="flex gap-10">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-xl font-black text-[#d9a417]">25+</span>
-                                    <span class="text-[8px] font-bold text-white/40 uppercase tracking-widest">Years Mastery</span>
+                        <!-- Formal Brand Manifesto -->
+                        <div class="bg-[#0E0057] rounded-[4rem] p-12 md:p-20 text-white relative overflow-hidden group">
+                            <!-- Background Accent -->
+                            <div class="absolute top-0 right-0 w-1/2 h-full bg-[#d9a417]/5 -skew-x-12 translate-x-1/2"></div>
+                            
+                            <div class="relative z-10 max-w-4xl">
+                                <h2 class="text-4xl md:text-6xl font-black mb-12 leading-tight tracking-tighter">
+                                    Beyond Services, <br />
+                                    <span class="text-[#d9a417]">We Build Legacies.</span>
+                                </h2>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+                                    <p class="text-lg text-slate-300 font-medium leading-relaxed">
+                                        At IKF, our philosophy is the engine of our growth. For 25 years, we've refined digital tools through a human lens, ensuring every output is a blend of precision and heart.
+                                    </p>
+                                    <p class="text-lg text-slate-300 font-medium leading-relaxed">
+                                        We are obsessed with curiosity and mastered in digital wisdom, engineering competitive advantages for 1500+ global partners.
+                                    </p>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-xl font-black text-[#d9a417]">1500+</span>
-                                    <span class="text-[8px] font-bold text-white/40 uppercase tracking-widest">Global Partners</span>
+
+                                <div class="flex flex-wrap gap-12 pt-12 border-t border-white/10">
+                                    <div class="flex flex-col">
+                                        <span class="text-5xl font-black text-[#d9a417] mb-2">25+</span>
+                                        <span class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Years Legacy</span>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="text-5xl font-black text-white mb-2">1500+</span>
+                                        <span class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Global Partners</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
