@@ -612,5 +612,166 @@
     ],
     "searchPlaceholder": "Scan for agent name or clearance level...",
     "filterLabel": "All Ecosystems"
+  },
+  "org_chart": {
+    "badge": "Our Structure",
+    "title": "How We're <span class=\"text-[#d9a417]\">Organized</span>",
+    "subtitle": "A simple overview of our departments and what they do",
+    "leadership": {
+      "title": "Leadership Team",
+      "subtitle": "Our Board of Directors provides strategic guidance and vision for the company"
+    },
+    "departments": [
+      {
+        "id": "web-dev",
+        "title": "Web Development",
+        "description": "Building high-performance websites and web applications",
+        "icon": "fa-laptop-code",
+        "color": "blue",
+        "items": [
+          "Website Design",
+          "E-Commerce",
+          "Maintenance"
+        ]
+      },
+      {
+        "id": "digital-marketing",
+        "title": "Digital Marketing",
+        "description": "Driving growth through strategic digital campaigns",
+        "icon": "fa-bullhorn",
+        "color": "green",
+        "items": [
+          "Social Media",
+          "SEO",
+          "Performance Marketing"
+        ]
+      },
+      {
+        "id": "branding",
+        "title": "Branding & Creative",
+        "description": "Creating compelling visual identities and content",
+        "icon": "fa-palette",
+        "color": "purple",
+        "items": [
+          "Video Production",
+          "Content Marketing",
+          "Corporate Branding"
+        ]
+      },
+      {
+        "id": "app-dev",
+        "title": "Application Development",
+        "description": "Custom software solutions for business needs",
+        "icon": "fa-server",
+        "color": "orange",
+        "items": [
+          "Cloud Telephony",
+          "Task Management",
+          "Custom Apps"
+        ]
+      }
+    ]
+  },
+  "client_showcase": {
+    "badge": "Global Impact",
+    "title": "Our <span class=\"text-[#d9a417]\">Client Showcase</span>",
+    "subtitle": "We partner with leading national and global brands to create powerful, insight-driven digital experiences.",
+    "categories": [
+      {
+        "title": "Automotive & Industrial",
+        "icon": "fa-car-side",
+        "color": "blue",
+        "clients": [
+          {
+            "name": "Tata Autocomp",
+            "logo": "https://www.ikf.co.in/wp-content/uploads/TataAutoComp.jpg"
+          },
+          {
+            "name": "Mercedes-Benz School",
+            "logo": "https://www.ikf.co.in/wp-content/uploads/MercedesBenzSchool.jpg"
+          },
+          {
+            "name": "Force Motors",
+            "logo": "https://www.ikf.co.in/wp-content/uploads/force-motors-logo.jpg"
+          },
+          {
+            "name": "Kalyani Group",
+            "logo": "https://www.ikf.co.in/wp-content/uploads/Kalyani2.jpg"
+          },
+          {
+            "name": "Kirloskar",
+            "logo": "https://www.ikf.co.in/wp-content/uploads/Kirloskar.jpg"
+          }
+        ]
+      },
+      {
+        "title": "Education & Culture",
+        "icon": "fa-graduation-cap",
+        "color": "indigo",
+        "clients": [
+          {
+            "name": "Symbiosis",
+            "logo": "https://www.ikf.co.in/wp-content/uploads/Symbiosis.jpg"
+          },
+          {
+            "name": "MIT School",
+            "logo": "https://www.ikf.co.in/wp-content/uploads/MITSchool.jpg"
+          },
+          {
+            "name": "MIT-WPU",
+            "logo": "https://www.ikf.co.in/wp-content/uploads/MIT-WPU-1.jpg"
+          },
+          {
+            "name": "MITCON",
+            "logo": "https://www.ikf.co.in/wp-content/uploads/MITCON.jpg"
+          },
+          {
+            "name": "MIT ADT",
+            "logo": "https://www.ikf.co.in/wp-content/uploads/MIT-ADT-1.jpg"
+          }
+        ]
+      },
+      {
+        "title": "Tech & Innovation",
+        "icon": "fa-microchip",
+        "color": "emerald",
+        "clients": [
+          {
+            "name": "Persistent",
+            "logo": "https://www.ikf.co.in/wp-content/uploads/Persistent.jpg"
+          },
+          {
+            "name": "Bharat Electronics",
+            "logo": "https://www.ikf.co.in/wp-content/uploads/BharatElectronics.jpg"
+          },
+          {
+            "name": "Poonawalla Group",
+            "logo": "https://www.ikf.co.in/wp-content/uploads/poonawalla-group-jpg.webp"
+          },
+          {
+            "name": "Mindgate",
+            "logo": "https://www.ikf.co.in/wp-content/uploads/Mindgate.jpg"
+          },
+          {
+            "name": "ARAI",
+            "logo": "https://www.ikf.co.in/wp-content/uploads/ARAI-1.jpg"
+          }
+        ]
+      }
+    ],
+    "stats": [
+      {
+        "value": "1500+",
+        "label": "Global Brands"
+      },
+      {
+        "value": "25+",
+        "label": "Years Excellence"
+      },
+      {
+        "value": "Pune",
+        "label": "Innovation Hub"
+      }
+    ]
   }
 }

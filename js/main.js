@@ -115,23 +115,33 @@ $(document).ready(async function () {
             $('#hero-section img[alt="YouTube"]').css('transform', `translate(${x * 2.2}px, ${y * 2.2}px)`);
         });
 
-        // 8. Smart Typing Effect for Hero Badge
-        const $badgeText = $('#hero-section .inline-flex span').last();
+        // 8. Smart Typing Effect for Hero Badge (Dynamic)
+        const $badgeText = $('#hero-badge');
         if ($badgeText.length) {
-            const originalBadgeText = "Your Future Starts Here";
-            $badgeText.text(''); // Clear initially
-
-            let charIndex = 0;
-            function typeBadge() {
-                if (charIndex < originalBadgeText.length) {
-                    $badgeText.text($badgeText.text() + originalBadgeText.charAt(charIndex));
-                    charIndex++;
-                    setTimeout(typeBadge, 100);
+            // Function to run typing effect
+            const runTypingEffect = (text) => {
+                $badgeText.text('');
+                let charIndex = 0;
+                function typeBadge() {
+                    if (charIndex < text.length) {
+                        $badgeText.text($badgeText.text() + text.charAt(charIndex));
+                        charIndex++;
+                        setTimeout(typeBadge, 80);
+                    }
                 }
-            }
+                setTimeout(typeBadge, 500);
+            };
 
-            // Start after a slight delay for impact
-            setTimeout(typeBadge, 1500);
+            // If navigation already has data, run it. Otherwise wait.
+            if (window.AppNavigation && window.AppNavigation.contentData) {
+                runTypingEffect(window.AppNavigation.contentData.hero.badge || "Your Future Starts Here");
+            } else {
+                // Polling for data load if necessary, or default
+                setTimeout(() => {
+                    const dynamicText = window.AppNavigation?.contentData?.hero?.badge || "Your Future Starts Here";
+                    runTypingEffect(dynamicText);
+                }, 2000);
+            }
         }
 
     } catch (error) {
