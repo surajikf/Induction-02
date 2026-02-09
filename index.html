@@ -8,6 +8,8 @@
 
     <!-- Scripts & Styles -->
     <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
@@ -42,18 +44,21 @@
             <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 border border-white/20 text-white/80 mb-10 backdrop-blur-sm fade-in"
                 style="animation-delay: 0.1s">
                 <span class="w-2 h-2 bg-ikf-yellow rounded-full subtle-pulse"></span>
-                <span class="text-xs font-semibold uppercase tracking-[0.2em]">Your Future Starts Here</span>
+                <span id="hero-badge" class="text-xs font-semibold uppercase tracking-[0.2em]">Your Future Starts
+                    Here</span>
             </div>
 
             <!-- Main Heading - Removed Glitch Effect -->
-            <h1 class="text-5xl sm:text-7xl lg:text-8xl font-black text-white mb-8 tracking-tight leading-[1.1] fade-in"
+            <h1 id="hero-title"
+                class="text-5xl sm:text-7xl lg:text-8xl font-black text-white mb-8 tracking-tight leading-[1.1] fade-in"
                 style="animation-delay: 0.2s">
                 Transforming <span class="text-ikf-yellow">Ideas</span><br />Into <span
                     class="text-white">Reality</span>
             </h1>
 
             <!-- Subtitle -->
-            <p class="text-lg sm:text-xl text-slate-300 mb-14 max-w-2xl mx-auto leading-relaxed fade-in"
+            <p id="hero-subtitle"
+                class="text-lg sm:text-xl text-slate-300 mb-14 max-w-2xl mx-auto leading-relaxed fade-in"
                 style="animation-delay: 0.3s">
                 Welcome to <span class="text-white font-semibold">I Knowledge Factory</span>. Explore our legacy,
                 understand our DNA, and become part of our 25-year journey of digital excellence.
@@ -64,7 +69,7 @@
                 style="animation-delay: 0.4s">
                 <button id="start-journey" onclick="window.startApp()"
                     class="btn-primary group relative bg-ikf-yellow hover:bg-[#c29215] text-white px-10 py-4 rounded-xl text-base font-bold transition-all shadow-lg hover:shadow-xl flex items-center gap-3 z-20">
-                    Start Your Induction
+                    <span id="hero-cta">Start Your Induction</span>
                     <i class="fas fa-arrow-right transition-transform group-hover:translate-x-1 text-sm"></i>
                 </button>
 
@@ -73,12 +78,12 @@
                     <div
                         class="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
                         <i class="fas fa-calendar-check text-ikf-yellow text-sm"></i>
-                        <span class="text-white text-sm font-semibold">25+ Years</span>
+                        <span id="hero-years" class="text-white text-sm font-semibold">25+ Years</span>
                     </div>
                     <div
                         class="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
                         <i class="fas fa-users text-ikf-yellow text-sm"></i>
-                        <span class="text-white text-sm font-semibold">150+ Team</span>
+                        <span id="hero-team" class="text-white text-sm font-semibold">150+ Team</span>
                     </div>
                 </div>
             </div>
@@ -205,6 +210,13 @@
                             class="nav-link flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
                             data-section="culture">
                             <i class="fas fa-users w-5"></i> <span>Company Culture</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#gallery"
+                            class="nav-link flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                            data-section="gallery">
+                            <i class="fas fa-images w-5"></i> <span>IKF Gallery</span>
                         </a>
                     </li>
                     <li>

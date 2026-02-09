@@ -7,8 +7,11 @@
     <title>IKF Induction CMS</title>
 
     <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
@@ -34,35 +37,44 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
         }
 
+        /* Premium Scrollbar */
         .cms-scrollbar::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
         }
 
         .cms-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 4px;
+            background: transparent;
         }
 
         .cms-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
+            background: #e2e8f0;
+            border-radius: 10px;
         }
 
         .cms-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+            background: #cbd5e1;
         }
 
+        /* Glassmorphism Sidebar */
+        .glass-sidebar {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Smooth Animations */
         .fade-in {
-            animation: fadeIn 0.3s ease-in;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(8px);
             }
 
             to {
@@ -71,54 +83,64 @@
             }
         }
 
-        .editor-toolbar {
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            background: white;
-            border-bottom: 2px solid #e2e8f0;
+        /* Button Loading State */
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+            pointer-events: none;
         }
 
-        .content-preview {
-            border: 2px dashed #cbd5e1;
-            min-height: 200px;
-            transition: all 0.3s;
+        .btn-loading::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: calc(50% - 10px);
+            left: calc(50% - 10px);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
         }
 
-        .content-preview:hover {
-            border-color: #d9a417;
-            background: #fffbeb;
-        }
-
-        .image-upload-zone {
-            border: 3px dashed #cbd5e1;
-            transition: all 0.3s;
-        }
-
-        .image-upload-zone.dragover {
-            border-color: #d9a417;
-            background: #fffbeb;
-        }
-
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            min-width: 300px;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-
+        @keyframes spin {
             to {
-                transform: translateX(0);
-                opacity: 1;
+                transform: rotate(360deg);
             }
+        }
+
+        /* Field Hover Effects */
+        .cms-field {
+            transition: all 0.2s ease;
+        }
+
+        .cms-field:focus {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(14, 0, 87, 0.1);
+        }
+
+        /* Card Stylings */
+        .editor-card {
+            background: white;
+            border-radius: 1.5rem;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        /* Tooltip Polish */
+        [title] {
+            position: relative;
+            cursor: help;
+        }
+
+        .fa-question-circle {
+            transition: all 0.2s ease;
+        }
+
+        .fa-question-circle:hover {
+            color: #0E0057 !important;
+            transform: scale(1.2);
         }
     </style>
 </head>
@@ -167,34 +189,47 @@
     <!-- MAIN CMS INTERFACE -->
     <div id="cms-interface" class="hidden">
         <!-- HEADER -->
-        <header class="bg-white border-b-2 border-slate-200 sticky top-0 z-50 shadow-sm">
-            <div class="px-6 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-ikf-blue rounded-xl flex items-center justify-center">
-                        <i class="fas fa-edit text-white text-xl"></i>
+        <header class="bg-white border-b border-slate-200/60 sticky top-0 z-50 backdrop-blur-md bg-white/80">
+            <div class="px-8 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-5">
+                    <div
+                        class="w-12 h-12 bg-ikf-blue rounded-2xl flex items-center justify-center shadow-lg shadow-ikf-blue/20">
+                        <i class="fas fa-microchip text-white text-xl"></i>
                     </div>
                     <div>
-                        <h1 class="text-xl font-black text-ikf-blue">IKF CMS</h1>
-                        <p class="text-xs text-slate-500 font-medium">Content Management System</p>
+                        <h1 class="text-2xl font-black text-slate-900 tracking-tighter">IKF Control Center</h1>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Cloud
+                                Link Active</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <button id="restore-sync-btn"
+                        class="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl transition-all flex items-center gap-2 text-sm">
+                        <i class="fas fa-undo"></i>
+                        Discard Changes
+                    </button>
+
+                    <button id="preview-btn" onclick="window.open('index.html', '_blank')"
+                        class="px-5 py-3 bg-ikf-yellow hover:bg-yellow-600 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2 text-sm">
+                        <i class="fas fa-eye"></i>
+                        Live Preview
+                    </button>
+
                     <button id="save-all-btn"
-                        class="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
-                        <i class="fas fa-save"></i>
+                        class="px-6 py-3 bg-ikf-blue hover:bg-ikf-blue/90 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2 text-sm">
+                        <i class="fas fa-cloud-upload-alt"></i>
                         Save All Changes
                     </button>
 
-                    <button id="preview-btn"
-                        class="px-6 py-3 bg-ikf-yellow hover:bg-yellow-600 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
-                        <i class="fas fa-eye"></i>
-                        Preview
-                    </button>
+                    <div class="h-8 w-px bg-slate-200 mx-2"></div>
 
                     <button id="logout-btn"
-                        class="px-4 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl transition-all flex items-center gap-2">
-                        <i class="fas fa-sign-out-alt"></i>
+                        class="px-4 py-3 bg-red-50 hover:bg-red-100 text-red-500 font-bold rounded-xl transition-all flex items-center gap-2 text-sm border border-red-100">
+                        <i class="fas fa-power-off"></i>
                         Logout
                     </button>
                 </div>
@@ -204,22 +239,34 @@
         <!-- MAIN CONTENT -->
         <div class="flex h-[calc(100vh-80px)]">
             <!-- SIDEBAR -->
-            <aside class="w-80 bg-white border-r-2 border-slate-200 overflow-y-auto cms-scrollbar">
-                <div class="p-6">
-                    <h2 class="text-sm font-black uppercase tracking-wider text-slate-400 mb-4">Content Sections</h2>
+            <aside class="w-80 bg-white border-r border-slate-200/60 overflow-y-auto cms-scrollbar flex flex-col">
+                <div class="p-8 pb-4">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-[10px] font-black uppercase tracking-widest text-slate-400">System Modules</h2>
+                    </div>
 
-                    <nav id="cms-nav" class="space-y-2">
+                    <nav id="cms-nav" class="space-y-1">
                         <!-- Navigation will be populated by JavaScript -->
                     </nav>
                 </div>
 
-                <div class="p-6 border-t-2 border-slate-100">
-                    <h2 class="text-sm font-black uppercase tracking-wider text-slate-400 mb-4">Image Manager</h2>
+                <div class="mt-auto p-8 border-t border-slate-100 bg-slate-50/50">
+                    <h2 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Media Library</h2>
                     <button id="image-manager-btn"
-                        class="w-full px-4 py-3 bg-ikf-blue hover:bg-ikf-yellow text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2">
-                        <i class="fas fa-images"></i>
-                        Manage Images
+                        class="w-full px-5 py-4 bg-white border border-slate-200 hover:border-ikf-blue/30 text-slate-700 hover:text-ikf-blue font-bold rounded-2xl transition-all flex items-center justify-center gap-3 shadow-sm group">
+                        <i class="fas fa-images text-slate-400 group-hover:text-ikf-blue transition-colors"></i>
+                        Manage Assets
                     </button>
+
+                    <div class="mt-6 flex items-center gap-3 p-4 bg-ikf-blue/5 rounded-2xl border border-ikf-blue/10">
+                        <div class="w-8 h-8 rounded-full bg-ikf-blue/10 flex items-center justify-center text-ikf-blue">
+                            <i class="fas fa-lock text-xs"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-[10px] font-bold text-ikf-blue uppercase tracking-wider">Secure Access</p>
+                            <p class="text-[9px] text-slate-400 font-medium">L-3 Admin Cleared</p>
+                        </div>
+                    </div>
                 </div>
             </aside>
 

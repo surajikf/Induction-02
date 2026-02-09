@@ -29,16 +29,110 @@ window.AppNavigation = {
     },
 
     /**
-     * Loads content from JSON file
+     * Loads ALL content (Sections, Images, Employees) from Supabase in Parallel
      */
     loadContent: async function () {
         try {
+            console.log('Fetching intelligence from Supabase Cloud...');
+
+            // Parallel Fetch Strategy for maximum speed
+            const [contentRes, imagesRes, employeesRes, galleryRes] = await Promise.all([
+                window.supabaseClient.from('induction_content').select('data').eq('slug', 'main').single(),
+                window.supabaseClient.from('image_manifest').select('data').eq('slug', 'main').single(),
+                window.supabaseClient.from('employees').select('*').order('is_leader', { ascending: false }).order('name'),
+                window.supabaseClient.from('gallery').select('*').order('created_at', { ascending: false })
+            ]);
+
+            // 1. Handle Content
+            if (!contentRes.error && contentRes.data) {
+                this.contentData = contentRes.data.data;
+                console.log('✓ Content synced');
+            } else {
+                console.warn('! Content fetch issue, using local fallback');
+                const res = await fetch('data/content.json');
+                this.contentData = await res.json();
+            }
+
+            // 2. Handle Images
+            if (!imagesRes.error && imagesRes.data) {
+                this.imagesData = imagesRes.data.data;
+                console.log('✓ Image Manifest synced');
+            } else {
+                console.warn('! Image manifest fetch issue, using local fallback');
+                const res = await fetch('data/images-manifest.json');
+                this.imagesData = await res.json();
+            }
+
+            // 3. Handle Employees
+            if (!employeesRes.error && employeesRes.data && employeesRes.data.length > 0) {
+                this.employees = employeesRes.data;
+                console.log(`✓ ${this.employees.length} Agents synced`);
+            } else {
+                console.warn('! Employee directory fetch issue, initializing defaults');
+                this.initEmployees(); // Use local hardcoded defaults
+            }
+
+            // 4. Handle Gallery
+            if (!galleryRes.error && galleryRes.data) {
+                this.galleryData = galleryRes.data;
+                console.log(`✓ ${this.galleryData.length} Gallery items synced`);
+            } else {
+                console.warn('! Gallery fetch issue, initializing empty');
+                this.galleryData = [];
+            }
+
+            console.log('Supabase Sync Complete');
+
+            // 5. Apply Dynamic Data to Landing Hero
+            this._applyHeroData();
+        } catch (error) {
+            console.error('Critical Sync Error:', error);
+            // Full system fallback
             const response = await fetch('data/content.json');
             this.contentData = await response.json();
-            console.log('Content loaded successfully');
-        } catch (error) {
-            console.error('Error loading content:', error);
-            // Fallback for missing content will be handled in templates
+            this.galleryData = [];
+            this.initEmployees();
+            this._applyHeroData();
+        }
+    },
+
+    /**
+     * Updates the landing hero on index.html with live data
+     */
+    _applyHeroData: function () {
+        const hero = this.contentData?.hero;
+        if (!hero) return;
+
+        console.log('Applying live hero content to landing page...');
+
+        // Badge & CTA
+        if (hero.badge) $('#hero-badge').text(hero.badge);
+        if (hero.cta) $('#hero-cta').text(hero.cta);
+
+        // Title Construction (handling the yellow highlight spans)
+        if (hero.title) {
+            const line1 = hero.title.line1 || '';
+            const highlight1 = hero.title.highlight1 || '';
+            const line2 = hero.title.line2 || '';
+            const highlight2 = hero.title.highlight2 || '';
+
+            // Map parts into HTML structure
+            let fullTitle = line1;
+            if (highlight1) fullTitle = fullTitle.replace(highlight1, `<span class="text-ikf-yellow">${highlight1}</span>`);
+
+            fullTitle += `<br/>${line2}`;
+            if (highlight2) fullTitle = fullTitle.replace(highlight2, `<span class="text-white">${highlight2}</span>`);
+
+            $('#hero-title').html(fullTitle);
+        }
+
+        // Subtitle
+        if (hero.subtitle) $('#hero-subtitle').html(hero.subtitle);
+
+        // Stats
+        if (hero.stats) {
+            if (hero.stats.years) $('#hero-years').text(hero.stats.years);
+            if (hero.stats.team) $('#hero-team').text(hero.stats.team);
         }
     },
 
@@ -124,6 +218,12 @@ window.AppNavigation = {
      * Directory Logic
      */
     initEmployees: function () {
+        // If already initialized from Supabase, don't overwrite with defaults
+        if (this.employees && this.employees.length > 0) {
+            console.log('Skipping default initialization, cloud sync active');
+            return;
+        }
+
         // Use dynamic data from management leaders if available, otherwise use hardcoded defaults
         const dynamicLeaders = (this.contentData?.management?.leaders || []).map(leader => ({
             id: leader.id,
@@ -465,100 +565,66 @@ window.AppNavigation = {
                     </div>`;
 
             case 'management':
+                const mData = this.contentData?.management || {
+                    badge: "System Architects",
+                    title: "The <span class=\"text-[#d9a417]\">Visionaries</span>",
+                    subtitle: "Guiding the IKF mainframes with over <span class=\"text-ikf-blue font-bold\">75 years</span> of combined digital intelligence.",
+                    leaders: []
+                };
+
                 return `
                     <div class="max-w-7xl mx-auto py-6 fade-in">
                         <div class="mb-16 text-center">
-                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">System Architects</span>
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${mData.badge}</span>
                             <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">
-                                The <span class="text-[#d9a417]">Visionaries</span>
+                                ${mData.title}
                             </h1>
                             <p class="text-slate-400 max-w-2xl mx-auto text-sm font-medium leading-relaxed">
-                                Guiding the IKF mainframes with over <span class="text-ikf-blue font-bold">75 years</span> of combined digital intelligence.
+                                ${mData.subtitle}
                             </p>
                         </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-                            <!-- Leader 1: Ashish Dalia -->
-                            <div class="group relative perspective-1000" onclick="AppNavigation.showLeaderModal('ashish', 'Ashish Dalia', 'Founder')">
-                                <div class="bg-white rounded-[3rem] p-4 relative z-10 transition-all duration-500 transform preserve-3d group-hover:rotate-y-6 group-hover:shadow-2xl border border-slate-100 h-full flex flex-col">
-                                    <div class="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-6 bg-slate-100">
-                                        <img src="images/IKFLOGO/Ashish-Dalia-Sir.jpg" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Ashish Dalia">
-                                        
-                                        <!-- Smart Overlay -->
-                                        <div class="absolute inset-0 bg-gradient-to-t from-ikf-blue via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
-                                        
-                                        <!-- Data Overlay (Normally Hidden, shows on hover) -->
-                                        <div class="absolute inset-x-0 bottom-0 p-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
-                                            <div class="flex items-center justify-between text-white mb-2">
-                                                <span class="text-[10px] font-bold uppercase tracking-widest">Strategy</span>
-                                                <span class="text-[10px] font-bold">98%</span>
+                            ${(Array.isArray(mData.leaders) ? mData.leaders : []).map(leader => `
+                                <div class="group relative perspective-1000" onclick="AppNavigation.showLeaderModal('${leader.id}', '${leader.name}', '${leader.role}')">
+                                    <div class="bg-white rounded-[3rem] p-4 relative z-10 transition-all duration-500 transform preserve-3d group-hover:rotate-y-6 group-hover:shadow-2xl border border-slate-100 h-full flex flex-col">
+                                        <div class="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-6 bg-slate-100">
+                                            <img src="${leader.image}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="${leader.name}">
+                                            
+                                            <!-- Smart Overlay -->
+                                            <div class="absolute inset-0 bg-gradient-to-t from-ikf-blue via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
+                                            
+                                            <!-- Data Overlay -->
+                                            <div class="absolute inset-x-0 bottom-0 p-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                                                <div class="flex items-center justify-between text-white mb-2">
+                                                    <span class="text-[10px] font-bold uppercase tracking-widest">${leader.skill}</span>
+                                                    <span class="text-[10px] font-bold">98%</span>
+                                                </div>
+                                                <div class="w-full h-1 bg-white/20 rounded-full overflow-hidden mb-4">
+                                                    <div class="h-full bg-ikf-yellow w-[98%] shadow-[0_0_10px_rgba(255,255,255,0.5)]"></div>
+                                                </div>
+                                                <div class="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-widest border border-white/30 rounded-full px-3 py-1 bg-white/10 backdrop-blur-md w-max">
+                                                    <i class="fas fa-fingerprint text-ikf-yellow"></i> Access Profile
+                                                </div>
                                             </div>
-                                            <div class="w-full h-1 bg-white/20 rounded-full overflow-hidden mb-4">
-                                                <div class="h-full bg-ikf-yellow w-[98%] shadow-[0_0_10px_rgba(255,255,255,0.5)]"></div>
-                                            </div>
-                                            <div class="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-widest border border-white/30 rounded-full px-3 py-1 bg-white/10 backdrop-blur-md w-max">
-                                                <i class="fas fa-fingerprint text-ikf-yellow"></i> Access Profile
+                                        </div>
+                                        
+                                        <div class="px-4 pb-4 text-center">
+                                            <h3 class="text-2xl font-black text-slate-800 group-hover:text-ikf-blue transition-colors mb-1">${leader.name}</h3>
+                                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">${leader.role}</p>
+                                            
+                                            <div class="flex justify-center gap-1 opacity-20 group-hover:opacity-100 transition-opacity duration-700">
+                                                <div class="w-1 h-1 bg-ikf-blue rounded-full"></div>
+                                                <div class="w-1 h-1 bg-ikf-blue rounded-full"></div>
+                                                <div class="w-8 h-1 bg-ikf-blue rounded-full"></div>
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                    <div class="px-4 pb-4 text-center">
-                                        <h3 class="text-2xl font-black text-slate-800 group-hover:text-ikf-blue transition-colors mb-1">Ashish Dalia</h3>
-                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Founder</p>
-                                        
-                                        <!-- Decorative Tech Elements -->
-                                        <div class="flex justify-center gap-1 opacity-20 group-hover:opacity-100 transition-opacity duration-700">
-                                            <div class="w-1 h-1 bg-ikf-blue rounded-full"></div>
-                                            <div class="w-1 h-1 bg-ikf-blue rounded-full"></div>
-                                            <div class="w-8 h-1 bg-ikf-blue rounded-full"></div>
-                                        </div>
-                                    </div>
+                                    <!-- 3D Glow Backing -->
+                                    <div class="absolute inset-4 bg-ikf-yellow/30 rounded-[3rem] blur-2xl -z-10 group-hover:blur-3xl transition-all opacity-0 group-hover:opacity-70"></div>
                                 </div>
-                                <!-- 3D Glow Backing -->
-                                <div class="absolute inset-4 bg-ikf-yellow/30 rounded-[3rem] blur-2xl -z-10 group-hover:blur-3xl transition-all opacity-0 group-hover:opacity-70"></div>
-                            </div>
-
-                            <!-- Leader 2: Ritu Dalia -->
-                            <div class="group relative perspective-1000" onclick="AppNavigation.showLeaderModal('ritu', 'Ritu Dalia', 'Co-Founder')">
-                                <div class="bg-white rounded-[3rem] p-4 relative z-10 transition-all duration-500 transform preserve-3d group-hover:rotate-y-6 group-hover:shadow-2xl border border-slate-100 h-full flex flex-col">
-                                    <div class="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-6 bg-slate-100">
-                                        <img src="images/IKFLOGO/Ritu-Dalia-IMG.jpg" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Ritu Dalia">
-                                        <div class="absolute inset-0 bg-gradient-to-t from-ikf-blue via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
-                                        
-                                        <div class="absolute inset-x-0 bottom-0 p-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
-                                            <div class="flex items-center justify-between text-white mb-2">
-                                                <span class="text-[10px] font-bold uppercase tracking-widest">Creativity</span>
-                                                <span class="text-[10px] font-bold">100%</span>
-                                            </div>
-                                            <div class="w-full h-1 bg-white/20 rounded-full overflow-hidden mb-4">
-                                                <div class="h-full bg-pink-500 w-full shadow-[0_0_10px_rgba(255,255,255,0.5)]"></div>
-                                            </div>
-                                            <div class="flex items-center gap-2 text-[10px] font-bold text-white uppercase tracking-widest border border-white/30 rounded-full px-3 py-1 bg-white/10 backdrop-blur-md w-max">
-                                                <i class="fas fa-fingerprint text-pink-500"></i> Access Profile
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="px-4 pb-4 text-center">
-                                        <h3 class="text-2xl font-black text-slate-800 group-hover:text-ikf-blue transition-colors mb-1">Ritu Dalia</h3>
-                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Co-Founder</p>
-                                        
-                                        <div class="flex justify-center gap-1 opacity-20 group-hover:opacity-100 transition-opacity duration-700">
-                                            <div class="w-1 h-1 bg-pink-500 rounded-full"></div>
-                                            <div class="w-1 h-1 bg-pink-500 rounded-full"></div>
-                                            <div class="w-8 h-1 bg-pink-500 rounded-full"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="absolute inset-4 bg-pink-500/30 rounded-[3rem] blur-2xl -z-10 group-hover:blur-3xl transition-all opacity-0 group-hover:opacity-70"></div>
-                            </div>
-
-                            <!-- Leader 3: Gunjan Bhansali -->
-                            <div class="group relative perspective-1000" onclick="AppNavigation.showLeaderModal('gunjan', 'Gunjan Bhansali', 'Operations Head')">
-                                <div class="bg-white rounded-[3rem] p-4 relative z-10 transition-all duration-500 transform preserve-3d group-hover:rotate-y-6 group-hover:shadow-2xl border border-slate-100 h-full flex flex-col">
-                                    <div class="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-6 bg-slate-100">
-                                        <img src="images/IKFLOGO/Gunjan-Bhansali-IMG.jpg" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Gunjan Bhansali">
-                                        <div class="absolute inset-0 bg-gradient-to-t from-ikf-blue via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
+                            `).join('')}
+                        </div>
                                         
                                         <div class="absolute inset-x-0 bottom-0 p-6 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
                                             <div class="flex items-center justify-between text-white mb-2">
@@ -649,16 +715,20 @@ window.AppNavigation = {
                     </div>`;
 
             case 'org-chart':
+                const orgData = this.contentData?.org_chart || {};
+                const leadership = orgData.leadership || { title: "Leadership Team", subtitle: "Our Board of Directors providing strategic guidance." };
+                const depts = orgData.departments || [];
+
                 return `
                     <div class="max-w-7xl mx-auto py-8 fade-in">
                         <!-- Header -->
                         <div class="mb-12 text-center">
-                            <span class="text-ikf-yellow font-bold uppercase tracking-[0.2em] text-xs mb-3 block">Our Structure</span>
+                            <span class="text-ikf-yellow font-bold uppercase tracking-[0.2em] text-xs mb-3 block">${orgData.badge || 'Our Structure'}</span>
                             <h1 class="text-4xl md:text-5xl font-black text-[#0E0057] tracking-tight mb-4">
-                                How We're <span class="text-[#d9a417]">Organized</span>
+                                ${orgData.title || 'How We\'re Organized'}
                             </h1>
                             <p class="text-slate-500 text-lg max-w-2xl mx-auto">
-                                A simple overview of our departments and what they do
+                                ${orgData.subtitle || 'A simple overview of our departments and what they do'}
                             </p>
                         </div>
 
@@ -667,109 +737,33 @@ window.AppNavigation = {
                             <div class="bg-gradient-to-br from-ikf-blue to-slate-800 rounded-2xl p-8 text-white text-center shadow-lg">
                                 <div class="inline-flex items-center gap-3 mb-3">
                                     <i class="fas fa-crown text-ikf-yellow text-2xl"></i>
-                                    <h2 class="text-2xl font-bold">Leadership Team</h2>
+                                    <h2 class="text-2xl font-bold">${leadership.title}</h2>
                                 </div>
                                 <p class="text-blue-200 text-sm max-w-xl mx-auto">
-                                    Our Board of Directors provides strategic guidance and vision for the company
+                                    ${leadership.subtitle}
                                 </p>
                             </div>
                         </div>
 
                         <!-- Departments Grid -->
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            
-                            <!-- Web Development -->
-                            <div class="card-clean p-6 group">
-                                <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors">
-                                    <i class="fas fa-laptop-code text-2xl text-blue-600"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-slate-800 mb-2">Web Development</h3>
-                                <p class="text-sm text-slate-500 mb-4">Building high-performance websites and web applications</p>
-                                <div class="space-y-2">
-                                    <div class="text-xs text-slate-600 flex items-center gap-2">
-                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
-                                        <span>Website Design</span>
+                            ${depts.map(dept => `
+                                <div class="card-clean p-6 group">
+                                    <div class="w-14 h-14 bg-${dept.color || 'blue'}-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-${dept.color || 'blue'}-100 transition-colors">
+                                        <i class="fas ${dept.icon || 'fa-briefcase'} text-2xl text-${dept.color || 'blue'}-600"></i>
                                     </div>
-                                    <div class="text-xs text-slate-600 flex items-center gap-2">
-                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
-                                        <span>E-Commerce</span>
-                                    </div>
-                                    <div class="text-xs text-slate-600 flex items-center gap-2">
-                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
-                                        <span>Maintenance</span>
+                                    <h3 class="text-lg font-bold text-slate-800 mb-2">${dept.title}</h3>
+                                    <p class="text-sm text-slate-500 mb-4">${dept.description}</p>
+                                    <div class="space-y-2">
+                                        ${(dept.items || []).map(item => `
+                                            <div class="text-xs text-slate-600 flex items-center gap-2">
+                                                <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
+                                                <span>${item}</span>
+                                            </div>
+                                        `).join('')}
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- Digital Marketing -->
-                            <div class="card-clean p-6 group">
-                                <div class="w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-100 transition-colors">
-                                    <i class="fas fa-bullhorn text-2xl text-green-600"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-slate-800 mb-2">Digital Marketing</h3>
-                                <p class="text-sm text-slate-500 mb-4">Driving growth through strategic digital campaigns</p>
-                                <div class="space-y-2">
-                                    <div class="text-xs text-slate-600 flex items-center gap-2">
-                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
-                                        <span>Social Media</span>
-                                    </div>
-                                    <div class="text-xs text-slate-600 flex items-center gap-2">
-                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
-                                        <span>SEO</span>
-                                    </div>
-                                    <div class="text-xs text-slate-600 flex items-center gap-2">
-                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
-                                        <span>Performance Marketing</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Branding & Creative -->
-                            <div class="card-clean p-6 group">
-                                <div class="w-14 h-14 bg-purple-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-100 transition-colors">
-                                    <i class="fas fa-palette text-2xl text-purple-600"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-slate-800 mb-2">Branding & Creative</h3>
-                                <p class="text-sm text-slate-500 mb-4">Creating compelling visual identities and content</p>
-                                <div class="space-y-2">
-                                    <div class="text-xs text-slate-600 flex items-center gap-2">
-                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
-                                        <span>Video Production</span>
-                                    </div>
-                                    <div class="text-xs text-slate-600 flex items-center gap-2">
-                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
-                                        <span>Content Marketing</span>
-                                    </div>
-                                    <div class="text-xs text-slate-600 flex items-center gap-2">
-                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
-                                        <span>Corporate Branding</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Application Development -->
-                            <div class="card-clean p-6 group">
-                                <div class="w-14 h-14 bg-orange-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-orange-100 transition-colors">
-                                    <i class="fas fa-server text-2xl text-orange-600"></i>
-                                </div>
-                                <h3 class="text-lg font-bold text-slate-800 mb-2">Application Development</h3>
-                                <p class="text-sm text-slate-500 mb-4">Custom software solutions for business needs</p>
-                                <div class="space-y-2">
-                                    <div class="text-xs text-slate-600 flex items-center gap-2">
-                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
-                                        <span>Cloud Telephony</span>
-                                    </div>
-                                    <div class="text-xs text-slate-600 flex items-center gap-2">
-                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
-                                        <span>Task Management</span>
-                                    </div>
-                                    <div class="text-xs text-slate-600 flex items-center gap-2">
-                                        <i class="fas fa-check-circle text-ikf-yellow text-xs"></i>
-                                        <span>Custom Apps</span>
-                                    </div>
-                                </div>
-                            </div>
-
+                            `).join('')}
                         </div>
 
                         <!-- Info Footer -->
@@ -786,116 +780,63 @@ window.AppNavigation = {
                         </div>
                     </div>`;
 
+
             case 'departments':
+                const clientData = this.contentData?.client_showcase || {};
+                const categories = clientData.categories || [];
+                const clientStats = clientData.stats || [];
+
                 return `
                     <div class="max-w-7xl mx-auto py-8 fade-in">
                         <!-- Header -->
                         <div class="mb-12 text-center">
-                            <span class="text-ikf-yellow font-bold uppercase tracking-[0.2em] text-xs mb-3 block">Global Impact</span>
+                            <span class="text-ikf-yellow font-bold uppercase tracking-[0.2em] text-xs mb-3 block">${clientData.badge || 'Global Impact'}</span>
                             <h1 class="text-4xl md:text-5xl font-black text-[#0E0057] tracking-tight mb-4">
-                                Our <span class="text-[#d9a417]">Client Showcase</span>
+                                ${clientData.title || 'Our Client Showcase'}
                             </h1>
                             <p class="text-slate-500 text-lg max-w-2xl mx-auto">
-                                We partner with leading national and global brands to create powerful, insight-driven digital experiences.
+                                ${clientData.subtitle || 'We partner with leading national and global brands.'}
                             </p>
                         </div>
 
                         <!-- Client Categories -->
                         <div class="space-y-16">
-                            
-                            <!-- Category: Automotive & Industrial -->
-                            <div>
-                                <h3 class="text-xl font-bold text-slate-800 mb-8 flex items-center gap-3">
-                                    <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fas fa-car-side"></i></span>
-                                    Automotive & Industrial
-                                </h3>
-                                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-                                    ${[
-                        { name: 'Tata Autocomp', logo: 'https://www.ikf.co.in/wp-content/uploads/TataAutoComp.jpg' },
-                        { name: 'Mercedes-Benz School', logo: 'https://www.ikf.co.in/wp-content/uploads/MercedesBenzSchool.jpg' },
-                        { name: 'Force Motors', logo: 'https://www.ikf.co.in/wp-content/uploads/force-motors-logo.jpg' },
-                        { name: 'Kalyani Group', logo: 'https://www.ikf.co.in/wp-content/uploads/Kalyani2.jpg' },
-                        { name: 'Kirloskar', logo: 'https://www.ikf.co.in/wp-content/uploads/Kirloskar.jpg' }
-                    ].map(client => `
-                                        <div class="card-clean p-6 flex flex-col items-center justify-center text-center group hover:border-blue-200 transition-all h-40">
-                                            <div class="h-16 flex items-center justify-center mb-4">
-                                                <img src="${client.logo}" alt="${client.name}" class="h-full w-auto object-contain mix-blend-multiply">
+                            ${categories.map(cat => `
+                                <div>
+                                    <h3 class="text-xl font-bold text-slate-800 mb-8 flex items-center gap-3">
+                                        <span class="w-8 h-8 rounded-lg bg-${cat.color || 'blue'}-50 text-${cat.color || 'blue'}-600 flex items-center justify-center">
+                                            <i class="fas ${cat.icon || 'fa-building'}"></i>
+                                        </span>
+                                        ${cat.title}
+                                    </h3>
+                                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                                        ${(cat.clients || []).map(client => `
+                                            <div class="card-clean p-6 flex flex-col items-center justify-center text-center group hover:border-${cat.color || 'emerald'}-200 transition-all h-40">
+                                                 <div class="h-16 flex items-center justify-center mb-4">
+                                                    <img src="${client.logo}" alt="${client.name}" class="h-full w-auto object-contain mix-blend-multiply">
+                                                </div>
+                                                <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest leading-tight">${client.name}</p>
                                             </div>
-                                            <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest leading-tight">${client.name}</p>
-                                        </div>
-                                    `).join('')}
+                                        `).join('')}
+                                    </div>
                                 </div>
-                            </div>
-
-                            <!-- Category: Education & Institutions -->
-                            <div>
-                                <h3 class="text-xl font-bold text-slate-800 mb-8 flex items-center gap-3">
-                                    <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center"><i class="fas fa-graduation-cap"></i></span>
-                                    Education & Culture
-                                </h3>
-                                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-                                    ${[
-                        { name: 'Symbiosis', logo: 'https://www.ikf.co.in/wp-content/uploads/Symbiosis.jpg' },
-                        { name: 'MIT School', logo: 'https://www.ikf.co.in/wp-content/uploads/MITSchool.jpg' },
-                        { name: 'MIT-WPU', logo: 'https://www.ikf.co.in/wp-content/uploads/MIT-WPU-1.jpg' },
-                        { name: 'MITCON', logo: 'https://www.ikf.co.in/wp-content/uploads/MITCON.jpg' },
-                        { name: 'MIT ADT', logo: 'https://www.ikf.co.in/wp-content/uploads/MIT-ADT-1.jpg' }
-                    ].map(client => `
-                                        <div class="card-clean p-6 flex flex-col items-center justify-center text-center group hover:border-indigo-200 transition-all h-40">
-                                             <div class="h-16 flex items-center justify-center mb-4">
-                                                <img src="${client.logo}" alt="${client.name}" class="h-full w-auto object-contain mix-blend-multiply">
-                                            </div>
-                                            <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest leading-tight">${client.name}</p>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-
-                            <!-- Category: Tech & Enterprise -->
-                            <div>
-                                <h3 class="text-xl font-bold text-slate-800 mb-8 flex items-center gap-3">
-                                    <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center"><i class="fas fa-microchip"></i></span>
-                                    Tech & Innovation
-                                </h3>
-                                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-                                    ${[
-                        { name: 'Persistent', logo: 'https://www.ikf.co.in/wp-content/uploads/Persistent.jpg' },
-                        { name: 'Bharat Electronics', logo: 'https://www.ikf.co.in/wp-content/uploads/BharatElectronics.jpg' },
-                        { name: 'Poonawalla Group', logo: 'https://www.ikf.co.in/wp-content/uploads/poonawalla-group-jpg.webp' },
-                        { name: 'Mindgate', logo: 'https://www.ikf.co.in/wp-content/uploads/Mindgate.jpg' },
-                        { name: 'ARAI', logo: 'https://www.ikf.co.in/wp-content/uploads/ARAI-1.jpg' }
-                    ].map(client => `
-                                        <div class="card-clean p-6 flex flex-col items-center justify-center text-center group hover:border-emerald-200 transition-all h-40">
-                                             <div class="h-16 flex items-center justify-center mb-4">
-                                                <img src="${client.logo}" alt="${client.name}" class="h-full w-auto object-contain mix-blend-multiply">
-                                            </div>
-                                            <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest leading-tight">${client.name}</p>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-
+                            `).join('')}
                         </div>
 
                         <!-- Stats Footer -->
                         <div class="mt-20 p-12 bg-gradient-to-br from-ikf-blue to-slate-900 rounded-[3rem] text-white shadow-xl relative overflow-hidden">
                             <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
                             <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-                                <div>
-                                    <p class="text-5xl font-black text-ikf-yellow mb-2">1500+</p>
-                                    <p class="text-xs font-bold uppercase tracking-[0.2em] opacity-60">Global Brands</p>
-                                </div>
-                                <div class="md:border-x border-white/10 md:px-12">
-                                    <p class="text-5xl font-black text-ikf-yellow mb-2">25+</p>
-                                    <p class="text-xs font-bold uppercase tracking-[0.2em] opacity-60">Years Excellence</p>
-                                </div>
-                                <div>
-                                    <p class="text-5xl font-black text-ikf-yellow mb-2">Pune</p>
-                                    <p class="text-xs font-bold uppercase tracking-[0.2em] opacity-60">Innovation Hub</p>
-                                </div>
+                                ${clientStats.map((stat, idx) => `
+                                    <div class="${idx === 1 ? 'md:border-x border-white/10 md:px-12' : ''}">
+                                        <p class="text-5xl font-black text-ikf-yellow mb-2">${stat.value}</p>
+                                        <p class="text-xs font-bold uppercase tracking-[0.2em] opacity-60">${stat.label}</p>
+                                    </div>
+                                `).join('')}
                             </div>
                         </div>
                     </div>`;
+
 
             case 'directory':
                 // Initialize employees if not already done
@@ -1805,14 +1746,138 @@ window.AppNavigation = {
                         </div>
                     </div > `;
 
+            case 'gallery':
+                const galleryData = this.galleryData || [];
+                const galleryCategories = [...new Set(galleryData.map(item => item.category))];
+
+                return `
+                    <div class="max-w-7xl mx-auto py-8 fade-in">
+                        <div class="mb-12 text-center lg:text-left">
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Visual Archive</span>
+                            <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tight mb-4">
+                                IKF <span class="text-[#d9a417]">Gallery</span>
+                            </h1>
+                            <p class="text-slate-400 font-medium max-w-xl text-sm">Capturing the moments that define our culture, from high-stakes formal events to our favorite celebrations.</p>
+                        </div>
+
+                        <!-- Gallery View Container -->
+                        <div id="gallery-container" class="min-h-[400px]">
+                            <!-- This will be toggled between FOLDER VIEW and IMAGE VIEW -->
+                            ${this.renderGalleryFolders(galleryCategories)}
+                        </div>
+                    </div>`;
+
             default:
                 return `
-                    < div class="max-w-4xl mx-auto py-20 text-center" >
+                    <div class="max-w-4xl mx-auto py-20 text-center">
                         <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6"><i class="fas fa-tools text-2xl text-slate-400"></i></div>
                         <h2 class="text-2xl font-bold text-ikf-blue">Module Under Construction</h2>
                         <p class="text-slate-500 mt-2 text-lg">We are building high-quality content for <span class="font-bold text-ikf-yellow italic">${sectionId}</span>.</p>
                         <button onclick="AppNavigation.navigateTo('intro')" class="mt-8 text-ikf-blue font-bold hover:underline"><i class="fas fa-arrow-left mr-2"></i> Back to Intro</button>
-                    </div > `;
+                    </div>`;
         }
-    }
+    },
+
+    /**
+     * Renders folder-wise category grid
+     */
+    renderGalleryFolders: function (categories) {
+        if (!categories || categories.length === 0) {
+            return `
+                <div class="flex flex-col items-center justify-center py-20 bg-white rounded-[3rem] border border-slate-100 shadow-sm">
+                    <i class="fas fa-folder-open text-slate-100 text-8xl mb-6"></i>
+                    <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">No capsules found in the archive</p>
+                </div>`;
+        }
+
+        return `
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                ${categories.map(cat => {
+            const count = this.galleryData.filter(i => i.category === cat).length;
+            return `
+                        <div onclick="AppNavigation.viewGalleryFolder('${cat}')" 
+                             class="group bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all cursor-pointer relative overflow-hidden">
+                            <div class="absolute -right-4 -bottom-4 text-[100px] text-slate-50 font-black group-hover:text-ikf-yellow/5 transition-colors">
+                                <i class="fas fa-folder"></i>
+                            </div>
+                            <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#0E0057] group-hover:text-white transition-all">
+                                <i class="fas fa-images text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-black text-slate-800 mb-1 group-hover:text-ikf-blue transition-colors">${cat}</h3>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">${count} Items Logged</p>
+                            <div class="mt-6 flex items-center gap-2 text-[10px] font-black text-ikf-yellow opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0">
+                                <span>OPEN FOLDER</span>
+                                <i class="fas fa-chevron-right text-[8px]"></i>
+                            </div>
+                        </div>
+                    `;
+        }).join('')}
+            </div>`;
+    },
+
+    /**
+     * Renders images within a specific folder
+     */
+    viewGalleryFolder: function (category) {
+        const images = this.galleryData.filter(i => i.category === category);
+        const container = $('#gallery-container');
+
+        const html = `
+            <div class="fade-in">
+                <button onclick="AppNavigation.navigateTo('gallery', true)" 
+                        class="flex items-center gap-3 text-[10px] font-black text-slate-400 hover:text-ikf-blue mb-10 transition-colors uppercase tracking-widest">
+                    <i class="fas fa-arrow-left"></i> Back to Archive
+                </button>
+                
+                <h2 class="text-2xl font-black text-slate-800 mb-8 flex items-center gap-4">
+                    <span class="w-2 h-8 bg-ikf-yellow rounded-full"></span>
+                    ${category}
+                </h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    ${images.map((img, idx) => `
+                        <div class="aspect-square bg-slate-100 rounded-3xl overflow-hidden group relative cursor-zoom-in shadow-sm hover:shadow-xl transition-all"
+                             onclick="AppNavigation.openLightbox('${img.url}', '${category}', ${idx})">
+                            <img src="${img.url}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex items-end">
+                                <p class="text-white text-[10px] font-black uppercase tracking-widest">${img.title || 'View Metadata'}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`;
+
+        container.html(html);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+
+    /**
+     * Opens a simple lightbox for gallery images
+     */
+    openLightbox: function (url, category, index) {
+        const modalHtml = `
+            <div id="gallery-lightbox" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/95 backdrop-blur-xl fade-in" onclick="AppNavigation.closeLightbox()">
+                <button class="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-red-500 transition-all z-50">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <div class="max-w-5xl w-full max-h-[80vh] flex items-center justify-center relative scale-in" onclick="event.stopPropagation()">
+                    <img src="${url}" class="max-w-full max-h-full rounded-2xl shadow-2xl border border-white/10 object-contain">
+                    <div class="absolute -bottom-16 inset-x-0 text-center">
+                        <p class="text-white font-black uppercase tracking-[0.3em] text-xs mb-2">${category}</p>
+                        <div class="w-8 h-1 bg-ikf-yellow mx-auto"></div>
+                    </div>
+                </div>
+            </div>`;
+
+        $('body').append(modalHtml);
+        $('body').css('overflow', 'hidden');
+    },
+
+    closeLightbox: function () {
+        $('#gallery-lightbox').addClass('fade-out');
+        setTimeout(() => {
+            $('#gallery-lightbox').remove();
+            $('body').css('overflow', '');
+        }, 300);
+    },
 };
