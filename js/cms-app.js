@@ -493,8 +493,73 @@ const CMSApp = {
         });
     },
 
+    escapeHtml: function (str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    },
+
+    /**
+     * Generic Image Upload Handler
+     */
+    handleImageUpload: async function (input, targetInputId, previewId = null) {
+        const file = input.files[0];
+        if (!file) return;
+
+        // Validation
+        if (file.size > this.config.maxFileSize) {
+            this.showToast('File too large (Max 5MB)', 'error');
+            input.value = '';
+            return;
+        }
+
+        try {
+            this.showToast('Uploading...', 'info');
+
+            // Generate unique path
+            const fileExt = file.name.split('.').pop();
+            const fileName = `clients/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+            const { data, error } = await window.supabaseClient.storage
+                .from(this.config.bucketName)
+                .upload(fileName, file);
+
+            if (error) throw error;
+
+            // Get Public URL
+            const { data: { publicUrl } } = window.supabaseClient.storage
+                .from(this.config.bucketName)
+                .getPublicUrl(fileName);
+
+            // Update Input
+            const targetInput = document.getElementById(targetInputId);
+            if (targetInput) {
+                targetInput.value = publicUrl;
+                // Trigger change event if needed
+                targetInput.dispatchEvent(new Event('change'));
+            }
+
+            // Update Preview if ID provided
+            if (previewId) {
+                const preview = document.getElementById(previewId);
+                if (preview) preview.src = publicUrl;
+            }
+
+            this.showToast('Upload Complete', 'success');
+
+        } catch (err) {
+            console.error('Upload error:', err);
+            this.showToast('Upload Failed', 'error');
+        }
+    },
+
     editClient: async function (id) {
         const client = id ? this.state.clientsData.find(c => c.id === id) : { name: '', category: 'Development', logo_url: '', website_url: '', display_order: 10 };
+        const uniqueId = Date.now();
 
         const { value: formValues } = await Swal.fire({
             title: id ? 'Edit Client' : 'Add New Client',
@@ -502,67 +567,80 @@ const CMSApp = {
                 <div class="text-left space-y-4 pt-4">
                     <div>
                         <label class="text-[10px] font-bold text-slate-400 uppercase">Client Name</label>
-                        <input id="swal-client-name" class="admin-input mt-1" value="${client.name}">
-                    </div>
-                        <label class="text-[10px] font-bold text-slate-400 uppercase">Category</label>
-                        <select id="swal-client-category" class="admin-input mt-1 font-bold">
-                            ${[...new Set(this.state.clientsData.map(c => c.category))].sort().map(cat =>
-                `<option value="${cat}" ${client.category === cat ? 'selected' : ''}>${cat}</option>`
-            ).join('')}
-                            <option value="Vehicles" ${client.category === 'Vehicles' ? 'selected' : ''}>Vehicles</option>
-                            <option value="Manufacturing" ${client.category === 'Manufacturing' ? 'selected' : ''}>Manufacturing</option>
-                             <option value="Real Estate" ${client.category === 'Real Estate' ? 'selected' : ''}>Real Estate</option>
-                             <option value="Health Care" ${client.category === 'Health Care' ? 'selected' : ''}>Health Care</option>
-                             <option value="Education" ${client.category === 'Education' ? 'selected' : ''}>Education</option>
-                        </select>
-                         <p class="text-[9px] text-slate-400 mt-1">Select from existing or default industries</p>
+                        <input id="swal-client-name" class="admin-input mt-1" value="${this.escapeHtml(client.name)}" placeholder="e.g. Acme Corp">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-slate-400 uppercase">Logo URL</label>
-                        <div class="flex gap-2 items-center mt-1">
-                            <input type="text" id="swal-client-logo" class="admin-input flex-1" value="${client.logo_url}">
-                            <input type="file" id="swal-client-file" class="hidden" accept="image/*" onchange="CMSApp.handleImageUpload(this, 'swal-client-logo')">
-                            <button type="button" onclick="event.preventDefault(); event.stopPropagation(); document.getElementById('swal-client-file').click()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2">
-                                <i class="fas fa-upload"></i>
-                                <span>Upload</span>
-                            </button>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Category</label>
+                        <input list="client-categories-${uniqueId}" id="swal-client-category" class="admin-input mt-1 font-bold" value="${this.escapeHtml(client.category)}" placeholder="Select or Type New...">
+                        <datalist id="client-categories-${uniqueId}">
+                            ${[...new Set(this.state.clientsData.map(c => c.category))].sort().filter(c => c).map(cat =>
+                `<option value="${this.escapeHtml(cat)}">`
+            ).join('')}
+                        </datalist>
+                         <p class="text-[9px] text-slate-400 mt-1"><i class="fas fa-magic text-ikf-yellow"></i> Smart Suggest: Type to filter or add new</p>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Logo</label>
+                        <div class="flex gap-4 items-start mt-1">
+                            <div class="w-20 h-20 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-center p-2 relative group overflow-hidden">
+                                <img id="client-logo-preview" src="${client.logo_url || 'https://via.placeholder.com/150?text=LOGO'}" class="w-full h-full object-contain">
+                                <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" onclick="document.getElementById('swal-client-file').click()">
+                                    <i class="fas fa-camera text-white"></i>
+                                </div>
+                            </div>
+                            <div class="flex-1 space-y-2">
+                                <div class="flex gap-2">
+                                    <input type="text" id="swal-client-logo" class="admin-input flex-1 text-xs" value="${this.escapeHtml(client.logo_url)}" placeholder="Image URL or Upload -->">
+                                    <input type="file" id="swal-client-file" class="hidden" accept="image/*" onchange="CMSApp.handleImageUpload(this, 'swal-client-logo', 'client-logo-preview')">
+                                    <button type="button" onclick="document.getElementById('swal-client-file').click()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap">
+                                        <i class="fas fa-upload"></i> Upload
+                                    </button>
+                                </div>
+                                <p class="text-[9px] text-slate-400">Recommended: PNG/SVG with transparent background.</p>
+                            </div>
                         </div>
                     </div>
                     <div>
                         <label class="text-[10px] font-bold text-slate-400 uppercase">Website URL</label>
-                        <input id="swal-client-url" class="admin-input mt-1" value="${client.website_url}">
+                        <input id="swal-client-url" class="admin-input mt-1" value="${this.escapeHtml(client.website_url)}" placeholder="https://...">
                     </div>
                 </div>
             `,
             focusConfirm: false,
             showCancelButton: true,
-            confirmButtonText: 'Save Data',
+            confirmButtonText: 'Save Partner',
             confirmButtonColor: '#0E0057',
+            width: '32rem', // Wider modal for better layout
             preConfirm: () => {
+                const name = document.getElementById('swal-client-name').value;
+                if (!name) Swal.showValidationMessage('Client Name is required');
+
                 return {
-                    id: id || `client-${Date.now()}`,
-                    name: document.getElementById('swal-client-name').value,
-                    category: document.getElementById('swal-client-category').value,
+                    id: id || crypto.randomUUID(),
+                    name: name,
+                    category: document.getElementById('swal-client-category').value || 'Uncategorized',
                     logo_url: document.getElementById('swal-client-logo').value,
                     website_url: document.getElementById('swal-client-url').value,
-                    display_order: client.display_order
+                    display_order: client.display_order ?? 999
                 }
             }
         });
 
         if (formValues) {
             try {
-                this.showToast('Saving Client...', 'info');
+                this.showToast('Saving Partner...', 'info');
+                // Ensure ID is passed for both Insert and Update to handle Upsert correctly
                 const { error } = await window.supabaseClient
                     .from('clients')
                     .upsert(formValues, { onConflict: 'id' });
 
                 if (error) throw error;
-                await this.loadData();
+                await this.loadData(); // Re-fetch all data to ensure categories are reflected everywhere
                 this.renderClientsManager();
-                this.showToast('Client Updated', 'success');
+                this.showToast('Partner Saved!', 'success');
             } catch (err) {
-                this.showToast('Error saving client', 'error');
+                console.error('Save Error:', err);
+                Swal.fire('Save Failed', `Could not update client: ${err.message}`, 'error');
             }
         }
     },

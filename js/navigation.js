@@ -230,6 +230,9 @@ window.AppNavigation = {
             if (hero.stats.years) $('#hero-years').text(hero.stats.years);
             if (hero.stats.team) $('#hero-team').text(hero.stats.team);
         }
+
+        // Update Meta for Home
+        this._updatePageMeta("Welcome", hero.subtitle);
     },
 
     /**
@@ -272,6 +275,31 @@ window.AppNavigation = {
         const state = window.AppStorage.getState() || {};
         state.currentSection = sectionId;
         window.AppStorage.saveState(state);
+
+        // 8. Update Page Meta
+        const sectionTitle = $(`.nav-link[data-section="${sectionId}"] span`).text() || sectionId.charAt(0).toUpperCase() + sectionId.slice(1);
+        let desc = "Welcome to I Knowledge Factory.";
+
+        // Try to get specific description
+        if (this.contentData && this.contentData[sectionId]) {
+            desc = this.contentData[sectionId].subtitle || this.contentData[sectionId].description || desc;
+        }
+
+        this._updatePageMeta(sectionTitle, desc);
+    },
+
+    /**
+     * Updates the document title and meta description
+     */
+    _updatePageMeta: function (titleSuffix, description) {
+        document.title = `IKF Induction | ${titleSuffix}`;
+        let metaDesc = document.querySelector('meta[name="description"]');
+        if (!metaDesc) {
+            metaDesc = document.createElement('meta');
+            metaDesc.name = "description";
+            document.head.appendChild(metaDesc);
+        }
+        metaDesc.setAttribute("content", description || 'Welcome to I Knowledge Factory Induction Portal.');
     },
 
     /**
@@ -323,13 +351,13 @@ window.AppNavigation = {
      * Directory Logic
      */
     initEmployees: function () {
-        // If already initialized from Supabase, don't overwrite with defaults
+        // If already initialized from Supabase, don't overwrite
         if (this.employees && this.employees.length > 0) {
-            console.log('Skipping default initialization, cloud sync active');
+            console.log('Skipping initialization, cloud sync active');
             return;
         }
 
-        // Use dynamic data from management leaders if available, otherwise use hardcoded defaults
+        // Use dynamic data from management leaders if available
         const dynamicLeaders = (this.contentData?.management?.leaders || []).map(leader => ({
             id: leader.id,
             name: leader.name,
@@ -339,34 +367,8 @@ window.AppNavigation = {
             skills: [leader.skill]
         }));
 
-        const hardcodedEmployees = [
-            // Smart Avatars Distributed
-            { id: 'emp1', name: 'Vikram Singh', role: 'Sr. Brand Strategist', dept: 'Digital Marketing', img: 'https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg', skills: ['Brand Positioning', 'Market Analysis', 'Campaign Strategy'] },
-            { id: 'emp2', name: 'Priya Sharma', role: 'Client Servicing', dept: 'Digital Marketing', img: 'https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg', skills: ['CRM', 'Negotiation', 'Project Mgmt'] },
-            { id: 'emp3', name: 'Rahul Verma', role: 'Tech Lead', dept: 'Web Development', img: 'https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg', skills: ['Full Stack', 'Cloud Arch', 'Team Leadership'] },
-            { id: 'emp4', name: 'Sneha Patel', role: 'UI/UX Designer', dept: 'Branding', img: 'https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg', skills: ['Figma', 'User Research', 'Prototyping'] },
-            { id: 'emp5', name: 'Amit Kumar', role: 'SEO Manager', dept: 'Digital Marketing', img: 'https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg', skills: ['Technical SEO', 'Analytics', 'Content Strategy'] },
-            { id: 'emp6', name: 'Neha Gupta', role: 'Content Head', dept: 'Branding', img: 'https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg', skills: ['Copywriting', 'Editorial', 'Social Trends'] },
-            { id: 'emp7', name: 'Rohan Deshmukh', role: 'Full Stack Dev', dept: 'Web Development', img: 'https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg', skills: ['React', 'Node.js', 'Database Design'] },
-            { id: 'emp8', name: 'Kavita Reddy', role: 'Social Media Lead', dept: 'Digital Marketing', img: 'https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg', skills: ['Instagram Growth', 'Community Mgmt', 'Viral Content'] },
-            { id: 'emp9', name: 'Arjun Nair', role: 'Video Editor', dept: 'Branding', img: 'https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg', skills: ['Premiere Pro', 'After Effects', 'Motion Graphics'] },
-            { id: 'emp10', name: 'Meera Iyer', role: 'HR Manager', dept: 'Management', img: 'https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg', skills: ['Talent Acquisition', 'Culture', 'Compliance'] },
-            { id: 'emp11', name: 'Suresh Joshi', role: 'App Developer', dept: 'App Development', img: 'https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg', skills: ['Flutter', 'React Native', 'API Integration'] },
-            { id: 'emp12', name: 'Pooja Malhotra', role: 'Graphic Designer', dept: 'Branding', img: 'https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg', skills: ['Adobe Suite', 'Illustration', 'Print Design'] },
-            { id: 'emp13', name: 'Karan Malhotra', role: 'Performance Marketer', dept: 'Digital Marketing', img: 'https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg', skills: ['Google Ads', 'Meta Ads', 'ROI Optimization'] },
-            { id: 'emp14', name: 'Swati Kulkarni', role: 'Backend Developer', dept: 'Web Development', img: 'https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg', skills: ['Python', 'Django', 'AWS'] },
-            { id: 'emp15', name: 'Rajesh Chavan', role: 'Operations Head', dept: 'Management', img: 'https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg', skills: ['Resource Planning', 'Process Flow', 'Logistics'] }
-        ];
-
-        // Combine them, avoiding duplicates if any by ID
+        // Initialize with leaders only - NO HARDCODED FALLBACKS
         this.employees = [...dynamicLeaders];
-        const leaderIds = new Set(dynamicLeaders.map(l => l.id));
-
-        hardcodedEmployees.forEach(emp => {
-            if (!leaderIds.has(emp.id)) {
-                this.employees.push(emp);
-            }
-        });
 
         // Ensure every employee has a fallback image if missing or "null"
         const defaultAvatar = 'https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg';
