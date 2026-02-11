@@ -833,160 +833,122 @@ window.AppNavigation = {
 
 
             case 'social':
-                // Get social data from content.json and Supabase
-                const socialData = this.contentData?.social || {};
-                const socialLinks = this.socialLinks || [];
-                const curatedPosts = socialData.feed || [];
-
-                // Get platform icons
-                const getPlatformIcon = (platform) => {
-                    const icons = {
-                        'linkedin': 'fa-linkedin-in',
-                        'instagram': 'fa-instagram',
-                        'youtube': 'fa-youtube',
-                        'facebook': 'fa-facebook-f',
-                        'twitter': 'fa-twitter'
-                    };
-                    return icons[platform.toLowerCase()] || 'fa-share-alt';
-                };
-
-                // Get platform colors
-                const getPlatformColor = (platform) => {
-                    const colors = {
-                        'linkedin': '#0077B5',
-                        'instagram': '#E4405F',
-                        'youtube': '#FF0000',
-                        'facebook': '#1877F2',
-                        'twitter': '#1DA1F2'
-                    };
-                    return colors[platform.toLowerCase()] || '#6B7280';
+                const socData = this.contentData?.social || {
+                    badge: "Digital Pulse",
+                    bgLogoText: "HUB",
+                    title: "The <span class=\"text-[#d9a417]\">Social</span> Sphere",
+                    liveStatus: "Live Feed // Real-time connection established.",
+                    updatesTitle: "Latest Updates",
+                    youtubeTitle: "Latest Videos",
+                    featuredTitle: "Featured Posts",
+                    cta: {
+                        title: "Join the Conversation",
+                        subtitle: "Follow us on social media to stay updated with the latest news, events, and behind-the-scenes action at IKF."
+                    }
                 };
 
                 return `
-                    <div class="max-w-7xl mx-auto py-8 fade-in">
-                        <!-- Header -->
-                        <div class="mb-12 text-center">
-                            <span class="text-ikf-yellow font-bold uppercase tracking-[0.2em] text-xs mb-3 block">${socialData.badge || 'Stay Connected'}</span>
-                            <h1 class="text-4xl md:text-5xl font-black text-[#0E0057] tracking-tight mb-4">
-                                ${socialData.title || 'The <span class="text-[#d9a417]">Social Hub</span>'}
-                            </h1>
-                            <p class="text-slate-500 text-lg max-w-2xl mx-auto">
-                                ${socialData.liveStatus || 'Follow us! See what we\'re up to across platforms.'}
+                    <div class="max-w-7xl mx-auto py-12 fade-in relative">
+                         <!--Background Watermark-->
+                        <div class="absolute top-0 right-0 text-[200px] font-black text-slate-100 opacity-20 select-none pointer-events-none -z-10 leading-none overflow-hidden">
+                            ${socData.bgLogoText}
+                        </div>
+
+                        <div class="mb-16 relative">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-[10px] font-black uppercase tracking-widest mb-6">
+                                <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                                ${socData.badge}
+                            </div>
+                            <h1 class="text-5xl md:text-7xl font-black text-[#0E0057] tracking-tighter mb-4">${socData.title}</h1>
+                            <p class="text-slate-500 font-mono text-sm border-l-2 border-ikf-yellow pl-4">
+                                ${socData.liveStatus}
                             </p>
                         </div>
 
-                        <!-- Platform Stats Grid -->
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
-                            ${socialLinks.map(link => `
-                                <a href="${link.profile_url}" target="_blank" rel="noopener noreferrer" 
-                                   class="card-clean p-6 text-center group hover:shadow-lg transition-all">
-                                    <div class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center text-white transition-transform group-hover:scale-110"
-                                         style="background: ${getPlatformColor(link.platform)}">
-                                        <i class="fab ${getPlatformIcon(link.platform)} text-2xl"></i>
-                                    </div>
-                                    <h3 class="font-bold text-slate-800 mb-1 capitalize">${link.platform}</h3>
-                                    <p class="text-2xl font-black text-ikf-blue mb-1">${link.follower_count}</p>
-                                    <p class="text-xs text-slate-500 uppercase tracking-wider">${link.description}</p>
-                                </a>
-                            `).join('')}
+                        <!--LinkedIn Feed Section-->
+                        <div class="mb-20">
+                            <div class="flex items-center justify-between mb-8">
+                                <h3 class="text-2xl font-black text-[#0E0057] flex items-center gap-3">
+                                    <i class="fab fa-linkedin text-[#0077b5]"></i> ${socData.updatesTitle}
+                                </h3>
+                                <a href="https://www.linkedin.com/company/ikf-industrial-kinetics-factory" target="_blank" class="text-xs font-bold text-slate-400 hover:text-[#0077b5] uppercase tracking-widest transition-colors">View All <i class="fas fa-arrow-right ml-1"></i></a>
+                            </div>
+                            
+                            <!-- Elfsight LinkedIn Feed Widget -->
+                            <div class="bg-white rounded-[2.5rem] p-4 shadow-sm border border-slate-100 min-h-[400px]">
+                                <script src="https://static.elfsight.com/platform/platform.js" async></script>
+                                <div class="elfsight-app-17d722de-16e8-4660-b6df-2016556d028e" data-elfsight-app-lazy></div>
+                            </div>
                         </div>
 
-                        <!-- Latest Content Section -->
-                        <div class="mb-16">
-                            <h2 class="text-2xl font-bold text-slate-800 mb-8 flex items-center gap-3">
-                                <span class="w-8 h-8 rounded-lg bg-ikf-blue/10 text-ikf-blue flex items-center justify-center">
-                                    <i class="fas fa-rss"></i>
-                                </span>
-                                ${this.getSafeValue('social.updatesTitle', 'Latest Updates')}
-                            </h2>
+                        <!--YouTube Feed Section-->
+                        <div class="mb-20">
+                            <div class="flex items-center justify-between mb-8">
+                                <h3 class="text-2xl font-black text-[#0E0057] flex items-center gap-3">
+                                    <i class="fab fa-youtube text-[#FF0000]"></i> ${socData.youtubeTitle}
+                                </h3>
+                                <a href="https://www.youtube.com/@IKF" target="_blank" class="text-xs font-bold text-slate-400 hover:text-[#FF0000] uppercase tracking-widest transition-colors">View Channel <i class="fas fa-arrow-right ml-1"></i></a>
+                            </div>
 
-                            <!-- YouTube Latest Videos -->
-                            ${socialLinks.find(l => l.platform === 'youtube') ? `
-                                <div class="mb-12">
-                                    <h3 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
-                                        <i class="fab fa-youtube text-red-600"></i>
-                                        ${this.getSafeValue('social.youtubeTitle', 'Latest Videos')}
-                                    </h3>
-                                    <div class="aspect-video rounded-2xl overflow-hidden shadow-lg">
-                                        <iframe 
-                                            width="100%" 
-                                            height="100%" 
-                                            src="https://www.youtube.com/embed?listType=user_uploads&list=${socialLinks.find(l => l.platform === 'youtube').username}" 
-                                            frameborder="0" 
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                            allowfullscreen>
-                                        </iframe>
-                                    </div>
-                                </div>
-                            ` : ''}
-
-                            <!-- Curated Posts Feed -->
-                            ${curatedPosts.length > 0 ? `
-                                <div>
-                                    <h3 class="text-lg font-bold text-slate-700 mb-6 flex items-center gap-2">
-                                        <i class="fas fa-star text-ikf-yellow"></i>
-                                        ${this.getSafeValue('social.featuredTitle', 'Featured Posts')}
-                                    </h3>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        ${curatedPosts.slice(0, 6).map(post => `
-                                            <a href="${post.url || '#'}" target="_blank" rel="noopener noreferrer" 
-                                               class="card-clean overflow-hidden group hover:shadow-lg transition-all">
-                                                ${post.image ? `
-                                                    <div class="aspect-video overflow-hidden bg-slate-100">
-                                                        <img src="${post.image}" alt="${post.text}" 
-                                                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                                              onerror="this.src='https://via.placeholder.com/400x225?text=IKF+Social'">
-                                                    </div>
-                                                ` : ''}
-                                                <div class="p-6">
-                                                    <div class="flex items-center gap-3 mb-3">
-                                                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm"
-                                                              style="background: ${getPlatformColor(post.platform)}">
-                                                            <i class="fab ${post.icon}"></i>
-                                                        </div>
-                                                        <div class="flex-1">
-                                                            <p class="text-xs font-bold text-slate-800">${post.user}</p>
-                                                            <p class="text-xs text-slate-500">${post.date}</p>
-                                                        </div>
-                                                    </div>
-                                                    <p class="text-sm text-slate-600 line-clamp-3">${post.text}</p>
-                                                    ${post.likes ? `
-                                                        <div class="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-500">
-                                                            <i class="fas fa-heart text-red-500"></i>
-                                                            ${post.likes} likes
-                                                        </div>
-                                                    ` : ''}
-                                                </div>
-                                            </a>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                            ` : ''}
+                            <!-- Elfsight YouTube Gallery Widget -->
+                            <div class="bg-white rounded-[2.5rem] p-4 shadow-sm border border-slate-100 min-h-[400px]">
+                                <div class="elfsight-app-0444983a-44d2-43ce-9457-37207dc3390c" data-elfsight-app-lazy></div>
+                            </div>
                         </div>
 
-                        <!-- Call to Action -->
-                        <div class="p-12 bg-gradient-to-br from-ikf-blue to-slate-900 rounded-[3rem] text-white shadow-xl relative overflow-hidden text-center">
-                            <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
-                            <div class="relative z-10">
-                                <h3 class="text-3xl font-black mb-4">${this.getSafeValue('social.cta.title', 'Join Our Community')}</h3>
-                                <p class="text-blue-200 mb-8 max-w-2xl mx-auto">
-                                    ${this.getSafeValue('social.cta.subtitle', 'Stay updated with our latest insights, projects, and company culture. Follow us on your favorite platform!')}
-                                </p>
-                                <div class="flex flex-wrap justify-center gap-4">
-                                    ${socialLinks.map(link => `
-                                                <a href="${link.profile_url}" target="_blank" rel="noopener noreferrer"
-                                                   class="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-full font-bold text-sm uppercase tracking-wider transition-all flex items-center gap-2">
-                                                    <i class="fab ${getPlatformIcon(link.platform)}"></i>
-                                                    Follow on ${link.platform}
-                                                </a>
-                                            `).join('')}
+                        <!--Instagram / Featured Grid-->
+                        <div class="mb-20">
+                             <div class="flex items-center justify-between mb-8">
+                                <h3 class="text-2xl font-black text-[#0E0057] flex items-center gap-3">
+                                    <i class="fab fa-instagram text-[#E1306C]"></i> ${socData.featuredTitle}
+                                </h3>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <!-- Placeholder for Instagram grid - could also be an Elfsight widget if available -->
+                                <div class="aspect-square bg-slate-100 rounded-2xl relative group overflow-hidden cursor-pointer">
+                                    <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                                        <i class="fab fa-instagram text-3xl"></i>
+                                    </div>
+                                </div>
+                                <div class="aspect-square bg-slate-100 rounded-2xl relative group overflow-hidden cursor-pointer">
+                                    <img src="https://images.unsplash.com/photo-1611262588024-d12430b9816e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                                        <i class="fab fa-instagram text-3xl"></i>
+                                    </div>
+                                </div>
+                                 <div class="aspect-square bg-slate-100 rounded-2xl relative group overflow-hidden cursor-pointer">
+                                    <img src="https://images.unsplash.com/photo-1585250003058-20892c222ba2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                                        <i class="fab fa-instagram text-3xl"></i>
+                                    </div>
+                                </div>
+                                 <div class="aspect-square bg-slate-100 rounded-2xl relative group overflow-hidden cursor-pointer">
+                                    <img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                                        <i class="fab fa-instagram text-3xl"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>`;
 
-
-            case 'directory':
+                        <!--CTA -->
+                <div class="bg-slate-900 rounded-[3rem] p-12 text-center relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                    <div class="relative z-10">
+                        <h3 class="text-3xl font-black text-white mb-4">${(socData.cta || {}).title || 'Join the Conversation'}</h3>
+                        <p class="text-slate-400 max-w-xl mx-auto mb-8 font-medium">
+                            ${(socData.cta || {}).subtitle || 'Follow us on social media to stay updated with the latest news, events, and behind-the-scenes action at IKF.'}
+                        </p>
+                        <div class="flex justify-center gap-4">
+                            <a href="#" class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-white hover:bg-[#0077b5] hover:text-white transition-all"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-white hover:bg-[#FF0000] hover:text-white transition-all"><i class="fab fa-youtube"></i></a>
+                            <a href="#" class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-white hover:bg-[#E1306C] hover:text-white transition-all"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+                    </div>`; case 'directory':
                 // Initialize employees if not already done
                 if (!this.employees || this.employees.length === 0) {
                     this.initEmployees();
@@ -1005,7 +967,7 @@ window.AppNavigation = {
 
                 return `
                     <div class="max-w-7xl mx-auto py-6 fade-in">
-                        <!-- Creative Header / Dashboard -->
+                        <!--Creative Header / Dashboard-->
                         <div class="mb-16">
                             <div class="flex flex-col md:flex-row items-end justify-between gap-8 mb-10">
                                 <div>
@@ -1017,7 +979,7 @@ window.AppNavigation = {
                                 </div>
                                 
                                 <!-- Live Stats Ticker -->
-                                <div class="flex gap-4">
+                                <div class="flex flex-wrap gap-4">
                                     ${(Array.isArray(dirData.stats) ? dirData.stats : []).map(stat => `
                                         <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-lg text-center min-w-[100px] hover:-translate-y-1 transition-transform">
                                             <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">${stat.label}</p>
@@ -1028,7 +990,7 @@ window.AppNavigation = {
                             </div>
 
                             <!-- Floating Search & Filter Bar -->
-                            <div class="bg-white p-4 rounded-[2rem] shadow-xl shadow-ikf-blue/5 border border-slate-50 flex flex-col lg:flex-row gap-4 items-center relative z-30">
+                            <div class="bg-white p-4 rounded-[2rem] shadow-xl shadow-ikf-blue/5 border border-slate-50 flex flex-col lg:flex-row flex-wrap gap-4 items-center relative z-30">
                                 <!-- Search -->
                                 <div class="relative flex-1 w-full group">
                                     <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
@@ -1060,7 +1022,7 @@ window.AppNavigation = {
                             </div>
                         </div>
 
-                        <!-- Quick Filters Pills -->
+                        <!--Quick Filters Pills-->
                         <div class="flex flex-wrap justify-center gap-3 mb-12 opacity-60 hover:opacity-100 transition-opacity">
                             <span class="text-[10px] font-black uppercase tracking-widest text-slate-300 py-2">${this.getSafeValue('directory.quickAccessLabel', 'Quick Access:')}</span>
                             <button onclick="AppNavigation.quickFilter('Development')" class="px-4 py-1.5 bg-white/50 hover:bg-white text-slate-400 hover:text-ikf-blue rounded-full text-[10px] font-bold border border-transparent hover:border-ikf-blue/20 transition-all hover:shadow-lg">Development</button>
@@ -1068,16 +1030,16 @@ window.AppNavigation = {
                             <button onclick="AppNavigation.quickFilter('Design')" class="px-4 py-1.5 bg-white/50 hover:bg-white text-slate-400 hover:text-ikf-blue rounded-full text-[10px] font-bold border border-transparent hover:border-ikf-blue/20 transition-all hover:shadow-lg">Design</button>
                         </div>
 
-                        <!-- Dynamic Grid -->
-                        <div id="directory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 px-4 sm:px-0">
-                            <!-- Content will be injected by renderDirectoryGrid() -->
-                        </div>
+                        <!--Dynamic Grid-->
+                <div id="directory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 px-4 sm:px-0">
+                    <!-- Content will be injected by renderDirectoryGrid() -->
+                </div>
                     </div>`;
 
             case 'philosophy':
                 const pData = this.contentData?.philosophy || {
                     badge: "Core Directives",
-                    title: "I â€¢ K â€¢ F",
+                    title: "I • K • F",
                     subtitle: "The DNA of Our Identity",
                     pillars: [
                         { letter: "I", title: "Innovation", description: "Obsessive curiosity. We don't just use technology; we blend AI-refined strategies with a human lens to solve business challenges." },
@@ -1102,7 +1064,7 @@ window.AppNavigation = {
                             </p>
                         </div>
 
-                        <!-- Pillars Grid -->
+                        <!--Pillars Grid-->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
                             ${(Array.isArray(pData.pillars) ? pData.pillars : []).map((pillar, idx) => {
                     const pLetter = pillar.letter || pillar.id || "?";
@@ -1138,41 +1100,41 @@ window.AppNavigation = {
                 }).join('')}
                         </div>
 
-                        <!-- Formal Brand Manifesto -->
-                    <div class="bg-[#0E0057] rounded-[4rem] p-12 md:p-20 text-white relative overflow-hidden group">
-                        <!-- Background Accent -->
-                        <div class="absolute top-0 right-0 w-1/2 h-full bg-[#d9a417]/5 -skew-x-12 translate-x-1/2"></div>
+                        <!--Formal Brand Manifesto-->
+                <div class="bg-[#0E0057] rounded-[4rem] p-12 md:p-20 text-white relative overflow-hidden group">
+                    <!-- Background Accent -->
+                    <div class="absolute top-0 right-0 w-1/2 h-full bg-[#d9a417]/5 -skew-x-12 translate-x-1/2"></div>
 
-                        <div class="relative z-10 max-w-4xl">
-                            <h2 class="text-4xl md:text-6xl font-black mb-12 leading-tight tracking-tighter">
-                                ${this.getSafeValue('philosophy.manifesto.title', 'Beyond Services, <br /> <span class="text-[#d9a417]">We Build Legacies.</span>')}
-                            </h2>
+                    <div class="relative z-10 max-w-4xl">
+                        <h2 class="text-4xl md:text-6xl font-black mb-12 leading-tight tracking-tighter">
+                            ${this.getSafeValue('philosophy.manifesto.title', 'Beyond Services, <br /> <span class="text-[#d9a417]">We Build Legacies.</span>')}
+                        </h2>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-                                <p class="text-lg text-slate-300 font-medium leading-relaxed">
-                                    ${this.getSafeValue('philosophy.manifesto.para1', "At IKF, our philosophy is the engine of our growth. For 25 years, we've refined digital tools through a human lens, ensuring every output is a blend of precision and heart.")}
-                                </p>
-                                <p class="text-lg text-slate-300 font-medium leading-relaxed">
-                                    ${this.getSafeValue('philosophy.manifesto.para2', "We are obsessed with curiosity and mastered in digital wisdom, engineering competitive advantages for 1500+ global partners.")}
-                                </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+                            <p class="text-lg text-slate-300 font-medium leading-relaxed">
+                                ${this.getSafeValue('philosophy.manifesto.para1', "At IKF, our philosophy is the engine of our growth. For 25 years, we've refined digital tools through a human lens, ensuring every output is a blend of precision and heart.")}
+                            </p>
+                            <p class="text-lg text-slate-300 font-medium leading-relaxed">
+                                ${this.getSafeValue('philosophy.manifesto.para2', "We are obsessed with curiosity and mastered in digital wisdom, engineering competitive advantages for 1500+ global partners.")}
+                            </p>
+                        </div>
+
+                        <div class="flex flex-wrap gap-12 pt-12 border-t border-white/10">
+                            <div class="flex flex-col">
+                                <span class="text-5xl font-black text-[#d9a417] mb-2">${this.getSafeValue('philosophy.manifesto.years', '25+')}</span>
+                                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">${this.getSafeValue('philosophy.manifesto.label1', 'Years Legacy')}</span>
                             </div>
-
-                            <div class="flex flex-wrap gap-12 pt-12 border-t border-white/10">
-                                <div class="flex flex-col">
-                                    <span class="text-5xl font-black text-[#d9a417] mb-2">${this.getSafeValue('philosophy.manifesto.years', '25+')}</span>
-                                    <span class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">${this.getSafeValue('philosophy.manifesto.label1', 'Years Legacy')}</span>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-5xl font-black text-white mb-2">${this.getSafeValue('philosophy.manifesto.partners', '1500+')}</span>
-                                    <span class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">${this.getSafeValue('philosophy.manifesto.label2', 'Global Partners')}</span>
-                                </div>
+                            <div class="flex flex-col">
+                                <span class="text-5xl font-black text-white mb-2">${this.getSafeValue('philosophy.manifesto.partners', '1500+')}</span>
+                                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">${this.getSafeValue('philosophy.manifesto.label2', 'Global Partners')}</span>
                             </div>
                         </div>
                     </div>
+                </div>
                     </div>`;
 
             case 'mission':
-                const missData = this.contentData?.mission_vision || {
+                const missData = this.contentData?.mission || {
                     badge: "Strategic Imperatives",
                     title: "Mission & <span class=\"text-transparent bg-clip-text bg-gradient-to-r from-ikf-blue to-ikf-yellow\">Vision</span>",
                     vision: { title: "The Vision", content: "\"To be a globally respected, multidisciplinary digital agency known for its commitment to excellence and innovation.\"" },
@@ -1196,9 +1158,9 @@ window.AppNavigation = {
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20">
                             <div class="bg-white p-12 lg:p-16 rounded-[3rem] premium-card relative overflow-hidden group">
                                 <div class="absolute top-0 right-0 p-8 opacity-5 transform group-hover:scale-110 transition-transform"><i class="fas fa-eye text-[120px] text-ikf-blue"></i></div>
-                                <h3 class="text-3xl font-black text-ikf-blue mb-6">${missData.vision.title}</h3>
+                                <h3 class="text-3xl font-black text-ikf-blue mb-6">${missData.vision?.title || 'The Vision'}</h3>
                                 <p class="text-slate-500 text-lg leading-relaxed italic">
-                                    ${missData.vision.content}
+                                    ${missData.vision?.content || ''}
                                 </p>
                                 <div class="mt-10 flex items-center gap-4 text-ikf-yellow">
                                     <div class="h-px flex-1 bg-ikf-yellow/20"></div>
@@ -1207,9 +1169,9 @@ window.AppNavigation = {
                             </div>
                             <div class="bg-ikf-blue p-12 lg:p-16 rounded-[3rem] premium-card relative overflow-hidden group text-white">
                                 <div class="absolute top-0 right-0 p-8 opacity-10 transform group-hover:scale-110 transition-transform"><i class="fas fa-rocket text-[120px] text-white"></i></div>
-                                <h3 class="text-3xl font-black mb-6">${missData.mission.title}</h3>
+                                <h3 class="text-3xl font-black mb-6">${missData.mission?.title || 'The Mission'}</h3>
                                 <p class="text-blue-100 text-lg leading-relaxed">
-                                    ${missData.mission.content}
+                                    ${missData.mission?.content || ''}
                                 </p>
                                 <div class="mt-10 flex items-center gap-4 text-ikf-yellow">
                                     <div class="h-px flex-1 bg-white/10"></div>
@@ -1282,7 +1244,7 @@ window.AppNavigation = {
                             <p class="text-slate-400 mt-4 max-w-2xl mx-auto text-sm font-medium">${cultData.subtitle}</p>
                         </div>
 
-                        <!-- Culture Stats Grid -->
+                        <!--Culture Stats Grid-->
                         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                             ${(Array.isArray(cultData.stats) ? cultData.stats : []).map(stat => `
                                 <div class="p-8 bg-white rounded-[2.5rem] shadow-lg hover:shadow-xl transition-all border border-slate-50 text-center group cursor-pointer hover:-translate-y-2">
@@ -1295,78 +1257,81 @@ window.AppNavigation = {
                             `).join('')}
                         </div>
 
-                        <!-- Main Culture Modules -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 h-[600px] md:h-auto">
-                        <!-- Left: Smart Values -->
-                        <div class="md:col-span-2 space-y-6">
-                            <div class="bg-gradient-to-br from-ikf-blue to-slate-900 rounded-[3rem] p-10 md:p-14 text-white relative overflow-hidden group">
-                                <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-ikf-yellow/20 transition-colors duration-700"></div>
-                                <div class="relative z-10">
-                                    <div class="flex items-center gap-4 mb-8">
-                                        <span class="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-mono border border-white/20">values.json</span>
-                                        <div class="h-[1px] flex-1 bg-white/10"></div>
+                        <!--Main Culture Modules-->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 h-[600px] md:h-auto">
+                    <!-- Left: Smart Values -->
+                    <div class="md:col-span-2 space-y-6">
+                        <div class="bg-gradient-to-br from-ikf-blue to-slate-900 rounded-[3rem] p-10 md:p-14 text-white relative overflow-hidden group">
+                            <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-ikf-yellow/20 transition-colors duration-700"></div>
+                            <div class="relative z-10">
+                                <div class="flex items-center gap-4 mb-8">
+                                    <span class="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-mono border border-white/20">values.json</span>
+                                    <div class="h-[1px] flex-1 bg-white/10"></div>
+                                </div>
+                                <h3 class="text-3xl md:text-5xl font-black mb-6 leading-tight">${(cultData.mainMessage || cultData.mainValue || {}).title || ''}</h3>
+                                <p class="text-slate-300 max-w-lg text-sm leading-relaxed mb-8">${(cultData.mainMessage || cultData.mainValue || {}).description || ''}</p>
+                                <div class="flex gap-4">
+                                    <div class="flex -space-x-4">
+                                        <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-700"></div>
+                                        <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-600"></div>
+                                        <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-500 flex items-center justify-center text-[10px] font-bold">+</div>
                                     </div>
-                                    <h3 class="text-3xl md:text-5xl font-black mb-6 leading-tight">${(cultData.mainMessage || cultData.mainValue || {}).title || ''}</h3>
-                                    <p class="text-slate-300 max-w-lg text-sm leading-relaxed mb-8">${(cultData.mainMessage || cultData.mainValue || {}).description || ''}</p>
-                                    <div class="flex gap-4">
-                                        <div class="flex -space-x-4">
-                                            <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-700"></div>
-                                            <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-600"></div>
-                                            <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-500 flex items-center justify-center text-[10px] font-bold">+</div>
-                                        </div>
-                                        <div class="flex items-center gap-2 text-xs font-bold text-ikf-yellow">
-                                            <i class="fas fa-check-circle"></i>
-                                            <span>${this.getSafeValue('culture.collabStatus', 'Collaboration Mode: Active')}</span>
-                                        </div>
+                                    <div class="flex items-center gap-2 text-xs font-bold text-ikf-yellow">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>${this.getSafeValue('culture.collabStatus', 'Collaboration Mode: Active')}</span>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="grid grid-cols-2 gap-6">
-                                ${(Array.isArray(cultData.values || cultData.secondaryValues) ? (cultData.values || cultData.secondaryValues) : []).map(val => `
+                        <div class="grid grid-cols-2 gap-6">
+                            ${(Array.isArray(cultData.values || cultData.secondaryValues) ? (cultData.values || cultData.secondaryValues) : []).map(val => `
                                             <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group">
                                                 <i class="fas ${val.icon || 'fa-star'} text-3xl text-${val.color || 'ikf-yellow'} mb-4 group-hover:scale-110 transition-transform block"></i>
                                                 <h4 class="font-black text-lg mb-2">${val.title || ''}</h4>
                                                 <p class="text-xs text-slate-400">${val.description || val.desc || ''}</p>
                                             </div>
                                         `).join('')}
-                            </div>
-                        </div>
-
-                        <!-- Right: Life Gallery (Smart Vertical) -->
-                        <div class="bg-slate-50 rounded-[3rem] p-4 flex flex-col gap-4 overflow-hidden relative border border-slate-100">
-                            <div class="absolute top-8 left-8 z-10 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-black shadow-sm">
-                                <i class="fas fa-camera text-ikf-blue mr-2"></i> ${(cultData.gallery || {}).title || 'Life @ IKF'}
-                            </div>
-                            <div class="flex-1 rounded-[2.5rem] bg-cover bg-center" style="background-image: url('${(cultData.gallery || {}).image || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}');"></div>
-                            <div class="h-40 rounded-[2.5rem] bg-ikf-yellow/10 flex items-center justify-center relative overflow-hidden group cursor-pointer">
-                                <div class="absolute inset-0 bg-ikf-yellow/80 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center">
-                                    <span class="text-white font-black uppercase text-xs tracking-widest">${this.getSafeValue('culture.gallery.cta', 'View Gallery')}</span>
-                                </div>
-                                <span class="text-ikf-blue/30 font-black text-xl rotate-12 group-hover:rotate-0 transition-transform">${(cultData.gallery || {}).tag || '#IKFLife'}</span>
-                            </div>
                         </div>
                     </div>
+
+                    <!-- Right: Life Gallery (Smart Vertical) -->
+                    <div class="bg-slate-50 rounded-[3rem] p-4 flex flex-col gap-4 overflow-hidden relative border border-slate-100">
+                        <div class="absolute top-8 left-8 z-10 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-black shadow-sm">
+                            <i class="fas fa-camera text-ikf-blue mr-2"></i> ${(cultData.gallery || {}).title || 'Life @ IKF'}
+                        </div>
+                        <div class="flex-1 rounded-[2.5rem] bg-cover bg-center" style="background-image: url('${(cultData.gallery || {}).image || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}');"></div>
+                        <div class="h-40 rounded-[2.5rem] bg-ikf-yellow/10 flex items-center justify-center relative overflow-hidden group cursor-pointer">
+                            <div class="absolute inset-0 bg-ikf-yellow/80 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center">
+                                <span class="text-white font-black uppercase text-xs tracking-widest">${this.getSafeValue('culture.gallery.cta', 'View Gallery')}</span>
+                            </div>
+                            <span class="text-ikf-blue/30 font-black text-xl rotate-12 group-hover:rotate-0 transition-transform">${(cultData.gallery || {}).tag || '#IKFLife'}</span>
+                        </div>
+                    </div>
+                </div>
                     </div>`;
 
 
 
             case 'referral':
-                const refData = this.contentData?.referral || {};
-                const tiers = refData.tiers || [
-                    { title: "Junior Agent", experience: "0-2 Years Exp", reward: "â‚¹5,000", label: "Successfully Hired" },
-                    { title: "Specialist", experience: "2-5 Years Exp", reward: "â‚¹15,000", label: "Successfully Hired" },
-                    { title: "Architect", experience: "5+ Years Exp", reward: "â‚¹25,000", label: "Successfully Hired" }
-                ];
-                const refProcess = refData.process || [
-                    { step: "1. Identify", description: "Locate a candidate matching our cultural code." },
-                    { step: "2. Submit", description: "Forward coordinates (CV) to HR via secure channel." }
-                ];
-
-                const refPolicies = refData.policies || [
-                    { title: "Eligibility", description: "All active employees are eligible except HR and Leadership teams." },
-                    { title: "Payout", description: "Rewards are processed after 90 days of successful candidate probation." }
-                ];
+                const refData = this.contentData?.referral || {
+                    badge: "Ambassador Protocol",
+                    title: "Referral <span class=\"text-[#d9a417]\">Program</span>",
+                    subtitle: "Connect high-caliber talent with our industrial excellence and earn professional rewards.",
+                    tiers: [
+                        { title: "Junior Agent", experience: "0-2 Years Exp", reward: "₹5,000", label: "Successfully Hired" },
+                        { title: "Specialist", experience: "2-5 Years Exp", reward: "₹15,000", label: "Successfully Hired" },
+                        { title: "Architect", experience: "5+ Years Exp", reward: "₹25,000", label: "Successfully Hired" }
+                    ],
+                    process: [
+                        { step: "1. Identify", description: "Locate a candidate matching our cultural code." },
+                        { step: "2. Submit", description: "Forward coordinates (CV) to HR via secure channel." }
+                    ],
+                    policies: [
+                        { title: "Eligibility", description: "All active employees are eligible except HR and Leadership teams." },
+                        { title: "Payout", description: "Rewards are processed after 90 days of successful candidate probation." }
+                    ]
+                };
 
                 return `
                     <div class="max-w-6xl mx-auto py-12 px-6 fade-in">
@@ -1374,28 +1339,26 @@ window.AppNavigation = {
                         <div class="mb-20 text-center lg:text-left relative">
                             <div class="absolute -top-10 -left-10 text-[120px] font-black text-slate-50 -z-10 select-none">IKF</div>
                             <span class="bg-[#0E0057] text-white px-5 py-2 rounded-sm text-[10px] font-black uppercase tracking-[0.4em] mb-6 inline-block">
-                                ${refData.badge || 'Ambassador Protocol'}
+                                ${refData.badge}
                             </span>
                             <h1 class="text-5xl md:text-7xl font-black text-[#0E0057] leading-none tracking-tighter mb-6">
-                                Referral <span class="text-[#d9a417]">Program</span>
+                                ${refData.title}
                             </h1>
                             <p class="text-xl text-slate-400 font-medium max-w-2xl leading-relaxed">
-                                ${refData.subtitle || 'Connect high-caliber talent with our industrial excellence and earn professional rewards.'}
+                                ${refData.subtitle}
                             </p>
                         </div>
 
-                        <!-- Rewards Tiers -->
+                        <!--Rewards Tiers-->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
-                            ${(Array.isArray(tiers) ? tiers : []).map((tier, idx) => {
+                            ${(Array.isArray(refData.tiers) ? refData.tiers : []).map((tier, idx) => {
                     const isFeatured = tier.featured || idx === 1;
                     const borderClass = isFeatured ? 'border-[#d9a417] shadow-xl ring-4 ring-[#d9a417]/5' : 'border-slate-100 shadow-sm';
                     const colorClass = isFeatured ? 'text-[#d9a417]' : 'text-[#0E0057]';
 
                     return `
                                     <div class="group bg-white p-10 rounded-[3rem] border-2 ${borderClass} relative overflow-hidden transition-all duration-500 hover:-translate-y-2">
-                                        <div class="absolute -right-4 -bottom-4 text-[120px] font-black opacity-[0.03] group-hover:opacity-[0.06] transition-opacity select-none pointer-events-none">
-                                            0${idx + 1}
-                                        </div>
+                                        <div class="absolute -right-4 -bottom-4 text-[120px] font-black opacity-[0.03] group-hover:opacity-[0.06] transition-opacity select-none pointer-events-none">0${idx + 1}</div>
                                         
                                         <div class="flex items-center justify-between mb-8">
                                             <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-slate-50 shadow-inner group-hover:bg-[#0E0057] group-hover:text-white transition-all">
@@ -1422,17 +1385,15 @@ window.AppNavigation = {
                 }).join('')}
                         </div>
 
-                        <!-- Process Section -->
+                        <!--Process Section-->
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-24">
                             <div class="bg-white p-12 lg:p-16 rounded-[4rem] border border-slate-100 shadow-sm">
                                 <h3 class="text-3xl font-black text-[#0E0057] mb-12">${this.getSafeValue('referral.protocolTitle', 'The Protocol')}</h3>
                                 <div class="space-y-12">
-                                    ${(Array.isArray(refProcess) ? refProcess : []).map((step, idx) => `
+                                    ${(Array.isArray(refData.process) ? refData.process : []).map((step, idx) => `
                                         <div class="flex gap-6 relative group">
-                                            <div class="flex-shrink-0 w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center font-black text-[#0E0057] relative z-10 group-hover:bg-[#d9a417] group-hover:text-white transition-all">
-                                                0${idx + 1}
-                                            </div>
-                                            ${idx < refProcess.length - 1 ? '<div class="absolute left-6 top-12 w-px h-12 bg-slate-100"></div>' : ''}
+                                            <div class="flex-shrink-0 w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center font-black text-[#0E0057] relative z-10 group-hover:bg-[#d9a417] group-hover:text-white transition-all">0${idx + 1}</div>
+                                            ${idx < refData.process.length - 1 ? '<div class="absolute left-6 top-12 w-px h-12 bg-slate-100"></div>' : ''}
                                             <div>
                                                 <h4 class="text-xl font-bold text-[#0E0057] mb-2">${step.title || step.step}</h4>
                                                 <p class="text-slate-400 text-sm font-medium leading-relaxed">${step.description || step.desc}</p>
@@ -1446,7 +1407,7 @@ window.AppNavigation = {
                                 <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
                                 <h3 class="text-3xl font-black mb-12 relative z-10">Program Policies</h3>
                                 <div class="space-y-8 relative z-10">
-                                    ${(Array.isArray(refPolicies) ? refPolicies : []).map(policy => `
+                                    ${(Array.isArray(refData.policies) ? refData.policies : []).map(policy => `
                                         <div>
                                             <h4 class="text-xs font-black uppercase tracking-widest text-[#d9a417] mb-2">${policy.title}</h4>
                                             <p class="text-blue-100/70 text-sm font-medium leading-relaxed">${policy.description}</p>
@@ -1456,20 +1417,18 @@ window.AppNavigation = {
                             </div>
                         </div>
 
-                        <!-- CTA Section -->
-                    <div class="bg-slate-50 rounded-[4rem] p-12 md:p-20 text-center border-2 border-dashed border-slate-200">
-                        <div class="max-w-2xl mx-auto">
-                            <h2 class="text-3xl md:text-5xl font-black text-[#0E0057] mb-8 leading-tight">Ready to expand our intelligence network?</h2>
-                            <p class="text-slate-400 font-medium mb-12">Submit your candidate's details through our secure acquisition portal.</p>
-                            <a href="https://forms.gle/referral-example" target="_blank" class="inline-flex items-center gap-4 px-12 py-6 bg-[#0E0057] text-white font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-[#d9a417] transition-all shadow-xl shadow-blue-900/10 group">
-                                <i class="fas fa-paper-plane group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
-                                Initialize Submission
-                            </a>
-                        </div>
+                        <!--CTA Section-->
+                <div class="bg-slate-50 rounded-[4rem] p-12 md:p-20 text-center border-2 border-dashed border-slate-200">
+                    <div class="max-w-2xl mx-auto">
+                        <h2 class="text-3xl md:text-5xl font-black text-[#0E0057] mb-8 leading-tight">Ready to expand our intelligence network?</h2>
+                        <p class="text-slate-400 font-medium mb-12">Submit your candidate's details through our secure acquisition portal.</p>
+                        <a href="https://forms.gle/referral-example" target="_blank" class="inline-flex items-center gap-4 px-12 py-6 bg-[#0E0057] text-white font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-[#d9a417] transition-all shadow-xl shadow-blue-900/10 group">
+                            <i class="fas fa-paper-plane group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+                            Initialize Submission
+                        </a>
                     </div>
+                </div>
                     </div>`;
-
-
 
             case 'org_chart': {
 
@@ -1478,37 +1437,37 @@ window.AppNavigation = {
 
                 return `
                     <div class="max-w-7xl mx-auto py-12 px-6 fade-in">
-                    <!-- Premium Header -->
-                    <div class="mb-20 text-center lg:text-left relative">
-                        <div class="absolute -top-10 -left-10 text-[120px] font-black text-slate-50 -z-10 select-none">STRUCTURE</div>
-                        <span class="bg-[#0E0057] text-white px-5 py-2 rounded-sm text-[10px] font-black uppercase tracking-[0.4em] mb-6 inline-block">
-                            ${orgData.badge || 'Organizational Architecture'}
-                        </span>
-                        <h1 class="text-5xl md:text-7xl font-black text-[#0E0057] leading-none tracking-tighter mb-6">
-                            ${orgData.title || 'How We\'re <span class="text-[#d9a417]">Organized</span>'}
-                        </h1>
-                        <p class="text-xl text-slate-400 font-medium max-w-2xl leading-relaxed">
-                            ${orgData.subtitle || 'A high-level view of our functional ecosystem and reporting hierarchies.'}
-                        </p>
-                    </div>
-
-                    <!-- Leadership Node (Top Level) -->
-                    <div class="flex justify-center mb-24">
-                        <div class="bg-[#0E0057] text-white p-10 rounded-[3rem] text-center max-w-md relative group shadow-2xl">
-                            <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-ikf-yellow rounded-2xl flex items-center justify-center text-[#0E0057] shadow-lg">
-                                <i class="fas fa-crown"></i>
-                            </div>
-                            <h3 class="text-2xl font-black mb-2">${orgData.leadership?.title || 'Leadership Team'}</h3>
-                            <p class="text-blue-200 text-sm font-medium leading-relaxed">
-                                ${orgData.leadership?.subtitle || 'Strategic guidance and vision.'}
+                        <!--Premium Header-->
+                        <div class="mb-20 text-center lg:text-left relative">
+                            <div class="absolute -top-10 -left-10 text-[120px] font-black text-slate-50 -z-10 select-none">STRUCTURE</div>
+                            <span class="bg-[#0E0057] text-white px-5 py-2 rounded-sm text-[10px] font-black uppercase tracking-[0.4em] mb-6 inline-block">
+                                ${orgData.badge || 'Organizational Architecture'}
+                            </span>
+                            <h1 class="text-5xl md:text-7xl font-black text-[#0E0057] leading-none tracking-tighter mb-6">
+                                ${orgData.title || 'How We\'re <span class="text-[#d9a417]">Organized</span>'}
+                            </h1>
+                            <p class="text-xl text-slate-400 font-medium max-w-2xl leading-relaxed">
+                                ${orgData.subtitle || 'A high-level view of our functional ecosystem and reporting hierarchies.'}
                             </p>
-                            <div class="absolute -bottom-12 left-1/2 -translate-x-1/2 w-px h-12 bg-slate-200"></div>
                         </div>
-                    </div>
 
-                    <!-- Departments Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-                        ${depts.map((dept, idx) => {
+                        <!--Leadership Node(Top Level)-->
+                        <div class="flex justify-center mb-24">
+                            <div class="bg-[#0E0057] text-white p-10 rounded-[3rem] text-center max-w-md relative group shadow-2xl">
+                                <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-ikf-yellow rounded-2xl flex items-center justify-center text-[#0E0057] shadow-lg">
+                                    <i class="fas fa-crown"></i>
+                                </div>
+                                <h3 class="text-2xl font-black mb-2">${orgData.leadership?.title || 'Leadership Team'}</h3>
+                                <p class="text-blue-200 text-sm font-medium leading-relaxed">
+                                    ${orgData.leadership?.subtitle || 'Strategic guidance and vision.'}
+                                </p>
+                                <div class="absolute -bottom-12 left-1/2 -translate-x-1/2 w-px h-12 bg-slate-200"></div>
+                            </div>
+                        </div>
+
+                        <!--Departments Grid-->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+                            ${depts.map((dept, idx) => {
                     const colors = {
                         blue: 'bg-blue-50 text-blue-600 border-blue-100',
                         green: 'bg-emerald-50 text-emerald-600 border-emerald-100',
@@ -1518,37 +1477,42 @@ window.AppNavigation = {
                     const theme = colors[dept.color] || colors.blue;
 
                     return `
-                                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 group relative flex flex-col items-center text-center">
-                                    <div class="w-16 h-16 rounded-2xl ${theme} flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 transition-transform">
-                                        <i class="fas ${dept.icon || 'fa-users'} text-2xl"></i>
+                                    <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 group relative flex flex-col items-center text-center">
+                                        <div class="w-16 h-16 rounded-2xl ${theme} flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 transition-transform">
+                                            <i class="fas ${dept.icon || 'fa-users'} text-2xl"></i>
+                                        </div>
+                                        <h4 class="text-xl font-black text-[#0E0057] mb-4">${dept.title}</h4>
+                                        <p class="text-slate-400 text-xs font-medium leading-relaxed mb-6">
+                                            ${dept.description}
+                                        </p>
+                                        <div class="w-full space-y-2 pt-6 border-t border-slate-50">
+                                            ${(dept.items || []).map(item => `
+                                                <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest bg-slate-50 py-2 rounded-xl">
+                                                    ${item}
+                                                </div>
+                                            `).join('')}
+                                        </div>
                                     </div>
-                                    <h4 class="text-xl font-black text-[#0E0057] mb-4">${dept.title}</h4>
-                                    <p class="text-slate-400 text-xs font-medium leading-relaxed mb-6">
-                                        ${dept.description}
-                                    </p>
-                                    <div class="w-full space-y-2 pt-6 border-t border-slate-50">
-                                        ${(dept.items || []).map(item => `
-                                            <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest bg-slate-50 py-2 rounded-xl">
-                                                ${item}
-                                            </div>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                            `;
+                                `;
                 }).join('')}
-                    </div>
+                        </div>
 
-                    <!-- Legend / Footer -->
-                    <div class="bg-slate-50 p-12 rounded-[4rem] text-center border-2 border-dashed border-slate-200">
-                        <p class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Ecosystem Version 25.0 // Synchronized</p>
-                    </div>
-                </div> `;
+                        <!--Legend / Footer-->
+                <div class="bg-slate-50 p-12 rounded-[4rem] text-center border-2 border-dashed border-slate-200">
+                    <p class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Ecosystem Version 25.0 // Synchronized</p>
+                </div>
+                    </div>`;
             }
 
             case 'anniversary': {
                 const employees = this.employees || [];
                 const now = new Date();
                 const showAll = this.showAllAnniversaries || false;
+                const annivData = this.contentData?.anniversary || {
+                    badge: "Legacy System",
+                    title: showAll ? 'Hall of <span class="text-[#d9a417]">Fame</span>' : 'Upcoming <span class="text-[#d9a417]">Legends</span>',
+                    totalExperience: "142+"
+                };
 
                 // Helper for precise tenure (Years and Days)
                 const calculatePreciseTenure = (dojStr) => {
@@ -1599,6 +1563,7 @@ window.AppNavigation = {
                         if (tenure.years >= milestone.years) {
                             milestone.members.push({
                                 ...emp,
+                                ...tenure,
                                 displayTenure: `${tenure.years} Yrs, ${tenure.days} Days`
                             });
                             break;
@@ -1611,19 +1576,17 @@ window.AppNavigation = {
                     m.members.sort((a, b) => new Date(a.doj) - new Date(b.doj));
                 });
 
-                const annivData = this.contentData?.anniversary || {};
-
                 return `
-                    <div class="max-w-7xl mx-auto py-8 fade-in">
-                        <!-- Premium Header -->
+                <div class="max-w-7xl mx-auto py-8 fade-in">
+                        <!--Premium Header-->
                         <div class="mb-16 flex flex-col lg:flex-row items-end justify-between gap-10">
                             <div class="max-w-2xl">
                                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ikf-yellow/10 border border-ikf-yellow/20 text-ikf-yellow text-[10px] font-black uppercase tracking-widest mb-6">
                                     <i class="fas fa-crown"></i>
-                                    ${annivData.badge || 'Legacy System'}
+                                    ${annivData.badge}
                                 </div>
                                 <h1 class="text-5xl md:text-7xl font-black text-[#0E0057] tracking-tight leading-none">
-                                    ${showAll ? 'Hall of <span class="text-[#d9a417]">Fame</span>' : 'Upcoming <span class="text-[#d9a417]">Legends</span>'}
+                                    ${annivData.title}
                                 </h1>
                                 <p class="text-slate-500 mt-6 text-lg font-medium max-w-xl">
                                     ${showAll ? 'Celebrating every architect of our 25-year journey.' : 'Celebrating the architects reaching new milestones in the next 60 days.'}
@@ -1641,7 +1604,7 @@ window.AppNavigation = {
                                 <div class="relative z-10">
                                     <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black mb-2">Cumulative Intelligence</p>
                                     <div class="flex items-baseline gap-2">
-                                        <span class="text-5xl font-black text-ikf-yellow">${annivData.totalExperience || '142+'}</span>
+                                        <span class="text-5xl font-black text-ikf-yellow">${annivData.totalExperience}</span>
                                         <span class="text-sm font-bold text-slate-300">YEARS</span>
                                     </div>
                                     <div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-slate-500">
@@ -1652,7 +1615,7 @@ window.AppNavigation = {
                             </div>
                         </div>
 
-                        <!-- Milestone Grid -->
+                        <!--Milestone Grid-->
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
                             ${milestoneGroups.map((m, idx) => {
                     const colors = [
@@ -1699,24 +1662,24 @@ window.AppNavigation = {
                                 `;
                 }).join('')}
                         </div>
-
-                        <!-- Terminal Footer -->
-                        <div class="bg-slate-900 rounded-[3rem] p-10 md:p-14 text-center relative overflow-hidden flex flex-col items-center justify-center">
-                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-                            <div class="relative z-10 w-full max-w-lg text-left">
-                                <div class="bg-slate-800 rounded-t-xl p-3 flex gap-2">
-                                    <div class="w-2 h-2 rounded-full bg-red-500"></div>
-                                    <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
-                                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
-                                </div>
-                                <div class="bg-black/50 backdrop-blur-md p-6 rounded-b-xl border-t border-white/5 font-mono text-xs text-slate-300 shadow-2xl">
-                                    <p class="mb-2"><span class="text-green-400">âžœ</span> <span class="text-blue-400">~</span> system_check --anniverary</p>
-                                    <p class="mb-2"><span class="text-green-400">âœ”</span> milestone_detection: <span class="text-ikf-yellow">active</span></p>
-                                    <p class="mb-2"><span class="text-green-400">âœ”</span> current_view: <span class="text-ikf-yellow">${showAll ? 'historical_archive' : 'upcoming_milestones'}</span></p>
-                                    <p class="text-slate-500 mt-4">// Digital legacies are built one day at a time.</p>
-                                </div>
-                            </div>
+                        
+                        <!--Terminal Footer-->
+                <div class="bg-slate-900 rounded-[3rem] p-10 md:p-14 text-center relative overflow-hidden flex flex-col items-center justify-center">
+                    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+                    <div class="relative z-10 w-full max-w-lg text-left">
+                        <div class="bg-slate-800 rounded-t-xl p-3 flex gap-2">
+                            <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                            <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+                            <div class="w-2 h-2 rounded-full bg-green-500"></div>
                         </div>
+                        <div class="bg-black/50 backdrop-blur-md p-6 rounded-b-xl border-t border-white/5 font-mono text-xs text-slate-300 shadow-2xl">
+                            <p class="mb-2"><span class="text-green-400">➜</span> <span class="text-blue-400">~</span> system_check --anniversary</p>
+                            <p class="mb-2"><span class="text-green-400">✔</span> milestone_detection: <span class="text-ikf-yellow">active</span></p>
+                            <p class="mb-2"><span class="text-green-400">✔</span> current_view: <span class="text-ikf-yellow">${showAll ? 'historical_archive' : 'upcoming_milestones'}</span></p>
+                            <p class="text-slate-500 mt-4">// Digital legacies are built one day at a time.</p>
+                        </div>
+                    </div>
+                </div>
                     </div>`;
             }
 
@@ -1737,7 +1700,7 @@ window.AppNavigation = {
 
                         let status = '';
                         if (bMonth === currentMonth) {
-                            if (bDate === currentDate) status = 'TODAY! ðŸŽ‚';
+                            if (bDate === currentDate) status = 'TODAY! 🎂';
                             else if (bDate > currentDate && bDate <= currentDate + 15) status = 'UPCOMING';
                             else if (bDate < currentDate && bDate >= currentDate - 7) status = 'RECENT';
 
@@ -1747,7 +1710,7 @@ window.AppNavigation = {
                                     role: emp.role,
                                     dept: emp.dept,
                                     image: emp.img,
-                                    date: `${bDate} ${['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'][bMonth]} `,
+                                    date: `${bDate} ${['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'][bMonth]}`,
                                     status: status,
                                     rawDate: bDate
                                 });
@@ -1761,12 +1724,12 @@ window.AppNavigation = {
                 const bdayData = this.contentData?.birthdays || {};
                 const bdayTerminal = bdayData.terminal || { command: "broadcast_pulse.sh", output: ["system: ready"] };
 
-                const nextBday = upcoming.find(b => b.status === 'UPCOMING' || b.status === 'TODAY! ðŸŽ‚');
+                const nextBday = upcoming.find(b => b.status === 'UPCOMING' || b.status === 'TODAY! 🎂');
                 const nextEventText = nextBday ? nextBday.date : 'SCANNING...';
 
                 return `
-                    <div class="max-w-7xl mx-auto py-8 fade-in">
-                        <!-- Creative Vibrant Header -->
+                <div class="max-w-7xl mx-auto py-8 fade-in">
+                        <!--Creative Vibrant Header-->
                         <div class="mb-16 flex flex-col lg:flex-row items-center justify-between gap-12">
                             <div class="max-w-2xl text-center lg:text-left">
                                 <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-pink-500/10 to-purple-500/10 border border-pink-500/20 text-pink-600 text-[10px] font-black uppercase tracking-widest mb-6">
@@ -1928,9 +1891,7 @@ window.AppNavigation = {
                             </div>
                             <div class="w-full md:w-96 aspect-square bg-white/5 backdrop-blur-3xl rounded-[3rem] border-4 border-white/5 z-10 shadow-2xl flex items-center justify-center text-white/20 text-4xl font-black italic">PORTAL</div>
                         </div>
-                    </div>`;
-
-            case 'policies':
+                    </div>`; case 'policies':
                 const policyData = this.contentData?.policies || {};
                 const policyStats = policyData.stats || [
                     { value: "06", label: "Probation" },
@@ -1967,8 +1928,8 @@ window.AppNavigation = {
                                     <div class="w-3 h-3 rounded-full bg-green-500"></div>
                                 </div>
                                 <div class="bg-black/50 backdrop-blur-md p-6 rounded-b-xl border-t border-white/5 font-mono text-xs md:text-sm text-slate-300 shadow-2xl">
-                                    <p class="mb-2"><span class="text-green-400">âžœ</span> <span class="text-blue-400">~</span> ${policyTerminal.command}</p>
-                                    ${(policyTerminal.output || []).map(line => `<p class="mb-2"><span class="text-green-400">âœ”</span> ${line}</p>`).join('')}
+                                    <p class="mb-2"><span class="text-green-400">➜</span> <span class="text-blue-400">~</span> ${policyTerminal.command}</p>
+                                    ${(policyTerminal.output || []).map(line => `<p class="mb-2"><span class="text-green-400">✔</span> ${line}</p>`).join('')}
                                 </div>
                             </div>
 
@@ -2005,13 +1966,11 @@ window.AppNavigation = {
                             </div>
                         </div>
 
-                        <!-- Gallery View Container -->
-                        <div id="gallery-container" class="min-h-[400px]">
-                            ${this.renderGalleryFolders(gCategories)}
-                        </div>
+                        <!--Gallery View Container-->
+                <div id="gallery-container" class="min-h-[400px]">
+                    ${this.renderGalleryFolders(gCategories)}
+                </div>
                     </div>`;
-
-
 
             default:
                 return `
@@ -2029,7 +1988,7 @@ window.AppNavigation = {
      */
     filterGallery: function (category) {
         $('.gallery-filter-btn').removeClass('active bg-ikf-blue text-white').addClass('text-slate-400 hover:text-ikf-blue');
-        $(`button[onclick="AppNavigation.filterGallery('${category}')"]`).addClass('active bg-ikf-blue text-white').removeClass('text-slate-400 hover:text-ikf-blue');
+        $(`button[onclick = "AppNavigation.filterGallery('${category}')"]`).addClass('active bg-ikf-blue text-white').removeClass('text-slate-400 hover:text-ikf-blue');
 
         if (category === 'all') {
             const categories = [...new Set(this.galleryData.map(item => item.category))];
@@ -2045,7 +2004,7 @@ window.AppNavigation = {
     renderGalleryFolders: function (categories) {
         if (!categories || categories.length === 0) {
             return `
-                    <div class="flex flex-col items-center justify-center py-20 bg-white rounded-[3rem] border border-slate-100 shadow-sm">
+                <div class="flex flex-col items-center justify-center py-20 bg-white rounded-[3rem] border border-slate-100 shadow-sm">
                     <i class="fas fa-folder-open text-slate-100 text-8xl mb-6"></i>
                     <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">No capsules found in the archive</p>
                 </div>`;
@@ -2053,50 +2012,50 @@ window.AppNavigation = {
 
         return `
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 fade-in">
-                        ${categories.map(cat => {
+                    ${categories.map(cat => {
             const catImages = this.galleryData.filter(i => i.category === cat);
             const count = catImages.length;
             const previewImages = catImages.slice(0, 5); // Fetch 5 images
 
             return `
-                        <div onclick="AppNavigation.viewGalleryFolder('${cat}')" 
-                             class="group bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all cursor-pointer relative overflow-visible h-[380px] flex flex-col z-0 hover:z-50">
-                            
-                            <!-- Creative Hand of Cards Fan -->
-                            <div class="relative flex-1 w-full mb-8 mt-8 perspective-1000 flex items-center justify-center">
-                                ${previewImages.length > 0 ? previewImages.map((img, idx) => `
-                                    <div class="absolute w-44 h-52 rounded-2xl bg-white shadow-lg border-2 border-slate-50 overflow-hidden transform transition-all duration-700 cubic-bezier(0.34, 1.56, 0.64, 1) origin-bottom
-                                        ${idx === 0 ? 'z-50 scale-100 rotate-0 group-hover:-translate-y-6 group-hover:scale-110 shadow-xl' : ''}
-                                        ${idx === 1 ? 'z-40 scale-95 rotate-[-3deg] group-hover:rotate-[-15deg] group-hover:translate-x-[-50px] group-hover:translate-y-[-10px]' : ''}
-                                        ${idx === 2 ? 'z-40 scale-95 rotate-[3deg] group-hover:rotate-[15deg] group-hover:translate-x-[50px] group-hover:translate-y-[-10px]' : ''}
-                                        ${idx === 3 ? 'z-30 scale-90 rotate-[-6deg] group-hover:rotate-[-30deg] group-hover:translate-x-[-90px] group-hover:translate-y-[10px] opacity-80 group-hover:opacity-100' : ''}
-                                        ${idx === 4 ? 'z-30 scale-90 rotate-[6deg] group-hover:rotate-[30deg] group-hover:translate-x-[90px] group-hover:translate-y-[10px] opacity-80 group-hover:opacity-100' : ''}
-                                    ">
-                                        <img src="${img.url}" class="w-full h-full object-cover bg-slate-100" loading="lazy" onerror="this.src='https://via.placeholder.com/300x400?text=IMG'">
-                                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                    </div>
-                                `).join('') : `
-                                    <div class="w-44 h-52 bg-slate-50 rounded-2xl flex flex-col items-center justify-center text-slate-300 border-2 border-dashed border-slate-200">
-                                        <i class="fas fa-images text-4xl mb-2"></i>
-                                        <span class="text-[10px] font-bold uppercase tracking-widest">Empty</span>
-                                    </div>
-                                `}
-                            </div>
+                    <div onclick="AppNavigation.viewGalleryFolder('${cat}')" 
+                            class="group bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all cursor-pointer relative overflow-visible h-[380px] flex flex-col z-0 hover:z-50">
+                        
+                        <!-- Creative Hand of Cards Fan -->
+                        <div class="relative flex-1 w-full mb-8 mt-8 perspective-1000 flex items-center justify-center">
+                            ${previewImages.length > 0 ? previewImages.map((img, idx) => `
+                                <div class="absolute w-44 h-52 rounded-2xl bg-white shadow-lg border-2 border-slate-50 overflow-hidden transform transition-all duration-700 cubic-bezier(0.34, 1.56, 0.64, 1) origin-bottom
+                                    ${idx === 0 ? 'z-50 scale-100 rotate-0 group-hover:-translate-y-6 group-hover:scale-110 shadow-xl' : ''}
+                                    ${idx === 1 ? 'z-40 scale-95 rotate-[-3deg] group-hover:rotate-[-15deg] group-hover:translate-x-[-50px] group-hover:translate-y-[-10px]' : ''}
+                                    ${idx === 2 ? 'z-40 scale-95 rotate-[3deg] group-hover:rotate-[15deg] group-hover:translate-x-[50px] group-hover:translate-y-[-10px]' : ''}
+                                    ${idx === 3 ? 'z-30 scale-90 rotate-[-6deg] group-hover:rotate-[-30deg] group-hover:translate-x-[-90px] group-hover:translate-y-[10px] opacity-80 group-hover:opacity-100' : ''}
+                                    ${idx === 4 ? 'z-30 scale-90 rotate-[6deg] group-hover:rotate-[30deg] group-hover:translate-x-[90px] group-hover:translate-y-[10px] opacity-80 group-hover:opacity-100' : ''}
+                                ">
+                                    <img src="${img.url}" class="w-full h-full object-cover bg-slate-100" loading="lazy" onerror="this.src='https://via.placeholder.com/300x400?text=IMG'">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                </div>
+                            `).join('') : `
+                                <div class="w-44 h-52 bg-slate-50 rounded-2xl flex flex-col items-center justify-center text-slate-300 border-2 border-dashed border-slate-200">
+                                    <i class="fas fa-images text-4xl mb-2"></i>
+                                    <span class="text-[10px] font-bold uppercase tracking-widest">Empty</span>
+                                </div>
+                            `}
+                        </div>
 
-                            <div class="relative z-50 bg-white/95 backdrop-blur-sm pt-4 border-t border-slate-50 mx-[-1.5rem] px-6 pb-2 rounded-b-[2.5rem]">
-                                <h3 class="text-xl font-black text-slate-800 mb-1 group-hover:text-ikf-blue transition-colors truncate">${cat}</h3>
-                                <div class="flex items-center justify-between">
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">${count} Moments</p>
-                                    <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-ikf-yellow group-hover:text-[#0E0057] transition-all transform group-hover:rotate-[-45deg]">
-                                        <i class="fas fa-arrow-right text-xs"></i>
-                                    </div>
+                        <div class="relative z-50 bg-white/95 backdrop-blur-sm pt-4 border-t border-slate-50 mx-[-1.5rem] px-6 pb-2 rounded-b-[2.5rem]">
+                            <h3 class="text-xl font-black text-slate-800 mb-1 group-hover:text-ikf-blue transition-colors truncate">${cat}</h3>
+                            <div class="flex items-center justify-between">
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">${count} Moments</p>
+                                <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-ikf-yellow group-hover:text-[#0E0057] transition-all transform group-hover:rotate-[-45deg]">
+                                    <i class="fas fa-arrow-right text-xs"></i>
                                 </div>
                             </div>
                         </div>
-                    `;
+                    </div>
+                `;
         }).join('')
             }
-            </div>`;
+            </div > `;
     },
 
     /**
@@ -2126,7 +2085,7 @@ window.AppNavigation = {
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     ${images.map((img, idx) => `
                         <div class="aspect-square bg-slate-100 rounded-3xl overflow-hidden group relative cursor-zoom-in shadow-sm hover:shadow-xl transition-all"
-                             onclick="AppNavigation.openLightbox(${idx})">
+                                onclick="AppNavigation.openLightbox(${idx})">
                             <img src="${img.url}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" onerror="this.src='https://placehold.co/600x600?text=Image+Not+Found'">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent opacity-0 group-hover:opacity-100 transition-opacity p-6 flex items-end">
                                 <p class="text-white text-[10px] font-black uppercase tracking-widest">${img.title || 'View Metadata'}</p>
@@ -2139,7 +2098,7 @@ window.AppNavigation = {
         container.html(html);
         if (category !== 'all') {
             $('.gallery-filter-btn').removeClass('active bg-ikf-blue text-white').addClass('text-slate-400 hover:text-ikf-blue');
-            $(`button[onclick="AppNavigation.filterGallery('${category}')"]`).addClass('active bg-ikf-blue text-white').removeClass('text-slate-400 hover:text-ikf-blue');
+            $(`button[onclick = "AppNavigation.filterGallery('${category}')"]`).addClass('active bg-ikf-blue text-white').removeClass('text-slate-400 hover:text-ikf-blue');
         }
     },
 
@@ -2152,13 +2111,13 @@ window.AppNavigation = {
         if (!img) return;
 
         const modalHtml = `
-                    <div id="gallery-lightbox" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/98 backdrop-blur-2xl fade-in" onclick="AppNavigation.closeLightbox()">
-                <!-- Close Button -->
+                <div id="gallery-lightbox" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/98 backdrop-blur-2xl fade-in" onclick="AppNavigation.closeLightbox()">
+                <!--Close Button-->
                 <button class="absolute top-8 right-8 w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-white hover:bg-red-500 hover:rotate-90 transition-all z-50">
                     <i class="fas fa-times text-xl"></i>
                 </button>
 
-                <!-- Navigation Arrows -->
+                <!--Navigation Arrows-->
                 <button onclick="event.stopPropagation(); AppNavigation.changeLightboxImage(-1)" 
                         class="absolute left-8 top-1/2 -translate-y-1/2 w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-white hover:bg-ikf-blue hover:scale-110 transition-all z-50 group">
                     <i class="fas fa-chevron-left text-2xl group-hover:-translate-x-1 transition-transform"></i>
@@ -2168,18 +2127,18 @@ window.AppNavigation = {
                     <i class="fas fa-chevron-right text-2xl group-hover:translate-x-1 transition-transform"></i>
                 </button>
 
-                <!-- Image Container -->
-                    <div class="max-w-6xl w-full h-full flex flex-col items-center justify-center relative scale-in" onclick="event.stopPropagation()">
-                        <img id="lightbox-main-img" src="${img.url}" class="max-w-full max-h-[75vh] rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10 object-contain" onerror="this.src='https://placehold.co/800x600?text=Image+Not+Found'">
+                <!--Image Container-->
+                <div class="max-w-6xl w-full h-full flex flex-col items-center justify-center relative scale-in" onclick="event.stopPropagation()">
+                    <img id="lightbox-main-img" src="${img.url}" class="max-w-full max-h-[75vh] rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10 object-contain" onerror="this.src='https://placehold.co/800x600?text=Image+Not+Found'">
 
-                            <div class="mt-8 text-center">
-                                <p class="text-ikf-yellow font-black uppercase tracking-[0.4em] text-[10px] mb-2">${img.category}</p>
-                                <h3 class="text-white text-xl font-bold mb-4">${img.title || 'Visual Asset'}</h3>
-                                <div class="flex items-center justify-center gap-4">
-                                    <span class="text-white/40 text-[10px] font-bold uppercase tracking-widest">${index + 1} / ${this.currentGalleryImages.length}</span>
-                                </div>
+                        <div class="mt-8 text-center">
+                            <p class="text-ikf-yellow font-black uppercase tracking-[0.4em] text-[10px] mb-2">${img.category}</p>
+                            <h3 class="text-white text-xl font-bold mb-4">${img.title || 'Visual Asset'}</h3>
+                            <div class="flex items-center justify-center gap-4">
+                                <span class="text-white/40 text-[10px] font-bold uppercase tracking-widest">${index + 1} / ${this.currentGalleryImages.length}</span>
                             </div>
-                    </div>
+                        </div>
+                </div>
             </div>`;
 
         if ($('#gallery-lightbox').length) $('#gallery-lightbox').remove();

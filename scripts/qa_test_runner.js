@@ -116,6 +116,9 @@ async function runQATests() {
         assert('Update Client (Special Chars)', !updateClientErr);
 
         const { data: verifyClientUpdate } = await supabase.from('clients').select('*').eq('id', clientTestId).single();
+        if (verifyClientUpdate.category !== specialCategory) {
+            console.error(`Expected "${specialCategory}", got "${verifyClientUpdate.category}"`);
+        }
         assert('Verify Client Update', verifyClientUpdate.category === specialCategory);
 
         // 4. Delete

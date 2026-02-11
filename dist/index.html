@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Branding -->
+    <link rel="icon" type="image/svg+xml" href="/assets/logo-CmcLYJqH.svg">
+    <title>IKF Induction | Welcome to Your Journey</title>
+    <meta name="description"
+        content="Welcome to I Knowledge Factory (IKF). Explore our 25-year legacy of digital excellence, innovation, and strategic craftsmanship in the IKF Induction Portal.">
+
+    <!-- Scripts & Styles -->
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+
+    <!-- NOTICE: Using Tailwind CDN for development/demo ease. For production, use Tailwind CLI/PostCSS. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ikf: {
+                            blue: '#0E0057',
+                            yellow: '#d9a417'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CdsU7OGq.css">
+</head>
+
+<body class="bg-slate-50">
+
+    <!-- HERO SECTION - CLEAN & MINIMAL -->
+    <section id="hero-section"
+        class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative overflow-hidden gradient-mesh">
+
+        <div class="z-10 max-w-5xl px-6">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 border border-white/20 text-white/80 mb-10 backdrop-blur-sm fade-in"
+                style="animation-delay: 0.1s">
+                <span class="w-2 h-2 bg-ikf-yellow rounded-full subtle-pulse"></span>
+                <span id="hero-badge" class="text-xs font-semibold uppercase tracking-[0.2em]">Your Future Starts
+                    Here</span>
+            </div>
+
+            <!-- Main Heading - Removed Glitch Effect -->
+            <h1 id="hero-title"
+                class="text-5xl sm:text-7xl lg:text-8xl font-black text-white mb-8 tracking-tight leading-[1.1] fade-in"
+                style="animation-delay: 0.2s">
+                Transforming <span class="text-ikf-yellow">Ideas</span><br />Into <span
+                    class="text-white">Reality</span>
+            </h1>
+
+            <!-- Subtitle -->
+            <p id="hero-subtitle"
+                class="text-lg sm:text-xl text-slate-300 mb-14 max-w-2xl mx-auto leading-relaxed fade-in"
+                style="animation-delay: 0.3s">
+                Welcome to <span class="text-white font-semibold">I Knowledge Factory</span>. Explore our legacy,
+                understand our DNA, and become part of our 25-year journey of digital excellence.
+            </p>
+
+            <!-- CTA Section -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-8 fade-in"
+                style="animation-delay: 0.4s">
+                <button id="start-journey" onclick="window.startApp()"
+                    class="btn-primary group relative bg-ikf-yellow hover:bg-[#c29215] text-white px-10 py-4 rounded-xl text-base font-bold transition-all shadow-lg hover:shadow-xl flex items-center gap-3 z-20">
+                    <span id="hero-cta">Start Your Induction</span>
+                    <i class="fas fa-arrow-right transition-transform group-hover:translate-x-1 text-sm"></i>
+                </button>
+
+                <!-- Stats Badges -->
+                <div class="flex items-center gap-3">
+                    <div
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+                        <i class="fas fa-calendar-check text-ikf-yellow text-sm"></i>
+                        <span id="hero-years" class="text-white text-sm font-semibold">25+ Years</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+                        <i class="fas fa-users text-ikf-yellow text-sm"></i>
+                        <span id="hero-team" class="text-white text-sm font-semibold">150+ Team</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simplified Floating Social Icons - Only 3 -->
+        <div class="absolute right-8 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-5 z-20 fade-in"
+            style="animation-delay: 1s">
+            <a href="https://www.linkedin.com/company/i-knowledge-factory" target="_blank"
+                class="hero-floating w-11 h-11 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl flex items-center justify-center text-white hover:bg-ikf-yellow hover:border-ikf-yellow transition-all shadow-md hover:shadow-lg"
+                data-speed="1" title="LinkedIn">
+                <i class="fab fa-linkedin-in text-sm"></i>
+            </a>
+            <a href="https://www.instagram.com/iknowledgefactory" target="_blank"
+                class="hero-floating w-11 h-11 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl flex items-center justify-center text-white hover:bg-pink-600 hover:border-pink-600 transition-all shadow-md hover:shadow-lg"
+                data-speed="1.5" title="Instagram">
+                <i class="fab fa-instagram text-sm"></i>
+            </a>
+            <a href="https://www.ikf.co.in" target="_blank"
+                class="hero-floating w-11 h-11 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl flex items-center justify-center text-white hover:bg-blue-500 hover:border-blue-500 transition-all shadow-md hover:shadow-lg"
+                data-speed="1.2" title="Website">
+                <i class="fas fa-globe text-sm"></i>
+            </a>
+        </div>
+
+        <!-- Floating Icons - Uniform Size, Random Positions -->
+        <!-- Left Side -->
+        <img src="/assets/icon_linkedin-BL4Gosxr.png" alt="LinkedIn"
+            class="absolute top-[18%] left-[6%] w-16 h-16 icon-float mix-blend-screen opacity-50 hidden lg:block select-none pointer-events-none">
+
+        <img src="/assets/icon_facebook-Cya39Pod.png" alt="Facebook"
+            class="absolute bottom-[30%] left-[10%] w-16 h-16 icon-float mix-blend-screen opacity-50 hidden lg:block select-none pointer-events-none"
+            style="animation-delay: 1.5s">
+
+        <!-- Right Side -->
+        <img src="/assets/icon_instagram-BH_blDPi.png" alt="Instagram"
+            class="absolute top-[28%] right-[8%] w-16 h-16 icon-float mix-blend-screen opacity-50 hidden lg:block select-none pointer-events-none"
+            style="animation-delay: 0.8s">
+
+        <img src="/assets/icon_heart-DDDzcLYV.png" alt="Heart"
+            class="absolute bottom-[22%] right-[14%] w-16 h-16 icon-float mix-blend-screen opacity-50 hidden xl:block select-none pointer-events-none"
+            style="animation-delay: 2s">
+
+        <!-- Additional Icons for Balance -->
+        <img src="/assets/icon_youtube-9gaoF0vf.png" alt="YouTube"
+            class="absolute top-[55%] left-[4%] w-16 h-16 icon-float mix-blend-screen opacity-50 hidden xl:block select-none pointer-events-none"
+            style="animation-delay: 2.5s">
+
+    </section>
+
+    <!-- MAIN APP SHELL -->
+    <main id="app-shell" class="hidden h-screen overflow-hidden flex">
+        <!-- Sidebar Overlay (Mobile) -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden lg:hidden"></div>
+
+        <!-- SIDEBAR -->
+        <aside id="sidebar"
+            class="fixed inset-y-0 left-0 z-[60] w-72 bg-ikf-blue flex-shrink-0 flex flex-col shadow-2xl transition-transform duration-300 lg:relative lg:translate-x-0 -translate-x-full">
+            <div class="p-6 border-b border-blue-900 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="/assets/logo-CmcLYJqH.svg" alt="IKF Logo" class="h-10 w-auto">
+                    <span class="font-bold text-white tracking-widest uppercase text-sm">Induction</span>
+                </div>
+                <!-- Mobile Close Button -->
+                <button id="close-sidebar" class="lg:hidden text-white/50 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <nav id="sidebar-nav" class="flex-1 overflow-y-auto py-6 custom-scrollbar">
+                <!-- Navigation items will be injected here or hardcoded -->
+                <ul class="space-y-1 px-4">
+                    <li>
+                        <a href="#intro"
+                            class="nav-link flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all active"
+                            data-section="intro">
+                            <i class="fas fa-home w-5"></i> <span>Introduction</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#management"
+                            class="nav-link flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                            data-section="management">
+                            <i class="fas fa-user-tie w-5"></i> <span>Management Team</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#departments"
+                            class="nav-link flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                            data-section="departments">
+                            <i class="fas fa-star w-5"></i> <span>Major Clients</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#directory"
+                            class="nav-link flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                            data-section="directory">
+                            <i class="fas fa-address-book w-5"></i> <span>Employee Directory</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#philosophy"
+                            class="nav-link flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                            data-section="philosophy">
+                            <i class="fas fa-brain w-5"></i> <span>IKF Philosophy</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#mission"
+                            class="nav-link flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                            data-section="mission">
+                            <i class="fas fa-flag w-5"></i> <span>Mission & Vision</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#culture"
+                            class="nav-link flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                            data-section="culture">
+                            <i class="fas fa-users w-5"></i> <span>Company Culture</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#gallery"
+                            class="nav-link flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                            data-section="gallery">
+                            <i class="fas fa-images w-5"></i> <span>IKF Gallery</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#social"
+                            class="nav-link flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                            data-section="social">
+                            <i class="fas fa-share-nodes w-5"></i> <span>Social Media</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#referral"
+                            class="nav-link flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                            data-section="referral">
+                            <i class="fas fa-user-plus w-5"></i> <span>Referral Policy</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#anniversary"
+                            class="nav-link flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                            data-section="anniversary">
+                            <i class="fas fa-award w-5"></i> <span>Work Anniversaries</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#birthdays"
+                            class="nav-link flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                            data-section="birthdays">
+                            <i class="fas fa-birthday-cake w-5"></i> <span>Birthdays</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#holidays"
+                            class="nav-link flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                            data-section="holidays">
+                            <i class="fas fa-calendar-alt w-5"></i> <span>Company Holidays</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#attendance"
+                            class="nav-link flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                            data-section="attendance">
+                            <i class="fas fa-clock w-5"></i> <span>Schedule & Attendance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#policies"
+                            class="nav-link flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                            data-section="policies">
+                            <i class="fas fa-file-contract w-5"></i> <span>Policies & Performance</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Sidebar Footer - Simplified -->
+            <div class="mt-auto p-5 space-y-3 border-t border-white/10">
+                <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-white/80 font-medium">HR Portal</span>
+                        <span
+                            class="text-[10px] px-2 py-1 rounded-md bg-green-500/20 text-green-400 flex items-center gap-1.5 font-semibold">
+                            <span class="w-1.5 h-1.5 bg-green-400 rounded-full subtle-pulse"></span> Online
+                        </span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 text-white px-2">
+                    <div
+                        class="w-9 h-9 rounded-lg bg-gradient-to-br from-ikf-yellow to-orange-500 flex items-center justify-center font-bold text-sm shadow-md">
+                        JD</div>
+                    <div class="text-xs flex-1">
+                        <p class="font-semibold">John Doe</p>
+                        <p class="opacity-50 text-[10px]">Trainee Associate</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTENT AREA -->
+        <div class="flex-1 flex flex-col relative overflow-hidden bg-slate-50">
+            <!-- HEADER - Refined -->
+            <header
+                class="h-16 bg-white border-b border-slate-200 px-6 lg:px-10 flex items-center justify-between sticky top-0 z-40 shadow-sm"
+                id="main-header">
+                <div class="flex items-center gap-5">
+                    <!-- Mobile Menu -->
+                    <button id="open-sidebar"
+                        class="lg:hidden w-10 h-10 flex items-center justify-center bg-slate-100 rounded-lg text-ikf-blue hover:bg-ikf-blue hover:text-white transition-all">
+                        <i class="fas fa-bars text-sm"></i>
+                    </button>
+                    <div class="flex flex-col">
+                        <nav id="breadcrumbs"
+                            class="text-[9px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5">
+                            <span class="hover:text-ikf-blue cursor-pointer transition-colors">IKF</span>
+                            <span class="mx-1 opacity-40">/</span>
+                            <span class="text-ikf-yellow current-breadcrumb cursor-default">Introduction</span>
+                        </nav>
+                        <h2 id="current-section-title"
+                            class="text-sm lg:text-base font-bold text-ikf-blue tracking-tight truncate max-w-[160px] lg:max-w-none">
+                            Welcome to IKF</h2>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-8">
+                    <!-- Global Search -->
+                    <div class="relative hidden xl:block group">
+                        <i
+                            class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-ikf-blue transition-colors text-xs"></i>
+                        <input type="text" id="global-search" placeholder="Quick Search... (Ctrl + K)"
+                            class="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm w-64 focus:bg-white focus:border-ikf-blue/40 focus:ring-2 focus:ring-ikf-blue/10 outline-none transition-all">
+                    </div>
+
+                    <!-- Progress Tracker -->
+                    <div class="flex flex-col items-end w-36 lg:w-48">
+                        <div class="flex justify-between w-full text-[9px] font-bold uppercase tracking-wide mb-1.5">
+                            <span class="text-slate-400">Progress</span>
+                            <span id="progress-percentage" class="text-ikf-yellow">0%</span>
+                        </div>
+                        <div class="w-full h-1.5 rounded-full overflow-hidden bg-slate-100">
+                            <div id="progress-bar"
+                                class="progress-bar h-full bg-gradient-to-r from-ikf-yellow to-orange-500 rounded-full shadow-sm"
+                                style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- DYNAMIC CONTENT PANEL -->
+            <div id="content-panel" class="flex-1 overflow-y-auto p-8 lg:p-12 custom-scrollbar fade-in">
+                <!-- Content injected here -->
+                <div id="section-content">
+                    <div class="max-w-4xl mx-auto py-20 text-center">
+                        <i class="fas fa-spinner fa-spin text-4xl text-ikf-blue mb-4"></i>
+                        <p>Loading your induction journey...</p>
+                    </div>
+                </div>
+
+                <!-- FOOTER REMOVED -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Global Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/progress.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/main.js"></script>
+    <!-- Global Leader Modal -->
+    <div id="leader-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/90 backdrop-blur-2xl cursor-pointer"
+            onclick="AppNavigation.hideModal()">
+            <div
+                class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/circuit-board.png')]">
+            </div>
+        </div>
+        <div class="bg-white w-full max-w-5xl rounded-[3rem] overflow-hidden relative shadow-2xl scale-95 opacity-0 transition-all duration-500 border border-white/20 flex flex-col md:flex-row"
+            id="modal-content">
+
+            <button
+                class="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-slate-400 hover:bg-red-500 hover:text-white transition-all z-50 border border-white/20 cursor-pointer"
+                onclick="AppNavigation.hideModal()"><i class="fas fa-times text-xl"></i></button>
+
+            <!-- Left Panel: Avatar & Stats -->
+            <div class="md:w-2/5 relative bg-slate-100 overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-ikf-blue to-slate-900 opacity-90"></div>
+                <div class="relative z-10 h-full flex flex-col items-center justify-center p-12 text-center text-white">
+                    <div
+                        class="w-40 h-40 rounded-[2.5rem] p-1 bg-gradient-to-br from-ikf-yellow to-transparent mb-6 shadow-2xl">
+                        <div class="w-full h-full rounded-[2.3rem] overflow-hidden bg-slate-800">
+                            <img id="modal-leader-image" src="about:blank" class="w-full h-full object-cover"
+                                alt="Leader">
+                        </div>
+                    </div>
+                    <h4 id="modal-leader-name" class="text-3xl font-black mb-2 leading-none"></h4>
+                    <p id="modal-leader-role" class="text-ikf-yellow font-bold uppercase tracking-widest text-xs mb-8">
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-4 w-full">
+                        <div class="bg-white/10 rounded-2xl p-4 backdrop-blur-sm">
+                            <p class="text-2xl font-black">25+</p>
+                            <p class="text-[9px] uppercase tracking-widest opacity-60">Years</p>
+                        </div>
+                        <div class="bg-white/10 rounded-2xl p-4 backdrop-blur-sm">
+                            <p class="text-2xl font-black">TOP</p>
+                            <p class="text-[9px] uppercase tracking-widest opacity-60">Tier</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Content -->
+            <div class="md:w-3/5 p-12 lg:p-16 bg-white relative">
+                <i class="fas fa-quote-left text-6xl text-slate-100 absolute top-10 left-10 -z-0"></i>
+                <div class="relative z-10">
+                    <h3 class="text-2xl font-black text-slate-900 mb-8 uppercase tracking-wide flex items-center gap-3">
+                        <span class="w-2 h-2 bg-ikf-blue rounded-full"></span>
+                        Vision Archive
+                    </h3>
+                    <div id="modal-leader-note" class="text-slate-500 text-lg leading-relaxed space-y-6 font-medium">
+                    </div>
+
+                    <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div> Status: Online
+                        </div>
+                        <button onclick="AppNavigation.hideModal()"
+                            class="text-ikf-blue font-black text-xs uppercase tracking-widest hover:text-ikf-yellow transition-colors cursor-pointer">Close
+                            Terminal <i class="fas fa-arrow-right ml-1"></i></button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

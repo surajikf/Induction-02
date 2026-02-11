@@ -94,9 +94,9 @@ const CMSApp = {
 
             'mission.badge': { title: 'Mission Badge', help: 'Tagline for section', limit: 30 },
             'mission.title': { title: 'Mission Title', help: 'Main heading', limit: 50 },
-            'mission_vision.vision.label': { title: 'Vision Tag', help: 'Small yellow label', limit: 20 },
-            'mission_vision.mission.label': { title: 'Mission Tag', help: 'Small yellow label', limit: 20 },
-            'mission_vision.valuesLabel': { title: 'Values Badge', help: 'Small footer text', limit: 20 },
+            'mission.vision.label': { title: 'Vision Tag', help: 'Small yellow label', limit: 20 },
+            'mission.mission.label': { title: 'Mission Tag', help: 'Small yellow label', limit: 20 },
+            'mission.valuesLabel': { title: 'Values Badge', help: 'Small footer text', limit: 20 },
 
             'culture.badge': { title: 'Culture Badge', help: 'Tagline at top', limit: 30 },
             'culture.title': { title: 'Culture Title', help: 'Main heading', limit: 80 },
@@ -117,6 +117,8 @@ const CMSApp = {
             'birthdays.title': { title: 'Birthday Title', help: 'Main heading', limit: 50 },
             'birthdays.cta': { title: 'CTA Button', help: 'Label for broadcast wishes', limit: 30 },
             'birthdays.terminal.command': { title: 'Broadcast Command', help: 'Terminal script name', limit: 40 },
+
+            'holidays.badge': { title: 'Holiday Badge', help: 'Global Calendar label', limit: 30 },
             'holidays.title': { title: 'Holiday Title', help: 'Main heading', limit: 50 },
             'holidays.policy.title': { title: 'Policy Title', help: 'Heading for the dark policy card', limit: 60 },
             'holidays.policy.description': { title: 'Policy Description', help: 'Main text for reset protocol', limit: 400 },
@@ -128,7 +130,40 @@ const CMSApp = {
 
             'policies.badge': { title: 'Policy Badge', help: 'Legal framework label', limit: 30 },
             'policies.title': { title: 'Policy Title', help: 'Main heading', limit: 50 },
-            'policies.acknowledgement': { title: 'CTA Label', help: 'Text for acknowledgment button', limit: 30 }
+            'policies.acknowledgement': { title: 'CTA Label', help: 'Text for acknowledgment button', limit: 30 },
+
+            'philosophy.badge': { title: 'Philosophy Badge', help: 'Tagline at top', limit: 30 },
+            'philosophy.title': { title: 'Philosophy Title', help: 'Main heading', limit: 50 },
+            'philosophy.subtitle': { title: 'Philosophy Intro', help: 'Description text', limit: 400 },
+            'philosophy.pillarPrefix': { title: 'Pillar Prefix', help: 'e.g. Pillar', limit: 20 },
+            'philosophy.versionLabel': { title: 'Version Label', help: 'Small footer text', limit: 30 },
+            'philosophy.manifesto.title': { title: 'Manifesto Title', help: 'Heading in dark card', limit: 100 },
+            'philosophy.manifesto.para1': { title: 'Manifesto Para 1', help: 'Left column text', limit: 500 },
+            'philosophy.manifesto.para2': { title: 'Manifesto Para 2', help: 'Right column text', limit: 500 },
+            'philosophy.manifesto.years': { title: 'Manifesto Stat 1', help: 'e.g. 25+', limit: 20 },
+            'philosophy.manifesto.label1': { title: 'Stat 1 Label', help: 'e.g. Years Legacy', limit: 30 },
+            'philosophy.manifesto.partners': { title: 'Manifesto Stat 2', help: 'e.g. 1500+', limit: 20 },
+            'philosophy.manifesto.label2': { title: 'Stat 2 Label', help: 'e.g. Global Partners', limit: 30 },
+
+            // Nested / Array item metadata (Generic matching by key suffix)
+            'schedule.title': { title: 'Schedule Name', help: 'e.g. Work Week', limit: 30 },
+            'schedule.value': { title: 'Schedule Time', help: 'e.g. Mon - Fri', limit: 40 },
+            'schedule.note': { title: 'Schedule Note', help: 'Small annotation', limit: 30 },
+
+            'punctuality.title': { title: 'Punctuality Heading', help: 'Card title', limit: 40 },
+            'punctuality.description': { title: 'Punctuality Text', help: 'Description', limit: 200 },
+
+            'tiers.title': { title: 'Tier Name', help: 'e.g. Junior Agent', limit: 30 },
+            'tiers.experience': { title: 'Exp Requirement', help: 'e.g. 0-2 Years', limit: 30 },
+            'tiers.reward': { title: 'Reward Amount', help: 'e.g. ₹5,000', limit: 20 },
+            'tiers.label': { title: 'Tier Label', help: 'e.g. Successfully Hired', limit: 30 },
+
+            'stats.value': { title: 'Stat Value', help: 'e.g. 4.8', limit: 10 },
+            'stats.label': { title: 'Stat Label', help: 'e.g. Happiness Index', limit: 30 },
+            'stats.icon': { title: 'FontAwesome Icon', help: 'e.g. fa-star', limit: 30 },
+
+            'values.title': { title: 'Value Title', help: 'e.g. Growth Mindset', limit: 30 },
+            'values.description': { title: 'Value Description', help: 'Short explanation', limit: 100 }
         }
     },
 
@@ -559,7 +594,7 @@ const CMSApp = {
 
     editClient: async function (id) {
         const client = id ? this.state.clientsData.find(c => c.id === id) : { name: '', category: 'Development', logo_url: '', website_url: '', display_order: 10 };
-        const uniqueId = Date.now();
+        const categories = [...new Set(this.state.clientsData.map(c => c.category || 'Uncategorized'))].sort();
 
         const { value: formValues } = await Swal.fire({
             title: id ? 'Edit Client' : 'Add New Client',
@@ -571,13 +606,13 @@ const CMSApp = {
                     </div>
                     <div>
                         <label class="text-[10px] font-bold text-slate-400 uppercase">Category</label>
-                        <input list="client-categories-${uniqueId}" id="swal-client-category" class="admin-input mt-1 font-bold" value="${this.escapeHtml(client.category)}" placeholder="Select or Type New...">
-                        <datalist id="client-categories-${uniqueId}">
-                            ${[...new Set(this.state.clientsData.map(c => c.category))].sort().filter(c => c).map(cat =>
-                `<option value="${this.escapeHtml(cat)}">`
+                        <input type="text" id="swal-client-category" class="admin-input mt-1 font-bold" value="${this.escapeHtml(client.category)}" placeholder="Type New or Select Below...">
+                        <div class="flex flex-wrap gap-2 mt-2" id="category-tags">
+                            ${categories.map(cat =>
+                `<span class="px-2 py-1 bg-slate-100 border border-slate-200 rounded-md text-[10px] font-bold text-slate-500 cursor-pointer hover:bg-ikf-blue hover:text-white transition-colors" onclick="document.getElementById('swal-client-category').value = '${this.escapeHtml(cat)}'">${this.escapeHtml(cat)}</span>`
             ).join('')}
-                        </datalist>
-                         <p class="text-[9px] text-slate-400 mt-1"><i class="fas fa-magic text-ikf-yellow"></i> Smart Suggest: Type to filter or add new</p>
+                        </div>
+                        <p class="text-[9px] text-slate-400 mt-1">Click a tag to auto-fill, or type your own.</p>
                     </div>
                     <div>
                         <label class="text-[10px] font-bold text-slate-400 uppercase">Logo</label>
@@ -613,12 +648,16 @@ const CMSApp = {
             width: '32rem', // Wider modal for better layout
             preConfirm: () => {
                 const name = document.getElementById('swal-client-name').value;
+                const catInput = document.getElementById('swal-client-category');
+                const category = catInput.value.trim(); // Explicitly trim and capture
+
                 if (!name) Swal.showValidationMessage('Client Name is required');
+                if (!category) Swal.showValidationMessage('Category is required');
 
                 return {
                     id: id || crypto.randomUUID(),
                     name: name,
-                    category: document.getElementById('swal-client-category').value || 'Uncategorized',
+                    category: category,
                     logo_url: document.getElementById('swal-client-logo').value,
                     website_url: document.getElementById('swal-client-url').value,
                     display_order: client.display_order ?? 999
