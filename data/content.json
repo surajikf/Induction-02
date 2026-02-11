@@ -40,9 +40,9 @@
     "footer": "Explore the sidebar to begin your induction journey."
   },
   "management": {
-    "badge": "System Architects",
+    "badge": "Meet Your Leaders",
     "title": "The <span class=\"text-[#d9a417]\">Visionaries</span>",
-    "subtitle": "Guiding the IKF mainframes with over <strong>75 years</strong> of combined digital intelligence.",
+    "subtitle": "The minds who'll guide your journey. Get to know the leadership team with over <strong>75 years</strong> of combined digital intelligence.",
     "leaders": [
       {
         "id": "ashish",
@@ -73,10 +73,18 @@
       }
     ]
   },
+  "clients": {
+    "badge": "Trusted Partners",
+    "title": "Our <span class=\"text-[#d9a417]\">Client</span> Showcase",
+    "subtitle": "Proudly serving 1500+ leading brands across 12+ industries.",
+    "fallback": "Digital intelligence gathering in progress..."
+  },
   "philosophy": {
-    "badge": "Core Directives",
+    "badge": "Your New DNA",
     "title": "I • K • <span class=\"text-[#d9a417]\">F</span>",
-    "subtitle": "The DNA of Our Identity",
+    "subtitle": "Understanding what makes us tick. This is the DNA you're now part of.",
+    "pillarPrefix": "Pillar",
+    "versionLabel": "Protocol v25.0",
     "pillars": [
       {
         "letter": "I",
@@ -93,64 +101,72 @@
         "title": "Factory",
         "description": "Precision at scale. Our industrialized processes ensure high-impact delivery for 1500+ global clients."
       }
-    ]
-  },
-  "mission": {
-    "badge": "Strategic Compass",
-    "title": "Mission & <span class=\"text-[#d9a417]\">Vision</span>",
-    "vision": {
-      "title": "The Vision",
-      "content": "To be a globally respected, multidisciplinary digital agency known for its commitment to excellence and innovation."
-    },
-    "missionStatement": {
-      "title": "The Mission",
-      "content": "To unlock the full growth potential of brands by pioneering new approaches and delivering high-impact digital solutions."
-    },
-    "coreValues": {
-      "title": "Our Core Values (T.R.I.I.I.P)",
-      "values": [
-        {
-          "name": "Transparent",
-          "description": "Openness in all we do."
-        },
-        {
-          "name": "Respectful",
-          "description": "Respect begets respect."
-        },
-        {
-          "name": "Innovative",
-          "description": "Challenge the norm."
-        },
-        {
-          "name": "Inspired",
-          "description": "Inspired & Inspiring."
-        },
-        {
-          "name": "Professional",
-          "description": "Excellence in delivery."
-        }
-      ]
+    ],
+    "manifesto": {
+        "title": "Beyond Services, <br /> <span class=\"text-[#d9a417]\">We Build Legacies.</span>",
+        "para1": "We don’t just execute; we engineer growth. Our industrialized factory model ensures that every creative pixel and every line of code is optimized for maximum business impact.",
+        "para2": "Join the neural network of IKF. Here, curiosity is the primary currency, and mastery is the absolute standard. Welcome to the machine.",
+        "years": "25+",
+        "label1": "Years Legacy",
+        "partners": "1500+",
+        "label2": "Global Partners"
     }
   },
+  "mission": {
+    "badge": "Our North Star",
+    "title": "Mission & <span class=\"text-[#d9a417]\">Vision</span>",
+    "valuesTitle": "The IKF <span class=\"text-[#d9a417]\">DNA</span>",
+    "valuesLabel": "Core DNA",
+    "vision": {
+      "title": "The Vision",
+      "label": "Ambition",
+      "content": "To be a globally respected, multidisciplinary digital agency known for its commitment to excellence and innovation."
+    },
+    "mission": {
+      "title": "The Mission",
+      "label": "Execution",
+      "content": "To unlock the full growth potential of brands by pioneering new approaches and delivering high-impact digital solutions."
+    },
+    "values": [
+        { "icon": "fa-search", "title": "Transparent", "desc": "Openness in all we do." },
+        { "icon": "fa-heart", "title": "Respectful", "desc": "Respect begets respect." },
+        { "icon": "fa-lightbulb", "title": "Innovative", "desc": "Challenge the norm." },
+        { "icon": "fa-bolt", "title": "Inspired", "desc": "Inspired & Inspiring." },
+        { "icon": "fa-user-tie", "title": "Professional", "desc": "Excellence in delivery." }
+    ]
+  },
   "culture": {
-    "badge": "System Core",
+    "badge": "Your New Home",
     "title": "The IKF Culture <span class=\"text-[#d9a417]\">Code</span>",
-    "subtitle": "Running on version 4.0. Optimized for high performance, creativity, and human-centric processing.",
+    "subtitle": "Welcome to version 4.0! Here's what life at IKF looks like - optimized for high performance, creativity, and human-centric processing.",
+    "collabStatus": "Collaboration Mode: Active",
     "stats": [
       {
-        "value": "4.8/5",
+        "value": "4.8",
+        "suffix": "/5",
+        "icon": "fa-laugh-beam",
+        "color": "blue",
         "label": "Happiness Index"
       },
       {
-        "value": "52+",
+        "value": "52",
+        "suffix": "+",
+        "icon": "fa-pizza-slice",
+        "color": "yellow",
         "label": "Friday Parties"
       },
       {
-        "value": "200h",
+        "value": "200",
+        "suffix": "h",
+        "icon": "fa-brain",
+        "color": "purple",
         "label": "Learning / Yr"
       },
       {
-        "value": "0%",
+        "value": "0",
+        "suffix": "%",
+        "icon": "fa-seedling",
+        "color": "green",
         "label": "Boredom"
       }
     ],
@@ -172,13 +188,23 @@
     "gallery": {
       "title": "Life @ IKF",
       "tag": "#TeamBonding",
+      "cta": "View Gallery",
       "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     }
   },
   "social": {
     "badge": "Stay Connected",
-    "title": "The <span class=\"text-[#d9a417]\">Social Hub</span>",
-    "liveStatus": "Social activity: High",
+    "bgLogoText": "HUB",
+    "title": "Social <span class=\"text-[#d9a417]\">Sphere.</span>",
+    "liveStatus": "Live synchronization with the IKF digital ecosystem. Follow our journey across the web.",
+    "updatesTitle": "Latest Updates",
+    "youtubeTitle": "Latest Videos",
+    "featuredTitle": "Featured Posts",
+    "feedTitle": "Recent <span class=\"text-[#d9a417]\">Transmissions.</span>",
+    "cta": {
+      "title": "Join the <span class=\"text-[#d9a417]\">Ecosystem.</span>",
+      "subtitle": "Our digital presence is where strategy meets transparency. Follow our journey, share our stories, and help us grow the global IKF network."
+    },
     "platforms": [
       {
         "name": "LinkedIn",
@@ -208,146 +234,13 @@
         "label": "Fans",
         "growth": "Community Rooted"
       }
-    ],
-    "feed": [
-      {
-        "platform": "YouTube",
-        "icon": "fa-youtube",
-        "user": "IKF Insights",
-        "handle": "IKFDigital",
-        "text": "Christmas at the office, done our way! 🎄 A peek into our celebrations and the spirit of IKF.",
-        "image": "https://img.youtube.com/vi/jH7-Yy2jLpA/hqdefault.jpg",
-        "date": "1mo ago",
-        "likes": "2.5k",
-        "url": "https://www.youtube.com/watch?v=jH7-Yy2jLpA"
-      },
-      {
-        "platform": "YouTube",
-        "icon": "fa-youtube",
-        "user": "IKF Insights",
-        "handle": "IKFDigital",
-        "text": "Vikas Dabade - Why IKF is the best place to work with? Real talk from our team.",
-        "image": "https://img.youtube.com/vi/_S0x1T6z_80/hqdefault.jpg",
-        "date": "6mo ago",
-        "likes": "4.1k",
-        "url": "https://www.youtube.com/watch?v=_S0x1T6z_80"
-      },
-      {
-        "platform": "YouTube",
-        "icon": "fa-youtube",
-        "user": "IKF Insights",
-        "handle": "IKFDigital",
-        "text": "How Storytelling Drives Luxury Branding | IKF x De Mandovi masterclass.",
-        "image": "https://img.youtube.com/vi/kY6f8p4e-K4/hqdefault.jpg",
-        "date": "4mo ago",
-        "likes": "1.2k",
-        "url": "https://www.youtube.com/watch?v=kY6f8p4e-K4"
-      },
-      {
-        "platform": "LinkedIn",
-        "icon": "fa-linkedin-in",
-        "user": "IKF Official",
-        "handle": "@ikf-digital",
-        "text": "Exactly what is GEO? Generative Engine Optimization explained for the future of digital search.",
-        "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
-        "date": "2w ago",
-        "likes": "1.2k",
-        "url": "https://www.linkedin.com/company/i-knowledge-factory-pvt.-ltd./"
-      },
-      {
-        "platform": "LinkedIn",
-        "icon": "fa-linkedin-in",
-        "user": "IKF Official",
-        "handle": "@ikf-digital",
-        "text": "We debug problems, not people. Our philosophy on psychological safety in an agency.",
-        "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800",
-        "date": "3w ago",
-        "likes": "890",
-        "url": "https://www.linkedin.com/company/i-knowledge-factory-pvt.-ltd./"
-      },
-      {
-        "platform": "LinkedIn",
-        "icon": "fa-linkedin-in",
-        "user": "IKF Official",
-        "handle": "@ikf-digital",
-        "text": "Join us in celebrating 25 years of digital craftsmanship. Our journey began in 2000.",
-        "image": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=800",
-        "date": "1w ago",
-        "likes": "450",
-        "url": "https://www.linkedin.com/company/i-knowledge-factory-pvt.-ltd./"
-      },
-      {
-        "platform": "Instagram",
-        "icon": "fa-instagram",
-        "user": "Life At IKF",
-        "handle": "@ikfdigital",
-        "text": "Friday vibes at the office! Caffeine, creativity, and the best team. ☕️🚀 #LifeAtIKF",
-        "image": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=800",
-        "date": "2d ago",
-        "likes": "310",
-        "url": "https://www.instagram.com/ikfdigital/"
-      },
-      {
-        "platform": "Instagram",
-        "icon": "fa-instagram",
-        "user": "Life At IKF",
-        "handle": "@ikfdigital",
-        "text": "Lemon Tea Never Looked This Good | Chai Kapi x IKF Reel Squad. Sneak peek.",
-        "image": "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80&w=800",
-        "date": "4d ago",
-        "likes": "520",
-        "url": "https://www.instagram.com/ikfdigital/"
-      },
-      {
-        "platform": "Instagram",
-        "icon": "fa-instagram",
-        "user": "Life At IKF",
-        "handle": "@ikfdigital",
-        "text": "Celebrating 25 years of digital legacy. From a small setup to a global powerhouse.",
-        "image": "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80&w=800",
-        "date": "1w ago",
-        "likes": "1.1k",
-        "url": "https://www.instagram.com/ikfdigital/"
-      },
-      {
-        "platform": "Facebook",
-        "icon": "fa-facebook-f",
-        "user": "IKF Community",
-        "handle": "@ikfdigital",
-        "text": "Welcoming our latest batch of inductees! You're now part of a legacy that spans over 2 decades.",
-        "image": "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&q=80&w=800",
-        "date": "3d ago",
-        "likes": "640",
-        "url": "https://www.facebook.com/IKFDigital/"
-      },
-      {
-        "platform": "Facebook",
-        "icon": "fa-facebook-f",
-        "user": "IKF Community",
-        "handle": "@ikfdigital",
-        "text": "IKF Community: Rebranding a tech giant - A case study on impact and strategy.",
-        "image": "https://images.unsplash.com/photo-1434626881859-194d67b2b86f?auto=format&fit=crop&q=80&w=800",
-        "date": "1w ago",
-        "likes": "820",
-        "url": "https://www.facebook.com/IKFDigital/"
-      },
-      {
-        "platform": "Facebook",
-        "icon": "fa-facebook-f",
-        "user": "IKF Community",
-        "handle": "@ikfdigital",
-        "text": "Join our upcoming webinar on AI-powered personalization and e-commerce growth.",
-        "image": "https://images.unsplash.com/photo-1540317580384-e5d43616b9aa?auto=format&fit=crop&q=80&w=800",
-        "date": "2w ago",
-        "likes": "410",
-        "url": "https://www.facebook.com/IKFDigital/"
-      }
     ]
   },
   "referral": {
     "badge": "Ambassador Protocol",
     "title": "Referral <span class=\"gradient\">Program</span>",
     "subtitle": "Expand our collective intelligence. Connect high-caliber talent with IKF's industrial excellence.",
+    "protocolTitle": "The Protocol",
     "tiers": [
       {
         "level": "1",
@@ -438,7 +331,7 @@
           {
             "name": "Vikram Singh",
             "role": "Sr. Strategist",
-            "image": "images/avatars/avatar_marketing_male.png"
+            "image": "https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg"
           }
         ]
       },
@@ -450,12 +343,12 @@
           {
             "name": "Sneha Patel",
             "role": "Designer",
-            "image": "images/avatars/avatar_creative_female.png"
+            "image": "https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg"
           },
           {
             "name": "Rahul Verma",
             "role": "Tech Lead",
-            "image": "images/avatars/avatar_dev_male.png"
+            "image": "https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg"
           }
         ]
       }
@@ -478,19 +371,19 @@
         "name": "Priya Sharma",
         "date": "Feb 14",
         "dept": "Creative Dept",
-        "image": "images/avatars/avatar_creative_female.png"
+        "image": "https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg"
       },
       {
         "name": "Rohan D.",
         "date": "Feb 22",
         "dept": "Development",
-        "image": "images/avatars/avatar_dev_male.png"
+        "image": "https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg"
       },
       {
         "name": "Amit K.",
         "date": "Mar 05",
         "dept": "SEO Team",
-        "image": "images/avatars/avatar_marketing_male.png"
+        "image": "https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg"
       }
     ],
     "terminal": {
@@ -598,6 +491,8 @@
     "badge": "Live Neural Network",
     "title": "The <span class=\"gradient\">Collective.</span>",
     "description": "Accessing biosignatures of active agents operating across the IKF ecosystem.",
+    "searchShortcut": "CTRL + K",
+    "quickAccessLabel": "Quick Access:",
     "stats": [
       {
         "label": "Active",
@@ -645,133 +540,7 @@
           "SEO",
           "Performance Marketing"
         ]
-      },
-      {
-        "id": "branding",
-        "title": "Branding & Creative",
-        "description": "Creating compelling visual identities and content",
-        "icon": "fa-palette",
-        "color": "purple",
-        "items": [
-          "Video Production",
-          "Content Marketing",
-          "Corporate Branding"
-        ]
-      },
-      {
-        "id": "app-dev",
-        "title": "Application Development",
-        "description": "Custom software solutions for business needs",
-        "icon": "fa-server",
-        "color": "orange",
-        "items": [
-          "Cloud Telephony",
-          "Task Management",
-          "Custom Apps"
-        ]
-      }
-    ]
-  },
-  "client_showcase": {
-    "badge": "Global Impact",
-    "title": "Our <span class=\"text-[#d9a417]\">Client Showcase</span>",
-    "subtitle": "We partner with leading national and global brands to create powerful, insight-driven digital experiences.",
-    "categories": [
-      {
-        "title": "Automotive & Industrial",
-        "icon": "fa-car-side",
-        "color": "blue",
-        "clients": [
-          {
-            "name": "Tata Autocomp",
-            "logo": "https://www.ikf.co.in/wp-content/uploads/TataAutoComp.jpg"
-          },
-          {
-            "name": "Mercedes-Benz School",
-            "logo": "https://www.ikf.co.in/wp-content/uploads/MercedesBenzSchool.jpg"
-          },
-          {
-            "name": "Force Motors",
-            "logo": "https://www.ikf.co.in/wp-content/uploads/force-motors-logo.jpg"
-          },
-          {
-            "name": "Kalyani Group",
-            "logo": "https://www.ikf.co.in/wp-content/uploads/Kalyani2.jpg"
-          },
-          {
-            "name": "Kirloskar",
-            "logo": "https://www.ikf.co.in/wp-content/uploads/Kirloskar.jpg"
-          }
-        ]
-      },
-      {
-        "title": "Education & Culture",
-        "icon": "fa-graduation-cap",
-        "color": "indigo",
-        "clients": [
-          {
-            "name": "Symbiosis",
-            "logo": "https://www.ikf.co.in/wp-content/uploads/Symbiosis.jpg"
-          },
-          {
-            "name": "MIT School",
-            "logo": "https://www.ikf.co.in/wp-content/uploads/MITSchool.jpg"
-          },
-          {
-            "name": "MIT-WPU",
-            "logo": "https://www.ikf.co.in/wp-content/uploads/MIT-WPU-1.jpg"
-          },
-          {
-            "name": "MITCON",
-            "logo": "https://www.ikf.co.in/wp-content/uploads/MITCON.jpg"
-          },
-          {
-            "name": "MIT ADT",
-            "logo": "https://www.ikf.co.in/wp-content/uploads/MIT-ADT-1.jpg"
-          }
-        ]
-      },
-      {
-        "title": "Tech & Innovation",
-        "icon": "fa-microchip",
-        "color": "emerald",
-        "clients": [
-          {
-            "name": "Persistent",
-            "logo": "https://www.ikf.co.in/wp-content/uploads/Persistent.jpg"
-          },
-          {
-            "name": "Bharat Electronics",
-            "logo": "https://www.ikf.co.in/wp-content/uploads/BharatElectronics.jpg"
-          },
-          {
-            "name": "Poonawalla Group",
-            "logo": "https://www.ikf.co.in/wp-content/uploads/poonawalla-group-jpg.webp"
-          },
-          {
-            "name": "Mindgate",
-            "logo": "https://www.ikf.co.in/wp-content/uploads/Mindgate.jpg"
-          },
-          {
-            "name": "ARAI",
-            "logo": "https://www.ikf.co.in/wp-content/uploads/ARAI-1.jpg"
-          }
-        ]
-      }
-    ],
-    "stats": [
-      {
-        "value": "1500+",
-        "label": "Global Brands"
-      },
-      {
-        "value": "25+",
-        "label": "Years Excellence"
-      },
-      {
-        "value": "Pune",
-        "label": "Innovation Hub"
       }
     ]
   }
-}
+}

@@ -46,7 +46,7 @@
             },
             {
                 "id": "avatar-marketing-male",
-                "path": "images/avatars/avatar_marketing_male.png",
+                "path": "https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg",
                 "alt": "Marketing Team Member",
                 "category": "team",
                 "usedIn": [
@@ -57,7 +57,7 @@
             },
             {
                 "id": "avatar-creative-female",
-                "path": "images/avatars/avatar_creative_female.png",
+                "path": "https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg",
                 "alt": "Creative Team Member",
                 "category": "team",
                 "usedIn": [
@@ -68,7 +68,7 @@
             },
             {
                 "id": "avatar-dev-male",
-                "path": "images/avatars/avatar_dev_male.png",
+                "path": "https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg",
                 "alt": "Development Team Member",
                 "category": "team",
                 "usedIn": [

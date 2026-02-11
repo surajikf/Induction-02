@@ -1,18 +1,15 @@
 /**
- * IKF Induction CMS Application
- * Handles content editing, image management, and data persistence
+ * IKF Induction CMS Application - Minimal Professional Edition
+ * Handles content editing, multi-table sync, and media management
  */
 
 const CMSApp = {
     // Configuration
     config: {
         defaultPassword: 'admin123',
-        contentPath: 'data/content.json',
-        imagesPath: 'data/images-manifest.json',
-        sessionTimeout: 3600000, // 1 hour
+        sessionTimeout: 3600000,
         bucketName: 'gallery',
-        maxFileSize: 5 * 1024 * 1024, // 5MB
-        allowedFileTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
+        maxFileSize: 5 * 1024 * 1024,
     },
 
     // State
@@ -21,1574 +18,1405 @@ const CMSApp = {
         currentSection: null,
         contentData: null,
         imagesData: null,
+        employeesData: null,
+        galleryData: null,
+        clientsData: null,
+        socialData: null,
         hasUnsavedChanges: false,
-        lastSyncedData: null
+        isSyncing: false,
+        lastSyncedData: null,
+        // Gallery State
+        mediaVaultFolder: 'root' // 'root' or specific category name
     },
 
-    // Human-Friendly Metadata
+    // Human-Friendly Metadata for Fields
     metadata: {
         fields: {
-            'hero.badge': { title: 'Top Badge', help: 'Small text appearing above the main headline.', limit: 25 },
-            'hero.title.line1': { title: 'Heading Line 1', help: 'The first line of the main welcome message.', limit: 40 },
-            'hero.title.highlight1': { title: 'Highlighted Word 1', help: 'A word in the first line that will be colored yellow.', limit: 15 },
-            'hero.title.line2': { title: 'Heading Line 2', help: 'The second line of the welcome message.', limit: 40 },
-            'hero.title.highlight2': { title: 'Highlighted Word 2', help: 'A word in the second line that will be colored yellow.', limit: 15 },
-            'hero.subtitle': { title: 'Introduction Text', help: 'The longer paragraph below the main heading.', limit: 300 },
-            'hero.cta': { title: 'Button Text', help: 'What the main "Start" button should say.', limit: 20 },
-            'hero.stats.years': { title: 'Years of Legacy', help: 'Displayed in the bottom stat bar.', limit: 10 },
-            'hero.stats.team': { title: 'Team Size', help: 'Displayed in the bottom stat bar.', limit: 15 },
+            'hero.badge': { title: 'Hero Badge', help: 'Small text above main heading', limit: 30 },
+            'hero.title.line1': { title: 'Headline Part 1', help: 'First line of the big welcome text', limit: 40 },
+            'hero.title.highlight1': { title: 'Highlight 1', help: 'Yellow accented word in line 1', limit: 20 },
+            'hero.title.line2': { title: 'Headline Part 2', help: 'Second line of the big welcome text', limit: 40 },
+            'hero.title.highlight2': { title: 'Highlight 2', help: 'Yellow accented word in line 2', limit: 20 },
+            'hero.subtitle': { title: 'Welcome Description', help: 'Introduction paragraph below headline', limit: 350 },
+            'hero.cta': { title: 'Main Button Label', help: 'Text for the primary action button', limit: 25 },
+            'hero.stats.years': { title: 'Year Badge', help: 'Stat shown in the bottom bar', limit: 15 },
+            'hero.stats.team': { title: 'Team Badge', help: 'Stat shown in the bottom bar', limit: 15 },
 
-            'management.badge': { title: 'Section Badge', help: 'Small label at the very top of the page.', limit: 25 },
-            'management.title': { title: 'Page Title', help: 'Main large heading for the Leadership page.', limit: 40 },
-            'management.subtitle': { title: 'Page Description', help: 'Text explaining the vision of the management.', limit: 300 },
-            'management.leaders': { title: 'Management Leaders', help: 'List of team leaders. You can edit their individual profiles here.' },
+            'intro.badge': { title: 'Intro Badge', help: 'Small label at top of intro section', limit: 30 },
+            'intro.title': { title: 'Intro Heading', help: 'Supports HTML tags like <span>', limit: 80 },
+            'intro.subtitle': { title: 'Intro Paragraph', help: 'Main introduction text', limit: 400 },
+            'intro.mission.title': { title: 'Mission Title', help: 'Heading for the mission card', limit: 40 },
+            'intro.mission.content': { title: 'Mission Content', help: 'Body text for mission', limit: 500 },
 
-            'name': { title: 'Full Name', help: 'Official name of the team member.', limit: 40 },
-            'role': { title: 'Professional Role', help: 'Job title or designation.', limit: 50 },
-            'image': { title: 'Profile Photo Path', help: 'The folder path to their photo (e.g., images/photo.jpg).', limit: 100 },
-            'skill': { title: 'Core Expertise', help: 'Single word defining their main skill (e.g., Strategy).', limit: 20 },
-            'note': { title: 'Leader Message', help: 'The personalized welcome message from this leader.', limit: 400 },
-            'id': { title: 'Internal ID', help: 'Used for system linking. Avoid changing this if possible.', limit: 30 },
+            'management.badge': { title: 'Leadership Badge', help: 'Tagline at top of leaders page', limit: 30 },
+            'management.title': { title: 'Page Title', help: 'Main heading for meeting the team', limit: 50 },
+            'management.subtitle': { title: 'Section Vision', help: 'Description of the leadership vision', limit: 400 },
 
-            'culture.badge': { title: 'Section Label', help: 'Small text above the Culture title.', limit: 25 },
-            'culture.title': { title: 'Culture Heading', help: 'The main title for the Culture section.', limit: 40 },
-            'culture.subtitle': { title: 'Culture Description', help: 'Text describing what makes IKF special.', limit: 300 },
+            'clients.badge': { title: 'Clients Badge', help: 'Tagline above title', limit: 30 },
+            'clients.title': { title: 'Clients Title', help: 'Supports HTML', limit: 80 },
+            'clients.subtitle': { title: 'Clients Subtitle', help: 'Description text', limit: 200 },
+            'clients.fallback': { title: 'Clients Fallback', help: 'Text when no clients load', limit: 100 },
 
-            'anniversary.totalExperience': { title: 'Combined Experience', help: 'Sum of years of all team members.', limit: 20 },
+            'culture.badge': { title: 'Culture Badge', help: 'Tagline above culture title', limit: 30 },
+            'culture.title': { title: 'Culture Heading', help: 'Main title for the culture section', limit: 50 },
+            'culture.subtitle': { title: 'Culture Text', help: 'Description of the office vibe and DNA', limit: 400 },
 
-            'slug': { title: 'URL Identifier', help: 'Technical name used for website routing.', limit: 50 }
-        },
-        sections: {
-            'hero': 'This controls the very first screen users see. Make it punchy and welcoming!',
-            'management': 'Manage the Leadership team profiles, their messages, and specialties.',
-            'culture': 'Update IKF culture stats like Happiness Index and party counts.',
-            'directory': 'Manage the full list of employees across all departments.'
+            'social.badge': { title: 'Social Tagline', help: 'Small text above title', limit: 30 },
+            'social.bgLogoText': { title: 'Background Watermark', help: 'Large ghost text (e.g. HUB)', limit: 10 },
+            'social.title': { title: 'Social Title', help: 'Supports HTML', limit: 80 },
+            'social.liveStatus': { title: 'Live Update Note', help: 'Subtitle below main title', limit: 200 },
+            'social.updatesTitle': { title: 'Updates Heading', help: 'e.g. Latest Updates', limit: 50 },
+            'social.youtubeTitle': { title: 'Youtube Heading', help: 'e.g. Latest Videos', limit: 50 },
+            'social.featuredTitle': { title: 'Featured Heading', help: 'e.g. Featured Posts', limit: 50 },
+            'social.cta.title': { title: 'Footer CTA Heading', help: 'Heading in dark card', limit: 100 },
+            'social.cta.subtitle': { title: 'Footer CTA Description', help: 'Paragraph in dark card', limit: 400 },
+
+            'directory.badge': { title: 'Directory Badge', help: 'Tagline at top', limit: 30 },
+            'directory.title': { title: 'Directory Title', help: 'Main heading', limit: 50 },
+            'directory.description': { title: 'Directory Intro', help: 'Description text', limit: 200 },
+            'directory.filterLabel': { title: 'Filter Label', help: 'Default dropdown option', limit: 30 },
+            'directory.searchPlaceholder': { title: 'Search Hint', help: 'Text inside search box', limit: 100 },
+            'directory.searchShortcut': { title: 'Shortcut Label', help: 'e.g. CTRL + K', limit: 20 },
+            'directory.quickAccessLabel': { title: 'Quick Access Tag', help: 'Label before pills', limit: 30 },
+
+            'philosophy.badge': { title: 'Philosophy Badge', help: 'Tagline at top', limit: 30 },
+            'philosophy.title': { title: 'Philosophy Title', help: 'Main heading', limit: 50 },
+            'philosophy.subtitle': { title: 'Philosophy Intro', help: 'Description text', limit: 400 },
+            'philosophy.pillarPrefix': { title: 'Pillar Prefix', help: 'e.g. Pillar', limit: 20 },
+            'philosophy.versionLabel': { title: 'Version Label', help: 'Small footer text', limit: 30 },
+            'philosophy.manifesto.title': { title: 'Manifesto Title', help: 'Heading in dark card', limit: 100 },
+            'philosophy.manifesto.para1': { title: 'Manifesto Para 1', help: 'Left column text', limit: 500 },
+            'philosophy.manifesto.para2': { title: 'Manifesto Para 2', help: 'Right column text', limit: 500 },
+            'philosophy.manifesto.years': { title: 'Manifesto Stat 1', help: 'e.g. 25+', limit: 20 },
+            'philosophy.manifesto.label1': { title: 'Stat 1 Label', help: 'e.g. Years Legacy', limit: 30 },
+            'philosophy.manifesto.partners': { title: 'Manifesto Stat 2', help: 'e.g. 1500+', limit: 20 },
+            'philosophy.manifesto.label2': { title: 'Stat 2 Label', help: 'e.g. Global Partners', limit: 30 },
+
+            'mission.badge': { title: 'Mission Badge', help: 'Tagline for section', limit: 30 },
+            'mission.title': { title: 'Mission Title', help: 'Main heading', limit: 50 },
+            'mission_vision.vision.label': { title: 'Vision Tag', help: 'Small yellow label', limit: 20 },
+            'mission_vision.mission.label': { title: 'Mission Tag', help: 'Small yellow label', limit: 20 },
+            'mission_vision.valuesLabel': { title: 'Values Badge', help: 'Small footer text', limit: 20 },
+
+            'culture.badge': { title: 'Culture Badge', help: 'Tagline at top', limit: 30 },
+            'culture.title': { title: 'Culture Title', help: 'Main heading', limit: 80 },
+            'culture.subtitle': { title: 'Culture Intro', help: 'Description text', limit: 400 },
+            'culture.collabStatus': { title: 'Collab Status', help: 'Text with check icon', limit: 50 },
+            'culture.gallery.cta': { title: 'Gallery Button', help: 'Button text on hover', limit: 30 },
+
+            'referral.badge': { title: 'Referral Badge', help: 'Ambassador protocol label', limit: 30 },
+            'referral.title': { title: 'Referral Title', help: 'Main heading', limit: 50 },
+            'referral.subtitle': { title: 'Referral Intro', help: 'Description text', limit: 200 },
+            'referral.protocolTitle': { title: 'Protocol Heading', help: 'Heading for steps section', limit: 50 },
+
+            'anniversary.badge': { title: 'Legacy Badge', help: 'Tagline for hall of fame', limit: 30 },
+            'anniversary.title': { title: 'Anniversary Title', help: 'Main heading', limit: 50 },
+            'anniversary.totalExperience': { title: 'Total Exp Counter', help: 'Total years across team', limit: 20 },
+
+            'birthdays.badge': { title: 'Solar Badge', help: 'Signal label for birthdays', limit: 30 },
+            'birthdays.title': { title: 'Birthday Title', help: 'Main heading', limit: 50 },
+            'birthdays.cta': { title: 'CTA Button', help: 'Label for broadcast wishes', limit: 30 },
+            'birthdays.terminal.command': { title: 'Broadcast Command', help: 'Terminal script name', limit: 40 },
+            'holidays.title': { title: 'Holiday Title', help: 'Main heading', limit: 50 },
+            'holidays.policy.title': { title: 'Policy Title', help: 'Heading for the dark policy card', limit: 60 },
+            'holidays.policy.description': { title: 'Policy Description', help: 'Main text for reset protocol', limit: 400 },
+            'holidays.policy.label': { title: 'Internal Policy Label', help: 'Small yellow label', limit: 50 },
+            'holidays.policy.compensatory': { title: 'Compensatory Note', help: 'Note about Sunday holidays etc.', limit: 200 },
+
+            'attendance.badge': { title: 'Attendance Badge', help: 'Operation hours label', limit: 30 },
+            'attendance.title': { title: 'Attendance Title', help: 'Main heading', limit: 50 },
+
+            'policies.badge': { title: 'Policy Badge', help: 'Legal framework label', limit: 30 },
+            'policies.title': { title: 'Policy Title', help: 'Main heading', limit: 50 },
+            'policies.acknowledgement': { title: 'CTA Label', help: 'Text for acknowledgment button', limit: 30 }
         }
     },
 
-    // Initialize CMS
+    // Initialization
     init: function () {
-        console.log('Initializing IKF CMS...');
+        console.log('--- CMS CORE INITIALIZING ---');
         this.checkAuth();
         this.bindEvents();
     },
 
-    // Authentication
-    checkAuth: function () {
-        const session = localStorage.getItem('cms_session');
-        const sessionTime = localStorage.getItem('cms_session_time');
+    bindEvents: function () {
+        $('#login-form').on('submit', (e) => {
+            e.preventDefault();
+            this.login($('#cms-password').val());
+        });
 
-        if (session && sessionTime) {
-            const elapsed = Date.now() - parseInt(sessionTime);
-            if (elapsed < this.config.sessionTimeout) {
-                this.state.isAuthenticated = true;
-                this.showCMS();
-                return;
+        $('#logout-btn').on('click', () => this.logout());
+        $('#save-all-btn').on('click', () => this.saveData());
+        $('#discard-changes').on('click', () => this.restoreLastSync());
+        $('#image-manager-btn').on('click', () => this.openImageManager());
+        $('#close-image-manager').on('click', () => this.closeImageManager());
+        $('#image-upload-input').on('change', (e) => this.handleImageUpload(e.target));
+
+        // Smart Upload Logic
+        $('#upload-folder-select').on('change', (e) => {
+            if (e.target.value === '__NEW__') {
+                $('#new-folder-input-container').removeClass('hidden');
+                $('#new-folder-name').focus();
+            } else {
+                $('#new-folder-input-container').addClass('hidden');
             }
-        }
+        });
 
-        this.showLogin();
+        // Global key listeners
+        $(window).on('beforeunload', (e) => {
+            if (this.state.hasUnsavedChanges) {
+                return "You have unsaved changes. Are you sure you want to leave?";
+            }
+        });
+
+        // Prevent ALL accidental form submissions (blocks the ? refresh)
+        $(document).on('submit', 'form', (e) => {
+            e.preventDefault();
+            console.warn('Blocked a standard form submission to prevent state loss.');
+            return false;
+        });
     },
 
+    // Auth Logic
+    checkAuth: function () {
+        const session = localStorage.getItem('cms_session_id');
+        if (session === 'active') {
+            this.state.isAuthenticated = true;
+            this.showCMS();
+        } else {
+            this.showLogin();
+        }
+    },
+
+    login: function (password) {
+        if (password === this.config.defaultPassword) {
+            localStorage.setItem('cms_session_id', 'active');
+            this.state.isAuthenticated = true;
+            this.showCMS();
+            this.showToast('Authentication Successful', 'success');
+        } else {
+            this.showToast('Invalid Access Key', 'error');
+        }
+    },
+
+    logout: function () {
+        if (this.state.hasUnsavedChanges) {
+            Swal.fire({
+                title: 'Unsaved Progress',
+                text: 'You have changes that haven\'t been synced. Exit anyway?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Exit Without Saving',
+                confirmButtonColor: '#ef4444'
+            }).then((result) => {
+                if (result.isConfirmed) this.doLogout();
+            });
+        } else {
+            this.doLogout();
+        }
+    },
+
+    doLogout: function () {
+        localStorage.removeItem('cms_session_id');
+        location.reload();
+    },
+
+    // UI Orchestration
     showLogin: function () {
         $('#login-screen').removeClass('hidden');
         $('#cms-interface').addClass('hidden');
     },
 
-    showCMS: function () {
+    showCMS: async function () {
         $('#login-screen').addClass('hidden');
         $('#cms-interface').removeClass('hidden');
-        $('#restore-sync-btn').on('click', () => this.restoreLastSync());
-
-        this.loadData();
+        await this.loadData();
+        this.renderNavigation();
     },
 
-    login: async function (password) {
-        if (password === this.config.defaultPassword) {
-            const btn = $('#login-form button');
-            btn.addClass('btn-loading');
-
-            // Artificial delay for premium feel
-            await new Promise(r => setTimeout(r, 600));
-
-            localStorage.setItem('cms_session', 'active');
-            localStorage.setItem('cms_session_time', Date.now().toString());
-            this.state.isAuthenticated = true;
-            this.showCMS();
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Access Granted',
-                text: 'Initializing industrial mainframes...',
-                timer: 1500,
-                showConfirmButton: false,
-                background: '#fff',
-                color: '#0E0057',
-                iconColor: '#22c55e'
-            });
-            btn.removeClass('btn-loading');
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Access Denied',
-                text: 'Invalid security clearance/password',
-                confirmButtonColor: '#0E0057'
-            });
-        }
-    },
-
-    logout: async function () {
-        if (this.state.hasUnsavedChanges) {
-            const result = await Swal.fire({
-                title: 'Unsaved Changes!',
-                text: "Your data hasn't been synced to the cloud. Logout anyway?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#0E0057',
-                confirmButtonText: 'Yes, Logout'
-            });
-            if (!result.isConfirmed) return;
-        }
-
-        localStorage.removeItem('cms_session');
-        localStorage.removeItem('cms_session_time');
-        this.state.isAuthenticated = false;
-        this.showLogin();
-
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'info',
-            title: 'Logged out successfully',
-            showConfirmButton: false,
-            timer: 3000
-        });
-    },
-
-    // Data Management
+    // Data Sync
     loadData: async function () {
         try {
-            console.log('Syncing cloud mainframes...');
+            console.log('--- SYNCING WITH CLOUD NODES ---');
 
-            const [contentRes, imagesRes, employeesRes, galleryRes] = await Promise.all([
+            const [contentRes, imagesRes, employeesRes, galleryRes, clientsRes, socialRes] = await Promise.all([
                 window.supabaseClient.from('induction_content').select('data').eq('slug', 'main').single(),
                 window.supabaseClient.from('image_manifest').select('data').eq('slug', 'main').single(),
                 window.supabaseClient.from('employees').select('*'),
-                window.supabaseClient.from('gallery').select('*').order('created_at', { ascending: false })
+                window.supabaseClient.from('gallery').select('*').order('created_at', { ascending: false }),
+                window.supabaseClient.from('clients').select('*').order('display_order', { ascending: true }),
+                window.supabaseClient.from('social_links').select('*').order('display_order', { ascending: true })
             ]);
 
-            // Load Content
-            if (contentRes.data) {
-                this.state.contentData = contentRes.data.data;
-            } else {
-                const response = await fetch(this.config.contentPath);
-                this.state.contentData = await response.json();
-            }
-
-            // Load Images
-            if (imagesRes.data) {
-                this.state.imagesData = imagesRes.data.data;
-            } else {
-                const response = await fetch(this.config.imagesPath);
-                this.state.imagesData = await response.json();
-            }
-
-            // Load Gallery Data
+            this.state.contentData = contentRes.data?.data || null;
+            this.state.imagesData = imagesRes.data?.data || null;
+            this.state.employeesData = employeesRes.data || [];
             this.state.galleryData = galleryRes.data || [];
+            this.state.clientsData = clientsRes.data || [];
+            this.state.socialData = socialRes.data || [];
 
-            // Store Employees for reference
-            this.state.employees = employeesRes.data || [];
+            console.log(`Loaded ${this.state.employeesData.length} employees`);
 
-            // Backup for Restore feature
             this.state.lastSyncedData = JSON.parse(JSON.stringify(this.state.contentData));
 
-            this.renderNavigation();
-
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: 'Cloud Sync Active',
-                showConfirmButton: false,
-                timer: 2000,
-                background: '#fff',
-                color: '#0E0057'
-            });
-        } catch (error) {
-            console.error('Sync error:', error);
-            Swal.fire({
-                icon: 'warning',
-                title: 'Offline Mode',
-                text: 'Running in local mode. Changes will be saved to browser only until cloud sync restored.',
-                confirmButtonColor: '#0E0057'
-            });
+            console.log('Cloud Sync 100%');
+            $('#sync-status-dot').removeClass('bg-orange-500').addClass('bg-green-500');
+            $('#sync-status-text').text('Cloud Synchronized');
+        } catch (err) {
+            console.error('Sync failure:', err);
+            this.showToast('Cloud Sync Offline', 'error');
         }
     },
 
-    saveData: async function () {
-        const btn = $('#save-all-btn');
-
-        // 0. Pre-save Validation
-        const validation = this.validateData();
-        if (!validation.valid) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Validation Error',
-                text: validation.message,
-                confirmButtonColor: '#0E0057'
-            });
-            return;
-        }
-
-        try {
-            btn.addClass('btn-loading');
-
-            Swal.fire({
-                title: 'Syncing...',
-                text: 'Transmitting data to IKF cloud mainframes',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            // 1. Sync Content
-            const { error: contentError } = await window.supabaseClient
-                .from('induction_content')
-                .upsert({
-                    slug: 'main',
-                    data: this.state.contentData,
-                    updated_at: new Date().toISOString()
-                }, { onConflict: 'slug' });
-
-            if (contentError) throw contentError;
-
-            // 2. Sync Image Manifest
-            const { error: imagesError } = await window.supabaseClient
-                .from('image_manifest')
-                .upsert({
-                    slug: 'main',
-                    data: this.state.imagesData,
-                    updated_at: new Date().toISOString()
-                }, { onConflict: 'slug' });
-
-            if (imagesError) throw imagesError;
-
-            // 3. Sync Employees
-            if (this.state.currentSection === 'management') {
-                const leaders = this.state.contentData.management.leaders;
-                for (const leader of leaders) {
-                    await window.supabaseClient
-                        .from('employees')
-                        .upsert({
-                            id: leader.id,
-                            name: leader.name,
-                            role: leader.role,
-                            dept: 'Management',
-                            img: leader.image,
-                            skills: [leader.skill],
-                            is_leader: true
-                        }, { onConflict: 'id' });
-                }
-            }
-
-            // Local Backups
-            const contentJSON = JSON.stringify(this.state.contentData, null, 2);
-            localStorage.setItem('cms_content_backup', contentJSON);
-
-            // Update Restore Point
-            this.state.lastSyncedData = JSON.parse(JSON.stringify(this.state.contentData));
-            this.state.hasUnsavedChanges = false;
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Global Sync Successful',
-                text: 'Cloud mainframes updated with 100% integrity.',
-                timer: 2000,
-                showConfirmButton: false
-            });
-        } catch (error) {
-            console.error('Save error:', error);
-            this.translateError(error);
-        } finally {
-            btn.removeClass('btn-loading');
-        }
-    },
-
-    validateData: function () {
-        // Simple check for mandatory content fields
-        const content = this.state.contentData;
-
-        if (!content.hero?.title?.line1) return { valid: false, message: 'Hero Title (Line 1) cannot be empty.' };
-        if (!content.management?.title) return { valid: false, message: 'Management Page Title cannot be empty.' };
-
-        // Check for empty leader names if in management section
-        if (this.state.currentSection === 'management') {
-            const emptyLeader = content.management.leaders.find(l => !l.name);
-            if (emptyLeader) return { valid: false, message: 'All leaders must have a name.' };
-        }
-
-        return { valid: true };
-    },
-
-    restoreLastSync: async function () {
-        if (!this.state.lastSyncedData) return;
-
-        const result = await Swal.fire({
-            title: 'Restore Last Sync?',
-            text: "This will revert ALL changes to the last time you successfully saved or loaded. You cannot undo this.",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#0E0057',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, Revert'
-        });
-
-        if (result.isConfirmed) {
-            this.state.contentData = JSON.parse(JSON.stringify(this.state.lastSyncedData));
-            this.state.hasUnsavedChanges = false;
-            if (this.state.currentSection) {
-                this.renderEditor(this.state.currentSection);
-            }
-            this.showToast('Reverted to last cloud sync', 'success');
-        }
-    },
-
-    translateError: function (error) {
-        let title = 'Sync Failed';
-        let message = 'Infrastructure error: ' + error.message;
-
-        if (error.code === 'PGRST116') {
-            message = '⚠️ System Node Mismatch. Please refresh and try again.';
-        } else if (error.message?.includes('network')) {
-            message = '⚠️ Network Interrupted. Check your IKF mainframe connection (Internet).';
-        } else if (error.code === '42501') {
-            message = '⚠️ Security Permission Denied. Contact IT for cloud access clearance.';
-        }
-
-        Swal.fire({
-            icon: 'error',
-            title: title,
-            text: message,
-            confirmButtonColor: '#0E0057'
-        });
-    },
-
-    downloadJSON: function (jsonString, filename) {
-        const blob = new Blob([jsonString], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    },
-
-    // Navigation
+    // Navigation (EXACT FRONTEND ORDER)
     renderNavigation: function () {
         const nav = $('#cms-nav');
         nav.empty();
 
-        const sections = [
-            { id: 'hero', name: 'Hero Mainframe', icon: 'fa-home' },
-            { id: 'intro', name: 'Intro Node', icon: 'fa-info-circle' },
-            { id: 'management', name: 'Visionary Team', icon: 'fa-user-tie' },
-            { id: 'philosophy', name: 'IKF DNA', icon: 'fa-brain' },
-            { id: 'mission', name: 'Strategic Compass', icon: 'fa-flag' },
-            { id: 'culture', name: 'System Core', icon: 'fa-users' },
-            { id: 'social', name: 'Social Hub', icon: 'fa-share-nodes' },
-            { id: 'referral', name: 'Ambassador Protocol', icon: 'fa-user-plus' },
-            { id: 'anniversary', name: 'Legacy Pins', icon: 'fa-award' },
-            { id: 'birthdays', name: 'Solar Returns', icon: 'fa-birthday-cake' },
-            { id: 'holidays', name: 'Sync Resets', icon: 'fa-calendar-alt' },
-            { id: 'attendance', name: 'Network Flow', icon: 'fa-clock' },
-            { id: 'policies', name: 'Legal Framework', icon: 'fa-file-contract' },
-            { id: 'directory', name: 'The Collective', icon: 'fa-address-book' },
-            { id: 'gallery', name: 'Memory Archive', icon: 'fa-images' }
+        const menuItems = [
+            { id: 'hero', name: 'Home Hero', icon: 'fa-home' },
+            { id: 'intro', name: 'Introduction', icon: 'fa-info-circle' },
+            { id: 'management', name: 'Management Team', icon: 'fa-user-tie' },
+
+            { id: 'clients', name: 'Major Clients', icon: 'fa-star' },
+            { id: 'directory', name: 'Employee Directory', icon: 'fa-address-book' },
+            { id: 'philosophy', name: 'IKF Philosophy', icon: 'fa-brain' },
+            { id: 'mission', name: 'Mission & Vision', icon: 'fa-flag' },
+            { id: 'culture', name: 'Company Culture', icon: 'fa-users' },
+            { id: 'gallery', name: 'IKF Gallery', icon: 'fa-images' },
+            { id: 'social', name: 'Social Media', icon: 'fa-share-nodes' },
+            { id: 'referral', name: 'Referral Policy', icon: 'fa-user-plus' },
+            { id: 'anniversary', name: 'Work Anniversaries', icon: 'fa-award' },
+            { id: 'birthdays', name: 'Team Birthdays', icon: 'fa-birthday-cake' },
+            { id: 'holidays', name: 'Company Holidays', icon: 'fa-calendar-alt' },
+            { id: 'attendance', name: 'Schedule & Attendance', icon: 'fa-clock' },
+            { id: 'policies', name: 'Policies & Performance', icon: 'fa-file-contract' }
         ];
 
-        sections.forEach((section, index) => {
-            const btn = $(`
-                <button class="cms-nav-btn group w-full px-5 py-4 text-left rounded-2xl transition-all flex items-center justify-between hover:bg-ikf-blue/5 text-slate-500 hover:text-ikf-blue font-bold text-sm mb-1 animate-fade-in"
-                    data-section="${section.id}" style="animation-delay: ${index * 30}ms">
-                    <div class="flex items-center gap-4">
-                        <i class="fas ${section.icon} w-5 text-center group-hover:scale-110 transition-transform"></i>
-                        <span>${section.name}</span>
-                    </div>
-                    <i class="fas fa-chevron-right text-[10px] opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all"></i>
+        menuItems.forEach(item => {
+            const el = $(`
+                <button data-section="${item.id}" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-slate-600 rounded-lg transition-all hover:bg-slate-100 mb-1">
+                    <i class="fas ${item.icon} w-5 text-center"></i>
+                    <span>${item.name}</span>
                 </button>
             `);
-
-            btn.on('click', () => this.loadSection(section.id));
-            nav.append(btn);
+            el.on('click', () => this.switchSection(item.id));
+            nav.append(el);
         });
     },
 
-    loadSection: function (sectionId) {
-        this.state.currentSection = sectionId;
+    switchSection: function (id) {
+        $('.nav-item').removeClass('active');
+        $(`.nav-item[data-section="${id}"]`).addClass('active');
 
-        // Update active state
-        $('.cms-nav-btn').removeClass('bg-ikf-blue text-white shadow-lg shadow-ikf-blue/20 scale-[1.02]').addClass('text-slate-500');
-        const activeBtn = $(`.cms-nav-btn[data-section="${sectionId}"]`);
-        activeBtn.addClass('bg-ikf-blue text-white shadow-lg shadow-ikf-blue/20 scale-[1.02]').removeClass('text-slate-500');
-
-        // Hide welcome, show editor
         $('#welcome-screen').addClass('hidden');
-        $('#content-editor').removeClass('hidden').addClass('fade-in');
+        $('#content-editor').removeClass('hidden');
 
-        this.renderEditor(sectionId);
+        this.state.currentSection = id;
+        $('#current-section-title').text($(`.nav-item[data-section="${id}"] span`).text());
+
+        this.renderEditor();
     },
 
-    // Content Editor
-    renderEditor: function (sectionId) {
-        const editor = $('#content-editor');
-        editor.empty();
+    // Main Content Rendering
+    renderEditor: function () {
+        const id = this.state.currentSection;
+        const container = $('#content-editor');
+        container.empty();
 
-        if (sectionId === 'gallery') {
-            this.renderGalleryManager();
-            return;
-        }
+        // 1. Specialized Managers for complex tables
+        if (id === 'gallery') { return this.renderGalleryManager(); }
+        if (id === 'clients') { return this.renderClientsManager(); }
+        if (id === 'social') { return this.renderSocialManager(); }
+        if (id === 'directory') { return this.renderEmployeeDirectory(); }
 
-        const sectionData = this.state.contentData[sectionId];
-        if (!sectionData) {
-            editor.html('<div class="p-8 text-center bg-red-50 text-red-500 rounded-2xl font-bold">Section data not found in cloud registry.</div>');
-            return;
-        }
 
-        // Section Header
-        const sectionGuide = this.metadata.sections[sectionId] || 'Modify the technical nodes below to update the live system.';
-        const header = $(`
-            <div class="mb-10 animate-fade-in">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ikf-blue/10 border border-ikf-blue/20 text-ikf-blue text-[10px] font-black uppercase tracking-widest mb-4">
-                    <span class="w-1.5 h-1.5 bg-ikf-blue rounded-full animate-pulse"></span>
-                    Smart Assistant Activated
-                </div>
-                <h2 class="text-5xl font-black text-slate-900 tracking-tighter mb-3">${this.getSectionTitle(sectionId)}</h2>
-                <div class="flex items-start gap-3 p-4 bg-slate-50 border border-slate-100 rounded-2xl max-w-2xl">
-                    <i class="fas fa-lightbulb text-ikf-yellow mt-1"></i>
-                    <p class="text-slate-600 font-medium text-sm leading-relaxed">${sectionGuide}</p>
-                </div>
-            </div>
-        `);
-        editor.append(header);
+        // 2. Standard Content Editor for induction_content JSON
+        const data = this.state.contentData[id];
+        if (!data) return container.html('<div class="p-10 text-center font-bold text-slate-400">Section schema not localized</div>');
 
-        // Render fields based on data structure
-        const container = $('<div class="space-y-8 animate-fade-in" style="animation-delay: 100ms"></div>');
-        this.renderFields(sectionData, sectionId, container);
-        editor.append(container);
+        this.renderFieldsRecursively(id, data, container);
     },
 
-    renderFields: function (data, path, container) {
-        for (const [key, value] of Object.entries(data)) {
+    renderFieldsRecursively: function (path, obj, container) {
+        for (const [key, value] of Object.entries(obj)) {
             const fullPath = `${path}.${key}`;
 
-            if (typeof value === 'string') {
-                this.renderTextField(key, value, fullPath, container);
-            } else if (typeof value === 'number') {
-                this.renderNumberField(key, value, fullPath, container);
-            } else if (Array.isArray(value)) {
-                this.renderArrayField(key, value, fullPath, container);
-            } else if (typeof value === 'object') {
-                this.renderObjectField(key, value, fullPath, container);
-            }
-        }
-    },
-
-    renderTextField: function (label, value, path, container) {
-        const isLong = value.length > 80;
-        const helpText = this.getFieldHelp(label, path);
-        const limit = this.getFieldLimit(label, path);
-        const friendlyLabel = this.formatLabel(label, path);
-
-        const field = $(`
-            <div class="mb-8 relative group">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center gap-2">
-                        <label class="text-xs font-black text-slate-400 uppercase tracking-widest group-focus-within:text-ikf-blue transition-colors">
-                            ${friendlyLabel}
-                        </label>
-                        ${helpText ? `<i class="fas fa-question-circle text-[10px] text-slate-300 cursor-help" title="${helpText}"></i>` : ''}
-                    </div>
-                    <div class="flex items-center gap-3">
-                        ${limit ? `<span class="char-counter text-[10px] font-bold text-slate-300" data-path="${path}">${value.length}/${limit}</span>` : ''}
-                        <span class="text-[9px] font-mono text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity">TECHNICAL KEY: ${path}</span>
-                    </div>
-                </div>
-                ${isLong ?
-                `<textarea class="cms-field w-full px-5 py-4 bg-white border-2 border-slate-100 rounded-2xl focus:border-ikf-blue/30 focus:ring-4 focus:ring-ikf-blue/5 outline-none transition-all font-semibold text-slate-700 resize-y min-h-[140px] leading-relaxed shadow-sm" data-path="${path}" ${limit ? `maxlength="${limit}"` : ''}>${value}</textarea>` :
-                `<input type="text" class="cms-field w-full px-5 py-4 bg-white border-2 border-slate-100 rounded-2xl focus:border-ikf-blue/30 focus:ring-4 focus:ring-ikf-blue/5 outline-none transition-all font-semibold text-slate-700 shadow-sm" data-path="${path}" value="${this.escapeHtml(value)}" ${limit ? `maxlength="${limit}"` : ''}>`
-            }
-                <div class="absolute right-4 bottom-4 pointer-events-none opacity-20 group-focus-within:opacity-100 transition-opacity">
-                    <i class="fas ${isLong ? 'fa-paragraph' : 'fa-font'} text-sm text-ikf-blue"></i>
-                </div>
-            </div>
-        `);
-
-        field.find('.cms-field').on('input', (e) => {
-            const val = $(e.target).val();
-            this.state.hasUnsavedChanges = true;
-            this.updateValue(path, val);
-
-            // Update counter
-            if (limit) {
-                const counter = field.find('.char-counter');
-                counter.text(`${val.length}/${limit}`);
-                if (val.length >= limit) {
-                    counter.addClass('text-red-500').removeClass('text-slate-300');
-                } else if (val.length >= limit * 0.9) {
-                    counter.addClass('text-orange-400').removeClass('text-slate-300 red-500 text-red-500');
-                } else {
-                    counter.addClass('text-slate-300').removeClass('text-red-500 text-orange-400');
-                }
-            }
-        });
-
-        container.append(field);
-    },
-
-    renderNumberField: function (label, value, path, container) {
-        const field = $(`
-            <div class="mb-6">
-                <label class="block text-sm font-bold text-slate-700 mb-2">${this.formatLabel(label)}</label>
-                <input type="number" class="cms-field w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-ikf-blue focus:ring-4 focus:ring-ikf-blue/10 outline-none transition-all font-medium" data-path="${path}" value="${value}">
-                <p class="text-xs text-slate-400 mt-1">Path: ${path}</p>
-            </div>
-        `);
-
-        field.find('.cms-field').on('input', () => {
-            this.state.hasUnsavedChanges = true;
-            this.updateValue(path, parseFloat(field.find('.cms-field').val()));
-        });
-
-        container.append(field);
-    },
-
-    renderArrayField: function (label, value, path, container) {
-        const helpText = this.getFieldHelp(label, path);
-        const friendlyLabel = this.formatLabel(label, path);
-
-        const fieldContainer = $(`
-            <div class="mb-12 editor-card p-8 animate-fade-in relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-4 opacity-5">
-                    <i class="fas fa-layer-group text-6xl"></i>
-                </div>
-                <div class="flex items-center gap-4 mb-4">
-                    <h3 class="text-2xl font-black text-slate-800">${friendlyLabel}</h3>
-                    <div class="h-px flex-1 bg-slate-100"></div>
-                    <span class="px-3 py-1 bg-slate-100 rounded-lg text-[10px] font-bold text-slate-400">${value.length} items</span>
-                </div>
-                ${helpText ? `<p class="text-xs font-medium text-slate-400 mb-8 flex items-center gap-2"><i class="fas fa-info-circle text-ikf-blue/30 font-bold"></i> ${helpText}</p>` : ''}
-                <div class="grid grid-cols-1 gap-6" id="array-${path.replace(/\./g, '-')}"></div>
-            </div>
-        `);
-
-        const arrayContainer = fieldContainer.find(`#array-${path.replace(/\./g, '-')}`);
-
-        value.forEach((item, index) => {
-            const itemPath = `${path}[${index}]`;
-            if (typeof item === 'object') {
-                const itemCard = $(`
-                    <div class="p-6 bg-slate-50/50 rounded-2xl border border-slate-100 hover:border-ikf-blue/20 hover:bg-white transition-all group/item">
-                        <div class="flex items-center justify-between mb-6">
-                            <span class="px-2 py-1 bg-white rounded text-[10px] font-black text-ikf-blue shadow-sm border border-slate-100">NODE ${index + 1}</span>
-                            <div class="flex gap-2">
-                                <button class="w-8 h-8 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-red-500 hover:border-red-100 transition-all opacity-0 group-hover/item:opacity-100">
-                                    <i class="fas fa-trash-alt text-xs"></i>
-                                </button>
-                            </div>
+            if (typeof value === 'object' && !Array.isArray(value)) {
+                const group = $(`
+                    <div class="mb-10 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50">
+                            <h3 class="text-xs font-black text-ikf-blue uppercase tracking-widest">${key.toUpperCase()} GROUP</h3>
                         </div>
-                        <div class="space-y-4"></div>
+                        <div class="p-6 space-y-6"></div>
                     </div>
                 `);
-
-                this.renderFields(item, itemPath, itemCard.find('.space-y-4'));
-                arrayContainer.append(itemCard);
+                this.renderFieldsRecursively(fullPath, value, group.find('.p-6'));
+                container.append(group);
+            } else if (Array.isArray(value)) {
+                this.renderArrayEditor(fullPath, value, container);
             } else {
-                this.renderTextField(`Item ${index + 1}`, item, itemPath, arrayContainer);
+                this.renderSingleField(fullPath, value, container);
             }
-        });
-
-        container.append(fieldContainer);
+        }
     },
 
-    renderObjectField: function (label, value, path, container) {
-        const fieldContainer = $(`
-            <div class="mb-8 p-6 bg-slate-50 rounded-2xl border-2 border-slate-200">
-                <h3 class="text-xl font-bold text-ikf-blue mb-4">${this.formatLabel(label)}</h3>
-                <div class="space-y-4"></div>
+    renderSingleField: function (path, value, container) {
+        const meta = this.metadata.fields[path] || { title: path.split('.').pop(), help: '', limit: 500 };
+        const isLong = value.toString().length > 60;
+
+        const field = $(`
+            <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">${meta.title}</label>
+                    <span class="text-[10px] font-bold text-slate-300">LIMIT: ${value.toString().length}/${meta.limit}</span>
+                </div>
+                ${isLong ?
+                `<textarea data-path="${path}" class="admin-input min-h-[120px] resize-y">${value}</textarea>` :
+                `<input type="text" data-path="${path}" class="admin-input" value="${this.escapeHtml(value)}">`
+            }
+                <p class="text-[10px] text-slate-400 leading-tight">${meta.help}</p>
             </div>
         `);
 
-        this.renderFields(value, path, fieldContainer.find('.space-y-4'));
-        container.append(fieldContainer);
+        field.find('.admin-input').on('input', (e) => {
+            this.updateValue(path, $(e.target).val());
+            this.markDirty();
+        });
+
+        container.append(field);
     },
 
-    updateValue: function (path, value) {
-        const parts = path.split('.');
-        let obj = this.state.contentData;
+    renderArrayEditor: function (path, array, container) {
+        const card = $(`
+            <div class="mb-10 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+                    <h3 class="text-xs font-black text-ikf-blue uppercase tracking-widest">${path.split('.').pop().toUpperCase()} COLLECTION</h3>
+                    <button class="text-[10px] font-black uppercase text-ikf-blue hover:text-ikf-yellow">+ Add Entry</button>
+                </div>
+                <div class="p-6 space-y-4"></div>
+            </div>
+        `);
 
-        for (let i = 1; i < parts.length - 1; i++) {
-            const part = parts[i];
-            const arrayMatch = part.match(/(.+)\[(\d+)\]/);
-
-            if (arrayMatch) {
-                obj = obj[arrayMatch[1]][parseInt(arrayMatch[2])];
+        array.forEach((item, index) => {
+            const itemPath = `${path}[${index}]`;
+            if (typeof item === 'object') {
+                const subContainer = $('<div class="p-4 bg-slate-50 border border-slate-100 rounded-lg space-y-4"></div>');
+                this.renderFieldsRecursively(itemPath, item, subContainer);
+                card.find('.p-6').append(subContainer);
             } else {
-                obj = obj[part];
-            }
-        }
-
-        const lastPart = parts[parts.length - 1];
-        const arrayMatch = lastPart.match(/(.+)\[(\d+)\]/);
-
-        if (arrayMatch) {
-            obj[arrayMatch[1]][parseInt(arrayMatch[2])] = value;
-        } else {
-            obj[lastPart] = value;
-        }
-    },
-
-    // Image Manager
-    openImageManager: function () {
-        $('#image-manager-modal').removeClass('hidden').addClass('flex fade-in');
-        this.renderImageGallery();
-    },
-
-    closeImageManager: function () {
-        $('#image-manager-modal').addClass('hidden').removeClass('flex');
-    },
-
-    renderImageGallery: function () {
-        const gallery = $('#image-gallery');
-        gallery.empty();
-
-        if (!this.state.imagesData || !this.state.imagesData.images) {
-            gallery.html('<p class="col-span-4 text-center text-slate-500">No images found</p>');
-            return;
-        }
-
-        // Flatten all image categories
-        const allImages = [];
-        for (const category in this.state.imagesData.images) {
-            allImages.push(...this.state.imagesData.images[category]);
-        }
-
-        allImages.forEach(image => {
-            const card = $(`
-                <div class="group relative bg-white rounded-xl border-2 border-slate-100 overflow-hidden hover:border-ikf-blue transition-all cursor-pointer">
-                    <div class="aspect-square bg-slate-100 flex items-center justify-center overflow-hidden">
-                        <img src="${image.path}" alt="${image.alt}" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
-                    </div>
-                    <div class="p-3">
-                        <p class="text-xs font-bold text-slate-700 truncate">${image.alt}</p>
-                        <p class="text-[10px] text-slate-400 truncate">${image.path}</p>
-                    </div>
-                    <div class="absolute inset-0 bg-ikf-blue/90 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                        <button class="px-4 py-2 bg-white text-ikf-blue rounded-lg font-bold text-sm hover:bg-ikf-yellow hover:text-white transition-all">
-                            <i class="fas fa-edit mr-1"></i> Replace
-                        </button>
-                    </div>
-                </div>
-            `);
-
-            gallery.append(card);
-        });
-    },
-
-    handleImageUpload: function (files) {
-        // In a real implementation, this would upload to a server
-        // For now, we'll show a preview and update the manifest
-
-        Array.from(files).forEach(file => {
-            if (!file.type.startsWith('image/')) {
-                this.showToast(`${file.name} is not an image file`, 'error');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                // Add to upload history
-                const uploadEntry = {
-                    id: `upload-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-                    filename: file.name,
-                    path: `uploads/${file.name}`,
-                    uploadedAt: new Date().toISOString(),
-                    size: file.size
-                };
-
-                this.state.imagesData.uploadHistory.push(uploadEntry);
-                this.state.hasUnsavedChanges = true;
-
-                this.showToast(`${file.name} ready for upload. Save changes to download manifest.`, 'success');
-                this.renderImageGallery();
-            };
-
-            reader.readAsDataURL(file);
-        });
-    },
-
-    // Utility Functions
-    getSectionTitle: function (sectionId) {
-        const titles = {
-            hero: 'Hero Section',
-            intro: 'Introduction',
-            management: 'Management Team',
-            philosophy: 'IKF Philosophy',
-            mission: 'Mission & Vision',
-            culture: 'Company Culture',
-            social: 'Social Media',
-            referral: 'Referral Policy',
-            anniversary: 'Work Anniversaries',
-            birthdays: 'Birthdays',
-            holidays: 'Company Holidays',
-            attendance: 'Schedule & Attendance',
-            policies: 'Policies & Performance',
-            directory: 'Employee Directory'
-        };
-        return titles[sectionId] || sectionId;
-    },
-
-    formatLabel: function (str, path) {
-        // Check metadata first
-        const meta = this.metadata.fields[path] || this.metadata.fields[str];
-        if (meta) return meta.title;
-
-        return str
-            .replace(/([A-Z])/g, ' $1')
-            .replace(/^./, str => str.toUpperCase())
-            .trim();
-    },
-
-    getFieldHelp: function (str, path) {
-        const meta = this.metadata.fields[path] || this.metadata.fields[str];
-        return meta ? meta.help : '';
-    },
-
-    getFieldLimit: function (str, path) {
-        const meta = this.metadata.fields[path] || this.metadata.fields[str];
-        return meta ? meta.limit : null;
-    },
-
-    escapeHtml: function (text) {
-        const map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
-        };
-        return text.replace(/[&<>"']/g, m => map[m]);
-    },
-
-    showToast: function (message, type = 'info') {
-        const icons = {
-            success: 'success',
-            error: 'error',
-            warning: 'warning',
-            info: 'info'
-        };
-
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: icons[type] || 'info',
-            title: message,
-            showConfirmButton: false,
-            timer: 3000,
-            background: '#fff',
-            color: '#0E0057',
-            iconColor: type === 'success' ? '#22c55e' : undefined
-        });
-    },
-
-    // Event Bindings
-    bindEvents: function () {
-        // Login form
-        $('#login-form').on('submit', (e) => {
-            e.preventDefault();
-            const password = $('#cms-password').val();
-            this.login(password);
-        });
-
-        // Logout
-        $('#logout-btn').on('click', () => this.logout());
-
-        // Save all changes
-        $('#save-all-btn').on('click', () => this.saveData());
-
-        // Preview
-        $('#preview-btn').on('click', () => {
-            window.open('index.html', '_blank');
-        });
-
-        // Image manager
-        $('#image-manager-btn').on('click', () => this.openImageManager());
-        $('#close-image-manager').on('click', () => this.closeImageManager());
-
-        // Image upload
-        const uploadZone = document.getElementById('upload-zone');
-        const uploadInput = document.getElementById('image-upload-input');
-
-        uploadZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadZone.classList.add('dragover');
-        });
-
-        uploadZone.addEventListener('dragleave', () => {
-            uploadZone.classList.remove('dragover');
-        });
-
-        uploadZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadZone.classList.remove('dragover');
-            this.handleImageUpload(e.dataTransfer.files);
-        });
-
-        uploadInput.addEventListener('change', (e) => {
-            this.handleImageUpload(e.target.files);
-        });
-
-        // Warn before leaving with unsaved changes
-        window.addEventListener('beforeunload', (e) => {
-            if (this.state.hasUnsavedChanges) {
-                e.preventDefault();
-                e.returnValue = '';
+                this.renderSingleField(itemPath, item, card.find('.p-6'));
             }
         });
+
+        container.append(card);
     },
-    // Gallery Management
-    renderGalleryManager: function () {
+
+    // Table Managers
+    renderClientsManager: function () {
         const container = $('#content-editor');
-        const galleryData = this.state.galleryData || [];
-        const categories = [...new Set(galleryData.map(item => item.category))];
-        if (categories.length === 0 && !categories.includes('General')) categories.push('General');
-
-        const html = $(`
-            <div class="fade-in">
-                <div class="flex items-center justify-between mb-12">
-                    <div>
-                        <h2 class="text-3xl font-black text-ikf-blue">IKF Gallery Archive</h2>
-                        <p class="text-slate-500 font-medium">Manage folder-wise event photos and celebrations.</p>
-                    </div>
-                    <button id="add-photo-btn" class="px-6 py-4 bg-ikf-yellow hover:bg-yellow-600 text-white font-black rounded-2xl transition-all shadow-lg flex items-center gap-3">
-                        <i class="fas fa-plus-circle"></i> Add New Photo
-                    </button>
+        container.html(`
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h3 class="text-xl font-black text-slate-900">Partner Inventory</h3>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Manage logo display and groupings. Drag to Reorder.</p>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    ${categories.map(cat => {
-            const items = galleryData.filter(i => i.category === cat);
-            return `
-                            <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group">
-                                <div class="flex items-center justify-between mb-6">
-                                    <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center group-hover:bg-ikf-blue group-hover:text-white transition-all">
-                                        <i class="fas fa-folder-open text-xl"></i>
-                                    </div>
-                                    <span class="px-3 py-1 bg-slate-100 rounded-lg text-[10px] font-black text-slate-400">${items.length} Photos</span>
-                                </div>
-                                <h3 class="text-xl font-black text-slate-800 mb-6">${cat}</h3>
-                                <div class="space-y-3">
-                                    ${items.slice(0, 3).map(img => `
-                                        <div class="flex items-center gap-3 p-2 bg-slate-50 rounded-xl border border-slate-100">
-                                            <img src="${img.url}" class="w-10 h-10 rounded-lg object-cover">
-                                            <div class="flex-1 min-w-0">
-                                                <p class="text-[10px] font-bold text-slate-800 truncate">${img.title || 'Untitled Image'}</p>
-                                                <p class="text-[9px] text-slate-400 truncate">${img.url}</p>
-                                            </div>
-                                            <div class="flex gap-1">
-                                                <button onclick="CMSApp.showEditPhotoModal('${img.id}')" class="text-slate-300 hover:text-ikf-blue p-2 transition-colors" title="Edit">
-                                                    <i class="fas fa-edit text-[10px]"></i>
-                                                </button>
-                                                <button onclick="CMSApp.deleteGalleryImage('${img.id}')" class="text-slate-300 hover:text-red-500 p-2 transition-colors" title="Delete">
-                                                    <i class="fas fa-trash-alt text-[10px]"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    `).join('')}
-                                    ${items.length > 3 ? `<p class="text-center text-[10px] font-bold text-slate-400 mt-4">+ ${items.length - 3} more photos</p>` : ''}
-                                    ${items.length === 0 ? `<p class="text-center text-[10px] font-bold text-slate-300 py-4">No photos in this folder</p>` : ''}
-                                </div>
-                            </div>
-                        `;
-        }).join('')
-            }
-                </div >
-            </div >
-    `);
-
-        html.find('#add-photo-btn').on('click', () => this.showAddPhotoModal(categories));
-        container.append(html);
-    },
-
-    showAddPhotoModal: async function (categories) {
-        const { value: formValues } = await Swal.fire({
-            title: 'Add Gallery Photo',
-            html: `
-    < div class="text-left space-y-4" >
-                    <div class="p-6 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl text-center hover:border-ikf-blue/30 transition-all cursor-pointer group" onclick="document.getElementById('swal-file-input').click()">
-                        <i class="fas fa-cloud-upload-alt text-3xl text-slate-300 group-hover:text-ikf-blue mb-2 block"></i>
-                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Choose File or Drop Here</span>
-                        <input type="file" id="swal-file-input" class="hidden" accept="image/*">
-                        <p id="file-name-preview" class="text-[10px] font-bold text-ikf-blue mt-2 truncate"></p>
+                <button id="add-client-btn" class="px-5 py-2 bg-ikf-blue text-white text-xs font-bold uppercase rounded-lg hover:bg-slate-900 transition-all">+ Add New Client</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="clients-list">
+                ${this.state.clientsData.map(client => `
+                    <div class="bg-white p-4 border border-slate-200 rounded-xl flex items-center gap-4 group hover:shadow-md transition-all cursor-grab active:cursor-grabbing" data-id="${client.id}">
+                        <div class="text-slate-300"><i class="fas fa-grip-vertical"></i></div>
+                        <img src="${client.logo_url || 'https://via.placeholder.com/100'}" class="w-16 h-16 object-contain rounded bg-slate-50 border p-2">
+                        <div class="flex-1">
+                            <p class="font-bold text-slate-900">${client.name}</p>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">${client.category}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="CMSApp.editClient('${client.id}')" class="p-2 text-slate-400 hover:text-ikf-blue"><i class="fas fa-edit"></i></button>
+                            <button onclick="CMSApp.deleteClient('${client.id}')" class="p-2 text-slate-400 hover:text-red-500"><i class="fas fa-trash"></i></button>
+                        </div>
                     </div>
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
-                        <div class="relative flex justify-center text-[8px] font-black uppercase text-slate-300 bg-white px-2">OR USE URL</div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Image URL</label>
-                        <input id="swal-img-url" class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-ikf-blue outline-none transition-all" placeholder="https://example.com/photo.jpg">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Category / Folder</label>
-                        <select id="swal-img-cat" class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-ikf-blue outline-none transition-all">
-                            ${categories.map(c => `<option value="${c}">${c}</option>`).join('')}
-                            <option value="NEW_CAT">+ Create New Folder</option>
-                        </select>
-                    </div>
-                    <div id="new-cat-container" class="hidden">
-                        <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">New Folder Name</label>
-                        <input id="swal-new-cat" class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-ikf-blue outline-none transition-all" placeholder="e.g. Picnic 2024">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Image Title (Optional)</label>
-                        <input id="swal-img-title" class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-ikf-blue outline-none transition-all" placeholder="e.g. Group Photo">
-                    </div>
-                </div >
-    `,
-            focusConfirm: false,
-            showCancelButton: true,
-            confirmButtonText: 'Add to Archive',
-            confirmButtonColor: '#0E0057',
-            didOpen: () => {
-                $('#swal-img-cat').on('change', function () {
-                    if ($(this).val() === 'NEW_CAT') {
-                        $('#new-cat-container').removeClass('hidden');
-                    } else {
-                        $('#new-cat-container').addClass('hidden');
-                    }
-                });
+                `).join('')}
+            </div>
+        `);
 
-                $('#swal-file-input').on('change', function () {
-                    const file = this.files[0];
-                    if (file) {
-                        $('#file-name-preview').text(`Selected: ${file.name} `);
-                        $('#swal-img-url').val('').attr('disabled', true).addClass('opacity-50');
-                    }
-                });
-            },
-            preConfirm: () => {
-                const file = $('#swal-file-input')[0].files[0];
-                const url = $('#swal-img-url').val().trim();
-                let cat = $('#swal-img-cat').val();
-                const title = $('#swal-img-title').val().trim();
+        $('#add-client-btn').on('click', () => this.editClient(null));
 
-                if (cat === 'NEW_CAT') {
-                    cat = $('#swal-new-cat').val().trim();
-                    if (!cat) {
-                        Swal.showValidationMessage('Please enter a folder name');
-                        return false;
-                    }
-                }
+        // Initialize Sortable
+        const list = document.getElementById('clients-list');
+        new Sortable(list, {
+            animation: 150,
+            handle: '.cursor-grab', // Drag handle
+            ghostClass: 'bg-slate-100',
+            onEnd: async (evt) => {
+                // Get new order
+                const itemEl = evt.item;
+                const newIndex = evt.newIndex;
+                const oldIndex = evt.oldIndex;
 
-                // Validation: File or URL required
-                if (!file && !url) {
-                    Swal.showValidationMessage('Please select a file or provide a URL');
-                    return false;
-                }
+                if (newIndex === oldIndex) return;
 
-                // Validation: Category required
-                if (!cat) {
-                    Swal.showValidationMessage('Category is required');
-                    return false;
-                }
+                // Update Local State
+                const movedItem = this.state.clientsData.splice(oldIndex, 1)[0];
+                this.state.clientsData.splice(newIndex, 0, movedItem);
 
-                // Validation: File size check
-                if (file && file.size > CMSApp.config.maxFileSize) {
-                    const sizeMB = (CMSApp.config.maxFileSize / (1024 * 1024)).toFixed(1);
-                    Swal.showValidationMessage(`File size exceeds ${sizeMB}MB limit`);
-                    return false;
-                }
+                // Re-assign display orders based on new index
+                const updates = this.state.clientsData.map((client, index) => ({
+                    id: client.id,
+                    display_order: index
+                }));
 
-                // Validation: File type check
-                if (file && !CMSApp.config.allowedFileTypes.includes(file.type)) {
-                    Swal.showValidationMessage('Only image files (JPEG, PNG, GIF, WebP) are allowed');
-                    return false;
-                }
+                // Optimistic UI Update (Already done by Sortable)
 
-                // Validation: URL format check
-                if (url) {
-                    try {
-                        new URL(url);
-                        if (!url.match(/\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i)) {
-                            Swal.showValidationMessage('URL must point to a valid image file');
-                            return false;
-                        }
-                    } catch (e) {
-                        Swal.showValidationMessage('Please enter a valid URL');
-                        return false;
-                    }
-                }
-
-                return { file, url, category: cat, title };
-            }
-        });
-
-        if (formValues) {
-            this.addGalleryImage(formValues);
-        }
-    },
-
-    addGalleryImage: async function (data) {
-        try {
-            Swal.fire({ title: 'Processing Archive...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-            let finalUrl = data.url;
-
-            // Handle File Upload
-            if (data.file) {
-                Swal.update({ title: 'Uploading to IKF Storage...', text: 'Transmitting visual data...' });
+                // Persist to Supabase
                 try {
-                    const storageUrl = await this.uploadToStorage(data.file);
-                    if (!storageUrl) throw new Error('Storage transmission failed');
-                    finalUrl = storageUrl;
-                } catch (storageError) {
-                    // Handle storage-specific errors
-                    throw new Error(this.translateStorageError(storageError));
+                    this.showToast('Updating Order...', 'info');
+
+                    // Update in batches or one-by-one? 
+                    // Supabase upsert with array is efficient.
+                    // But we only need id and display_order.
+
+                    const { error } = await window.supabaseClient
+                        .from('clients')
+                        .upsert(updates, { onConflict: 'id' });
+
+                    if (error) throw error;
+
+                    this.showToast('Order Updated', 'success');
+                } catch (err) {
+                    console.error('Reorder error:', err);
+                    this.showToast('Failed to save order', 'error');
+                    // Revert state?
                 }
             }
-
-            // Validate URL accessibility (for external URLs)
-            if (data.url && !data.file) {
-                Swal.update({ title: 'Validating Image URL...', text: 'Checking accessibility...' });
-                const isValid = await this.validateImageUrl(data.url);
-                if (!isValid) {
-                    throw new Error('Image URL is not accessible or invalid. Please check the URL and try again.');
-                }
-            }
-
-            Swal.update({ title: 'Linking to Mainframe...', text: 'Syncing with cloud database...' });
-            const { error } = await window.supabaseClient
-                .from('gallery')
-                .insert([{
-                    url: finalUrl,
-                    category: data.category,
-                    title: data.title || null,
-                    created_at: new Date().toISOString()
-                }]);
-
-            if (error) {
-                throw new Error(this.translateDatabaseError(error));
-            }
-
-            // Refresh Gallery State with error handling
-            Swal.update({ title: 'Refreshing Gallery...', text: 'Loading updated archive...' });
-            try {
-                const { data: newGallery, error: fetchError } = await window.supabaseClient
-                    .from('gallery')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
-                if (fetchError) throw fetchError;
-                this.state.galleryData = newGallery || [];
-                this.renderGalleryManager();
-            } catch (refreshError) {
-                console.warn('Gallery refresh failed:', refreshError);
-                // Photo was added successfully, just refresh failed
-                // Force a manual reload
-                await this.loadData();
-            }
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Photo Archived',
-                html: `< p class="text-sm text-slate-600" > The visual record has been successfully synced to the cloud.</p >
-    <p class="text-xs text-slate-400 mt-2">Category: <strong>${data.category}</strong></p>`,
-                timer: 3000,
-                showConfirmButton: false
-            });
-        } catch (error) {
-            console.error('Gallery upload error:', error);
-
-            // User-friendly error display
-            const errorMessage = error.message || 'An unknown error occurred';
-            const isNetworkError = errorMessage.includes('network') || errorMessage.includes('fetch');
-
-            Swal.fire({
-                icon: 'error',
-                title: isNetworkError ? 'Network Error' : 'Upload Failed',
-                html: `
-        < p class="text-sm text-slate-700 mb-3" > ${errorMessage}</p >
-            ${isNetworkError ? '<p class="text-xs text-slate-500">Please check your internet connection and try again.</p>' : ''}
-`,
-                confirmButtonText: 'Retry',
-                showCancelButton: true,
-                cancelButtonText: 'Close',
-                confirmButtonColor: '#0E0057'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Retry the upload
-                    this.showAddPhotoModal(this.state.galleryData ? [...new Set(this.state.galleryData.map(item => item.category))] : ['General']);
-                }
-            });
-        }
-    },
-
-    deleteGalleryImage: async function (id) {
-        // Find the image to get details
-        const imageToDelete = this.state.galleryData.find(i => i.id === id);
-        if (!imageToDelete) {
-            Swal.fire({ icon: 'error', title: 'Image Not Found', text: 'The image record could not be located.' });
-            return;
-        }
-
-        const result = await Swal.fire({
-            title: 'Expunge Photo?',
-            html: `
-    < p class="text-sm text-slate-600 mb-2" > This will permanently remove the record from the cloud archive.</p >
-        <div class="bg-slate-50 p-3 rounded-lg mt-3">
-            <p class="text-xs text-slate-500"><strong>Category:</strong> ${imageToDelete.category}</p>
-            ${imageToDelete.title ? `<p class="text-xs text-slate-500"><strong>Title:</strong> ${imageToDelete.title}</p>` : ''}
-        </div>
-`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            confirmButtonText: 'Permanently Delete',
-            cancelButtonText: 'Cancel'
         });
-
-        if (result.isConfirmed) {
-            try {
-                Swal.fire({ title: 'Deleting...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-                // Check if it's a storage URL and attempt to delete from storage
-                const isStorageUrl = imageToDelete.url.includes(this.config.bucketName);
-                if (isStorageUrl) {
-                    try {
-                        // Extract filename from URL
-                        const urlParts = imageToDelete.url.split('/');
-                        const fileName = urlParts[urlParts.length - 1].split('?')[0];
-
-                        const { error: storageError } = await window.supabaseClient.storage
-                            .from(this.config.bucketName)
-                            .remove([fileName]);
-
-                        if (storageError) {
-                            console.warn('Storage deletion failed:', storageError);
-                            // Continue with DB deletion even if storage deletion fails
-                        }
-                    } catch (storageErr) {
-                        console.warn('Storage cleanup error:', storageErr);
-                        // Non-critical, continue
-                    }
-                }
-
-                // Delete from database
-                const { error } = await window.supabaseClient.from('gallery').delete().eq('id', id);
-                if (error) throw new Error(this.translateDatabaseError(error));
-
-                // Update local state
-                this.state.galleryData = this.state.galleryData.filter(i => i.id !== id);
-                this.renderGalleryManager();
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Photo Expunged',
-                    text: 'The visual record has been permanently removed.',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            } catch (error) {
-                console.error('Deletion error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Deletion Failed',
-                    html: `
-    < p class="text-sm text-slate-700" > ${error.message || 'An error occurred during deletion'}</p >
-        <p class="text-xs text-slate-500 mt-2">Please try again or contact support if the issue persists.</p>
-`,
-                    confirmButtonColor: '#0E0057'
-                });
-            }
-        }
     },
 
-    showEditPhotoModal: async function (imageId) {
-        const image = this.state.galleryData.find(img => img.id === imageId);
-        if (!image) {
-            Swal.fire({ icon: 'error', title: 'Image Not Found', text: 'Could not locate the image record.' });
-            return;
-        }
-
-        const categories = [...new Set(this.state.galleryData.map(item => item.category))];
+    editClient: async function (id) {
+        const client = id ? this.state.clientsData.find(c => c.id === id) : { name: '', category: 'Development', logo_url: '', website_url: '', display_order: 10 };
 
         const { value: formValues } = await Swal.fire({
-            title: 'Edit Gallery Photo',
+            title: id ? 'Edit Client' : 'Add New Client',
             html: `
-                <div class="text-left space-y-4">
-                    <div class="mb-4">
-                        <img src="${image.url}" class="w-full h-32 object-cover rounded-xl border-2 border-slate-100">
-                    </div>
-                    <div class="p-4 bg-slate-50 rounded-xl">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" id="swal-replace-img" class="rounded">
-                            <span class="text-xs font-black text-slate-600 uppercase tracking-widest">Replace Image</span>
-                        </label>
-                    </div>
-                    <div id="replace-img-container" class="hidden space-y-3">
-                        <div class="p-6 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl text-center hover:border-ikf-blue/30 transition-all cursor-pointer group" onclick="document.getElementById('swal-edit-file-input').click()">
-                            <i class="fas fa-cloud-upload-alt text-3xl text-slate-300 group-hover:text-ikf-blue mb-2 block"></i>
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Choose New File</span>
-                            <input type="file" id="swal-edit-file-input" class="hidden" accept="image/*">
-                            <p id="edit-file-name-preview" class="text-[10px] font-bold text-ikf-blue mt-2 truncate"></p>
-                        </div>
-                        <div class="relative">
-                            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
-                            <div class="relative flex justify-center text-[8px] font-black uppercase text-slate-300 bg-white px-2">OR USE URL</div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">New Image URL</label>
-                            <input id="swal-edit-img-url" class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-ikf-blue outline-none transition-all" placeholder="https://example.com/photo.jpg">
-                        </div>
-                    </div>
+                <div class="text-left space-y-4 pt-4">
                     <div>
-                        <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Image Title</label>
-                        <input id="swal-edit-img-title" class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-ikf-blue outline-none transition-all" placeholder="e.g. Group Photo" value="${image.title || ''}">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Client Name</label>
+                        <input id="swal-client-name" class="admin-input mt-1" value="${client.name}">
                     </div>
-                    <div>
-                        <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Category / Folder</label>
-                        <select id="swal-edit-img-cat" class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-ikf-blue outline-none transition-all">
-                            ${categories.map(c => `<option value="${c}" ${c === image.category ? 'selected' : ''}>${c}</option>`).join('')}
-                            <option value="NEW_CAT">+ Create New Folder</option>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Category</label>
+                        <select id="swal-client-category" class="admin-input mt-1 font-bold">
+                            ${[...new Set(this.state.clientsData.map(c => c.category))].sort().map(cat =>
+                `<option value="${cat}" ${client.category === cat ? 'selected' : ''}>${cat}</option>`
+            ).join('')}
+                            <option value="Vehicles" ${client.category === 'Vehicles' ? 'selected' : ''}>Vehicles</option>
+                            <option value="Manufacturing" ${client.category === 'Manufacturing' ? 'selected' : ''}>Manufacturing</option>
+                             <option value="Real Estate" ${client.category === 'Real Estate' ? 'selected' : ''}>Real Estate</option>
+                             <option value="Health Care" ${client.category === 'Health Care' ? 'selected' : ''}>Health Care</option>
+                             <option value="Education" ${client.category === 'Education' ? 'selected' : ''}>Education</option>
                         </select>
+                         <p class="text-[9px] text-slate-400 mt-1">Select from existing or default industries</p>
                     </div>
-                    <div id="edit-new-cat-container" class="hidden">
-                        <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">New Folder Name</label>
-                        <input id="swal-edit-new-cat" class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-ikf-blue outline-none transition-all" placeholder="e.g. Picnic 2024">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Logo URL</label>
+                        <div class="flex gap-2 items-center mt-1">
+                            <input type="text" id="swal-client-logo" class="admin-input flex-1" value="${client.logo_url}">
+                            <input type="file" id="swal-client-file" class="hidden" accept="image/*" onchange="CMSApp.handleImageUpload(this, 'swal-client-logo')">
+                            <button type="button" onclick="event.preventDefault(); event.stopPropagation(); document.getElementById('swal-client-file').click()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2">
+                                <i class="fas fa-upload"></i>
+                                <span>Upload</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Website URL</label>
+                        <input id="swal-client-url" class="admin-input mt-1" value="${client.website_url}">
                     </div>
                 </div>
             `,
             focusConfirm: false,
             showCancelButton: true,
-            confirmButtonText: 'Update Photo',
+            confirmButtonText: 'Save Data',
             confirmButtonColor: '#0E0057',
-            width: '600px',
-            didOpen: () => {
-                $('#swal-edit-img-cat').on('change', function () {
-                    if ($(this).val() === 'NEW_CAT') {
-                        $('#edit-new-cat-container').removeClass('hidden');
-                    } else {
-                        $('#edit-new-cat-container').addClass('hidden');
-                    }
-                });
-
-                $('#swal-replace-img').on('change', function () {
-                    if ($(this).is(':checked')) {
-                        $('#replace-img-container').removeClass('hidden');
-                    } else {
-                        $('#replace-img-container').addClass('hidden');
-                    }
-                });
-
-                $('#swal-edit-file-input').on('change', function () {
-                    const file = this.files[0];
-                    if (file) {
-                        $('#edit-file-name-preview').text(`Selected: ${file.name}`);
-                        $('#swal-edit-img-url').val('').attr('disabled', true).addClass('opacity-50');
-                    }
-                });
-            },
             preConfirm: () => {
-                const replaceImage = $('#swal-replace-img').is(':checked');
-                const file = replaceImage ? $('#swal-edit-file-input')[0].files[0] : null;
-                const url = replaceImage ? $('#swal-edit-img-url').val().trim() : null;
-                let cat = $('#swal-edit-img-cat').val();
-                const title = $('#swal-edit-img-title').val().trim();
-
-                if (cat === 'NEW_CAT') {
-                    cat = $('#swal-edit-new-cat').val().trim();
-                    if (!cat) {
-                        Swal.showValidationMessage('Please enter a folder name');
-                        return false;
-                    }
-                }
-
-                if (!cat) {
-                    Swal.showValidationMessage('Category is required');
-                    return false;
-                }
-
-                if (replaceImage && !file && !url) {
-                    Swal.showValidationMessage('Please select a file or provide a URL to replace the image');
-                    return false;
-                }
-
-                if (file && file.size > CMSApp.config.maxFileSize) {
-                    const sizeMB = (CMSApp.config.maxFileSize / (1024 * 1024)).toFixed(1);
-                    Swal.showValidationMessage(`File size exceeds ${sizeMB}MB limit`);
-                    return false;
-                }
-
-                if (file && !CMSApp.config.allowedFileTypes.includes(file.type)) {
-                    Swal.showValidationMessage('Only image files (JPEG, PNG, GIF, WebP) are allowed');
-                    return false;
-                }
-
-                if (url) {
-                    try {
-                        new URL(url);
-                        if (!url.match(/\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i)) {
-                            Swal.showValidationMessage('URL must point to a valid image file');
-                            return false;
-                        }
-                    } catch (e) {
-                        Swal.showValidationMessage('Please enter a valid URL');
-                        return false;
-                    }
-                }
-
                 return {
-                    id: imageId,
-                    replaceImage,
-                    file,
-                    url,
-                    category: cat,
-                    title,
-                    oldUrl: image.url
-                };
+                    id: id || `client-${Date.now()}`,
+                    name: document.getElementById('swal-client-name').value,
+                    category: document.getElementById('swal-client-category').value,
+                    logo_url: document.getElementById('swal-client-logo').value,
+                    website_url: document.getElementById('swal-client-url').value,
+                    display_order: client.display_order
+                }
             }
         });
 
         if (formValues) {
-            this.updateGalleryImage(formValues);
+            try {
+                this.showToast('Saving Client...', 'info');
+                const { error } = await window.supabaseClient
+                    .from('clients')
+                    .upsert(formValues, { onConflict: 'id' });
+
+                if (error) throw error;
+                await this.loadData();
+                this.renderClientsManager();
+                this.showToast('Client Updated', 'success');
+            } catch (err) {
+                this.showToast('Error saving client', 'error');
+            }
         }
     },
 
-    updateGalleryImage: async function (data) {
+    deleteClient: async function (id) {
+        const result = await Swal.fire({
+            title: 'Delete Client?',
+            text: 'This action cannot be undone',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444'
+        });
+
+        if (result.isConfirmed) {
+            await window.supabaseClient.from('clients').delete().eq('id', id);
+            await this.loadData();
+            this.renderClientsManager();
+            this.showToast('Client Deleted', 'success');
+        }
+    },
+
+    renderSocialManager: function () {
+        const container = $('#content-editor');
+        container.html(`
+            <div class="mb-8">
+                <h3 class="text-xl font-black text-slate-900">Social Connections</h3>
+                <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Live statistics and profile links</p>
+            </div>
+            <div class="space-y-4">
+                ${this.state.socialData.map(link => `
+                    <div class="bg-white p-6 border border-slate-200 rounded-xl hover:shadow-md transition-all">
+                        <div class="flex items-center gap-4 mb-6 pb-4 border-b border-slate-50">
+                            <div class="w-10 h-10 rounded-lg bg-ikf-blue/10 flex items-center justify-center text-ikf-blue">
+                                <i class="fab fa-${link.platform} text-xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <input type="text" onchange="CMSApp.updateSocialField('${link.id}', 'display_name', this.value)" 
+                                    class="text-sm font-black text-slate-900 bg-transparent border-none outline-none focus:ring-1 focus:ring-ikf-blue/20 rounded px-2 w-full" 
+                                    value="${link.display_name}">
+                                <p class="text-[10px] text-slate-400 font-bold uppercase px-2">${link.platform}</p>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="flex flex-col items-end">
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase">Active</span>
+                                    <input type="checkbox" ${link.is_active ? 'checked' : ''} onchange="CMSApp.updateSocialField('${link.id}', 'is_active', this.checked)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-500 uppercase">Profile URL</label>
+                                <input type="text" onchange="CMSApp.updateSocialField('${link.id}', 'profile_url', this.value)" class="admin-input mt-1" value="${link.profile_url}">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-500 uppercase">Followers Label</label>
+                                <input type="text" onchange="CMSApp.updateSocialField('${link.id}', 'follower_count', this.value)" class="admin-input mt-1" value="${link.follower_count}">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-500 uppercase">Subtext/Desc</label>
+                                <input type="text" onchange="CMSApp.updateSocialField('${link.id}', 'description', this.value)" class="admin-input mt-1" value="${link.description}">
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            <div class="mt-8 pt-8 border-t border-slate-200">
+                <button onclick="CMSApp.saveSocialLinks()" class="w-full py-4 bg-ikf-blue text-white font-black uppercase tracking-widest text-xs rounded-xl shadow-lg hover:bg-slate-900 transition-all">Save Social Matrix</button>
+            </div>
+        `);
+    },
+
+    updateSocialField: function (id, field, value) {
+        const link = this.state.socialData.find(l => l.id === id);
+        if (link) {
+            link[field] = value;
+            this.markDirty();
+        }
+    },
+
+    saveSocialLinks: async function () {
         try {
-            Swal.fire({ title: 'Updating Photo...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            this.showToast('Syncing Social...', 'info');
+            for (const link of this.state.socialData) {
+                const { error } = await window.supabaseClient
+                    .from('social_links')
+                    .upsert(link, { onConflict: 'id' });
+                if (error) throw error;
+            }
+            this.state.hasUnsavedChanges = false;
+            $('#unsaved-indicator').addClass('hidden');
+            this.showToast('Social Matrix Synchronized', 'success');
+        } catch (err) {
+            this.showToast('Sync Failed', 'error');
+        }
+    },
 
-            let finalUrl = data.oldUrl;
+    renderEmployeeDirectory: function () {
+        const container = $('#content-editor');
+        container.html(`
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h3 class="text-xl font-black text-slate-900">Personnel Registry</h3>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Master list of all team members</p>
+                </div>
+                <div class="flex gap-4">
+                    <input type="text" id="directory-search" placeholder="Search by name/dept..." class="admin-input w-64 h-10 border-slate-300">
+                    <button id="add-employee-btn" class="px-5 py-2 bg-ikf-blue text-white text-xs font-bold uppercase rounded-lg hover:bg-slate-900 transition-all">+ Add Team Member</button>
+                </div>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50 border-b border-slate-100">
+                        <tr>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Member</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Department</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Role</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Contact Info</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Birthday</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Joining</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                            <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50" id="directory-table-body">
+                        ${this.state.employeesData.slice(0, 50).map(emp => `
+                            <tr class="hover:bg-slate-50/50 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <img src="${emp.img || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded-lg object-cover bg-white shadow-sm border border-slate-100">
+                                        <p class="font-bold text-slate-900 text-sm whitespace-nowrap">${emp.name}</p>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 bg-slate-100 text-[10px] font-black text-slate-500 uppercase rounded">${emp.dept}</span>
+                                </td>
+                                <td class="px-6 py-4 text-xs font-medium text-slate-600">${emp.role}</td>
+                                <td class="px-6 py-4">
+                                    <p class="text-[10px] font-bold text-slate-900">${emp.email || '-'}</p>
+                                    <p class="text-[9px] text-slate-400 font-bold">${emp.mobile || '-'}</p>
+                                </td>
+                                <td class="px-6 py-4 text-[10px] font-bold text-slate-500">${emp.dob || '-'}</td>
+                                <td class="px-6 py-4 text-[10px] font-bold text-slate-500">${emp.doj || '-'}</td>
+                                <td class="px-6 py-4">
+                                    ${emp.is_leader ? '<span class="text-[9px] font-bold text-ikf-yellow uppercase">Leadership</span>' : '<span class="text-[9px] font-bold text-slate-300 uppercase">Core Team</span>'}
+                                </td>
+                                <td class="px-6 py-4 text-right whitespace-nowrap">
+                                    <button onclick="CMSApp.editEmployee('${emp.id}')" class="text-slate-400 hover:text-ikf-blue p-2"><i class="fas fa-edit"></i></button>
+                                    <button onclick="CMSApp.deleteEmployee('${emp.id}')" class="text-slate-400 hover:text-red-500 p-2"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `);
 
-            if (data.replaceImage) {
-                if (data.file) {
-                    Swal.update({ title: 'Uploading New Image...', text: 'Transmitting visual data...' });
-                    try {
-                        const storageUrl = await this.uploadToStorage(data.file);
-                        if (!storageUrl) throw new Error('Storage transmission failed');
-                        finalUrl = storageUrl;
+        $('#directory-search').on('input', (e) => this.filterDirectory(e.target.value));
+        $('#add-employee-btn').on('click', () => this.editEmployee(null));
+    },
 
-                        if (data.oldUrl.includes(this.config.bucketName)) {
-                            try {
-                                const urlParts = data.oldUrl.split('/');
-                                const oldFileName = urlParts[urlParts.length - 1].split('?')[0];
-                                await window.supabaseClient.storage.from(this.config.bucketName).remove([oldFileName]);
-                            } catch (cleanupErr) {
-                                console.warn('Old image cleanup failed:', cleanupErr);
-                            }
+    filterDirectory: function (query) {
+        const q = query.toLowerCase();
+        const filtered = this.state.employeesData.filter(e =>
+            e.name.toLowerCase().includes(q) || e.dept.toLowerCase().includes(q) || e.role.toLowerCase().includes(q)
+        );
+        this.renderTableBody(filtered.slice(0, 50));
+    },
+
+    renderTableBody: function (data) {
+        const body = $('#directory-table-body');
+        body.empty();
+        data.forEach(emp => {
+            body.append(`
+                <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <!-- Debug Log: ${console.log('Rendering Employee:', emp.name, 'Img:', emp.img)} -->
+                            <img src="${(emp.img && emp.img !== 'null') ? emp.img : 'https://png.pngtree.com/png-vector/20220319/ourmid/pngtree-account-icon-profiles-and-users-vector-info-silhouette-vector-png-image_44982146.jpg'}" class="w-10 h-10 rounded-lg object-cover bg-slate-50 shadow-sm border border-slate-200 p-1">
+                            <p class="font-bold text-slate-900 text-sm whitespace-nowrap">${emp.name}</p>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 bg-slate-100 text-[10px] font-black text-slate-500 uppercase rounded">${emp.dept}</span>
+                    </td>
+                    <td class="px-6 py-4 text-xs font-medium text-slate-600">${emp.role}</td>
+                    <td class="px-6 py-4">
+                        <p class="text-[10px] font-bold text-slate-900">${emp.email || '-'}</p>
+                        <p class="text-[9px] text-slate-400 font-bold">${emp.mobile || '-'}</p>
+                    </td>
+                    <td class="px-6 py-4 text-[10px] font-bold text-slate-500">${emp.dob || '-'}</td>
+                    <td class="px-6 py-4 text-[10px] font-bold text-slate-500">${emp.doj || '-'}</td>
+                    <td class="px-6 py-4">
+                        ${emp.is_leader ? '<span class="text-[9px] font-bold text-ikf-yellow uppercase">Leadership</span>' : '<span class="text-[9px] font-bold text-slate-300 uppercase">Core Team</span>'}
+                    </td>
+                    <td class="px-6 py-4 text-right whitespace-nowrap">
+                        <button onclick="CMSApp.editEmployee('${emp.id}')" class="text-slate-400 hover:text-ikf-blue p-2"><i class="fas fa-edit"></i></button>
+                        <button onclick="CMSApp.deleteEmployee('${emp.id}')" class="text-slate-400 hover:text-red-500 p-2"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `);
+        });
+    },
+
+    editEmployee: async function (id) {
+        const emp = id ? this.state.employeesData.find(e => e.id === id) : { name: '', role: '', dept: 'Development', img: '', is_leader: false };
+
+        const { value: formValues } = await Swal.fire({
+            title: id ? 'Modify Identity' : 'Recruit Member',
+            html: `
+                <div class="text-left space-y-4 pt-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Full Name</label>
+                        <input id="swal-emp-name" class="admin-input mt-1" value="${emp.name}">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Department</label>
+                            <input id="swal-emp-dept" class="admin-input mt-1" value="${emp.dept}">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Role</label>
+                            <input id="swal-emp-role" class="admin-input mt-1" value="${emp.role}">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Birthday (DOB)</label>
+                            <input type="date" id="swal-emp-dob" class="admin-input mt-1" value="${emp.dob || ''}">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Joining Date (DOJ)</label>
+                            <input type="date" id="swal-emp-doj" class="admin-input mt-1" value="${emp.doj || ''}">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Email Address</label>
+                            <input type="email" id="swal-emp-email" class="admin-input mt-1" value="${emp.email || ''}">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Mobile Number</label>
+                            <input type="tel" id="swal-emp-mobile" class="admin-input mt-1" value="${emp.mobile || ''}">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Image URL/Path</label>
+                        <div class="flex gap-2 items-center mt-1">
+                            <input type="text" id="swal-emp-img" class="admin-input flex-1" value="${emp.img}">
+                            <input type="file" id="swal-emp-file" class="hidden" accept="image/*" onchange="CMSApp.handleImageUpload(this, 'swal-emp-img')">
+                            <button type="button" onclick="event.preventDefault(); event.stopPropagation(); document.getElementById('swal-emp-file').click()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2">
+                                <i class="fas fa-upload"></i>
+                                <span>Upload</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 py-2">
+                        <input type="checkbox" id="swal-emp-leader" ${emp.is_leader ? 'checked' : ''}>
+                        <label for="swal-emp-leader" class="text-xs font-bold text-slate-700 uppercase">Grant Leadership Status</label>
+                    </div>
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Update Personnel',
+            confirmButtonColor: '#0E0057',
+            preConfirm: () => {
+                try {
+                    console.log('--- Attempting to Save Employee Data ---');
+                    const popup = Swal.getPopup();
+
+                    const getValue = (selector) => {
+                        // Try global ID first
+                        let el = document.getElementById(selector);
+                        // If not found, try scoped lookup within popup
+                        if (!el && popup) el = popup.querySelector(`#${selector}`);
+
+                        if (!el) {
+                            console.error(`CRITICAL: Input #${selector} not found during save!`);
+                            return '';
                         }
-                    } catch (storageError) {
-                        throw new Error(this.translateStorageError(storageError));
-                    }
-                } else if (data.url) {
-                    Swal.update({ title: 'Validating New URL...', text: 'Checking accessibility...' });
-                    const isValid = await this.validateImageUrl(data.url);
-                    if (!isValid) {
-                        throw new Error('New image URL is not accessible or invalid. Please check the URL and try again.');
-                    }
-                    finalUrl = data.url;
+                        return el.value;
+                    };
+
+                    const getChecked = (selector) => {
+                        let el = document.getElementById(selector);
+                        if (!el && popup) el = popup.querySelector(`#${selector}`);
+                        return el ? el.checked : false;
+                    };
+
+                    const idVal = id || `emp-${Date.now()}`;
+                    const nameVal = getValue('swal-emp-name');
+                    const deptVal = getValue('swal-emp-dept');
+                    const roleVal = getValue('swal-emp-role');
+                    const imgVal = getValue('swal-emp-img');
+                    const dobVal = getValue('swal-emp-dob');
+                    const dojVal = getValue('swal-emp-doj');
+                    const emailVal = getValue('swal-emp-email');
+                    const mobileVal = getValue('swal-emp-mobile');
+                    const isLeaderVal = getChecked('swal-emp-leader');
+
+                    console.log('Captured Values:', { idVal, nameVal, deptVal, roleVal, imgVal, emailVal, mobileVal });
+
+                    if (!nameVal) throw new Error('Name is required');
+
+                    return {
+                        id: idVal,
+                        name: nameVal,
+                        dept: deptVal,
+                        role: roleVal,
+                        img: imgVal,
+                        dob: dobVal || null,
+                        doj: dojVal || null,
+                        email: emailVal || null,
+                        mobile: mobileVal || null,
+                        is_leader: isLeaderVal,
+                        skills: emp.skills || []
+                    };
+                } catch (err) {
+                    console.error('Save Error in preConfirm:', err);
+                    Swal.showValidationMessage(`Save failed: ${err.message}`);
+                    return false;
                 }
             }
+        });
 
-            Swal.update({ title: 'Updating Record...', text: 'Syncing with cloud database...' });
-            const { error } = await window.supabaseClient
-                .from('gallery')
-                .update({
-                    url: finalUrl,
-                    category: data.category,
-                    title: data.title || null
-                })
-                .eq('id', data.id);
-
-            if (error) {
-                throw new Error(this.translateDatabaseError(error));
-            }
-
-            Swal.update({ title: 'Refreshing Gallery...', text: 'Loading updated archive...' });
+        if (formValues) {
+            console.log('--- Sync Authorization Triggered ---');
             try {
-                const { data: newGallery, error: fetchError } = await window.supabaseClient
-                    .from('gallery')
-                    .select('*')
-                    .order('created_at', { ascending: false });
+                console.log('Final Data Packet:', formValues);
+                this.showToast('Committing Personnel Data...', 'info');
 
-                if (fetchError) throw fetchError;
-                this.state.galleryData = newGallery || [];
-                this.renderGalleryManager();
-            } catch (refreshError) {
-                console.warn('Gallery refresh failed:', refreshError);
+                const { error } = await window.supabaseClient
+                    .from('employees')
+                    .upsert(formValues, { onConflict: 'id' });
+                if (error) {
+                    console.error('Supabase UPSERT Error:', error);
+                    throw error;
+                }
+
+                console.log('Supabase Sync Success. Reloading local state...');
                 await this.loadData();
+                this.renderEmployeeDirectory();
+                this.showToast('Employee Profile Authorized', 'success');
+            } catch (err) {
+                console.error('Personnel Sync Failed:', err);
+                this.showToast(`Sync Failure: ${err.message}`, 'error');
             }
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Photo Updated',
-                html: `<p class="text-sm text-slate-600">The visual record has been successfully updated.</p>
-                       <p class="text-xs text-slate-400 mt-2">Category: <strong>${data.category}</strong></p>`,
-                timer: 3000,
-                showConfirmButton: false
-            });
-        } catch (error) {
-            console.error('Gallery update error:', error);
-
-            const errorMessage = error.message || 'An unknown error occurred';
-            const isNetworkError = errorMessage.includes('network') || errorMessage.includes('fetch');
-
-            Swal.fire({
-                icon: 'error',
-                title: isNetworkError ? 'Network Error' : 'Update Failed',
-                html: `
-                    <p class="text-sm text-slate-700 mb-3">${errorMessage}</p>
-                    ${isNetworkError ? '<p class="text-xs text-slate-500">Please check your internet connection and try again.</p>' : ''}
-                `,
-                confirmButtonText: 'Close',
-                confirmButtonColor: '#0E0057'
-            });
         }
     },
 
-    uploadToStorage: async function (file) {
+    deleteEmployee: async function (id) {
+        const emp = this.state.employeesData.find(e => e.id === id);
+        if (!emp) return;
+
+        const result = await Swal.fire({
+            title: 'Terminate Personnel?',
+            text: `Are you sure you want to remove ${emp.name} from the registry?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            confirmButtonText: 'Yes, Delete Record'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                this.showToast('Deleting Personnel...', 'info');
+                const { error } = await window.supabaseClient.from('employees').delete().eq('id', id);
+                if (error) throw error;
+
+                await this.loadData();
+                this.renderEmployeeDirectory();
+                this.showToast('Personnel Record Removed', 'success');
+            } catch (err) {
+                console.error('Delete Failed:', err);
+                this.showToast('Delete Failed', 'error');
+            }
+        }
+    },
+
+    handleImageUpload: async function (fileInput, targetInputId) {
+        console.log('--- Handle Image Upload Event Fired ---');
+        const files = fileInput.files;
+        if (!files || files.length === 0) return;
+
+        console.log(`Processing ${files.length} files...`);
+        const btn = $(fileInput).next('button');
+        // If the button exists (like in modal), show spinner. 
+        // For main upload zone, btn might not be immediate next sibling or might be the trigger button.
+        // In the main upload zone, the trigger is separate. We can try to find it or just ignore if null.
+        let originalIcon = '';
+        if (btn.length) {
+            originalIcon = btn.html();
+            btn.html('<i class="fas fa-spinner fa-spin"></i>').prop('disabled', true);
+        } else {
+            // Try to find the trigger button in the upload zone if this is the main input
+            if (fileInput.id === 'image-upload-input') {
+                const triggerBtn = $('#upload-zone button');
+                if (triggerBtn.length) {
+                    originalIcon = triggerBtn.html();
+                    triggerBtn.html('<i class="fas fa-spinner fa-spin"></i> Processing...').prop('disabled', true);
+                }
+            }
+        }
+
+        let successCount = 0;
+        let failCount = 0;
+
+        // Determine Target Folder
+        let targetCategory = 'Uploads';
+        const folderSelect = $('#upload-folder-select').val();
+
+        if (folderSelect === '__NEW__') {
+            const newName = $('#new-folder-name').val().trim();
+            if (newName) targetCategory = newName;
+        } else if (folderSelect) {
+            targetCategory = folderSelect;
+        }
+
+        console.log(`Target Category: ${targetCategory}`);
+
         try {
-            // Sanitize filename
-            const sanitizedName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-            const fileName = `${Date.now()}_${sanitizedName} `;
-
-            // Upload with retry logic
-            let uploadAttempts = 0;
-            const maxAttempts = 3;
-            let uploadError = null;
-
-            while (uploadAttempts < maxAttempts) {
+            // Process all files in parallel
+            const uploadPromises = Array.from(files).map(async (file) => {
                 try {
-                    const { data, error } = await window.supabaseClient.storage
-                        .from(this.config.bucketName)
-                        .upload(fileName, file, {
-                            cacheControl: '3600',
-                            upsert: false
-                        });
+                    const fileExt = file.name.split('.').pop();
+                    const cleanName = file.name.replace(/[^a-zA-Z0-9]/g, '_');
+                    // Add random component to avoid collisions
+                    const randomStr = Math.random().toString(36).substring(2, 8);
+                    const filePath = `${Date.now()}_${randomStr}_${cleanName}.${fileExt}`;
+
+                    console.log(`Starting upload: ${file.name} -> ${filePath}`);
+                    const { data, error } = await window.supabaseClient.storage.from('gallery').upload(filePath, file);
 
                     if (error) throw error;
 
-                    // Success - get public URL
-                    const { data: publicUrlData } = window.supabaseClient.storage
-                        .from(this.config.bucketName)
-                        .getPublicUrl(fileName);
+                    const result = window.supabaseClient.storage.from('gallery').getPublicUrl(filePath);
+                    const publicUrl = result.data ? result.data.publicUrl : result.publicUrl;
 
-                    if (!publicUrlData || !publicUrlData.publicUrl) {
-                        throw new Error('Failed to generate public URL');
-                    }
+                    // Sync to gallery table
+                    await window.supabaseClient.from('gallery').insert({
+                        url: publicUrl,
+                        title: file.name,
+                        category: targetCategory
+                    });
 
-                    return publicUrlData.publicUrl;
+                    successCount++;
+                    return publicUrl;
                 } catch (err) {
-                    uploadError = err;
-                    uploadAttempts++;
+                    console.error(`Failed to upload ${file.name}:`, err);
+                    failCount++;
+                    return null;
+                }
+            });
 
-                    if (uploadAttempts < maxAttempts) {
-                        // Wait before retry (exponential backoff)
-                        await new Promise(resolve => setTimeout(resolve, 1000 * uploadAttempts));
-                    }
+            const uploadedUrls = await Promise.all(uploadPromises);
+            const validUrls = uploadedUrls.filter(url => url !== null);
+
+            // If targetInputId is provided (Single mode), update the specific input
+            // But only if we have at least one valid URL. 
+            // Usually Single mode inputs like logo/avatar don't support 'multiple', so files.length check implies intent.
+            if (targetInputId && validUrls.length > 0) {
+                let inputField = document.getElementById(targetInputId);
+                if (!inputField) {
+                    // Sibling fallback
+                    inputField = fileInput.parentElement.querySelector('input:not([type="file"])');
+                }
+
+                if (inputField) {
+                    // Use the first valid URL
+                    inputField.value = validUrls[0];
+                    inputField.dispatchEvent(new Event('input', { bubbles: true }));
+                    inputField.dispatchEvent(new Event('change', { bubbles: true }));
                 }
             }
 
-            // All attempts failed
-            throw uploadError;
-        } catch (error) {
-            console.error('uploadToStorage Error:', error);
+            // Sync Data & Refresh UI if any success
+            if (successCount > 0) {
+                await this.loadData();
 
-            // Translate error to user-friendly message
-            if (error.message.includes('bucket not found') || error.message.includes('Bucket not found')) {
-                throw new Error('Storage bucket "gallery" not found. Please create it in your Supabase Dashboard.');
-            } else if (error.message.includes('exceeded') || error.message.includes('quota')) {
-                throw new Error('Storage quota exceeded. Please upgrade your Supabase plan or free up space.');
-            } else if (error.message.includes('duplicate') || error.message.includes('already exists')) {
-                throw new Error('A file with this name already exists. Please try again.');
-            } else if (error.message.includes('network') || error.message.includes('fetch')) {
-                throw new Error('Network error during upload. Please check your connection and try again.');
-            } else if (error.message.includes('permission') || error.message.includes('policy')) {
-                throw new Error('Permission denied. Please check your storage bucket policies.');
+                // Refresh Gallery Manager if active
+                if (this.state.currentSection === 'gallery') {
+                    this.renderGalleryManager();
+                }
+
+                // Refresh Media Vault Grid if open
+                if (!$('#image-manager-modal').hasClass('hidden')) {
+                    this.renderGalleryGrid();
+                }
+
+                this.showToast(`Successfully uploaded ${successCount} items`, 'success');
             }
 
-            throw error;
+            if (failCount > 0) {
+                this.showToast(`Warning: ${failCount} uploads failed`, 'warning');
+            }
+
+        } catch (err) {
+            console.error('UPLOAD ERROR:', err);
+            this.showToast('Critical Upload Failure', 'error');
+        } finally {
+            // Restore button state
+            if (btn.length && originalIcon) {
+                btn.html(originalIcon).prop('disabled', false);
+            } else if (fileInput.id === 'image-upload-input') {
+                const triggerBtn = $('#upload-zone button');
+                if (triggerBtn.length && originalIcon) {
+                    triggerBtn.html(originalIcon).prop('disabled', false);
+                } else {
+                    // Fallback if originalIcon wasn't captured correctly for trigger (rare)
+                    $('#upload-zone button').html('Select Media').prop('disabled', false);
+                }
+            }
+            fileInput.value = '';
         }
     },
 
-    validateImageUrl: async function (url) {
-        try {
-            // Quick validation
-            if (!url || typeof url !== 'string') return false;
 
-            // Check if URL is accessible (HEAD request simulation)
-            return new Promise((resolve) => {
-                const img = new Image();
-                const timeout = setTimeout(() => {
-                    resolve(false);
-                }, 5000); // 5 second timeout
 
-                img.onload = () => {
-                    clearTimeout(timeout);
-                    resolve(true);
-                };
+    renderGalleryManager: function () {
+        const container = $('#content-editor');
 
-                img.onerror = () => {
-                    clearTimeout(timeout);
-                    resolve(false);
-                };
+        // Group by items
+        const folders = [...new Set(this.state.galleryData.map(i => i.category))].sort();
 
-                img.src = url;
+        container.html(`
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h3 class="text-xl font-black text-slate-900">Memory Archive</h3>
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Global image storage bank</p>
+                </div>
+                <button onclick="CMSApp.openImageManager()" class="px-5 py-2 bg-ikf-blue text-white text-xs font-bold uppercase rounded-lg shadow-md hover:bg-slate-900 transition-all">+ Inject New Media</button>
+            </div>
+            
+            <div class="space-y-12">
+                ${folders.map(folder => {
+            const images = this.state.galleryData.filter(i => i.category === folder);
+            return `
+                    <div>
+                        <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
+                             <div class="flex items-center gap-3">
+                                <i class="fas fa-folder text-ikf-yellow text-xl"></i>
+                                <h4 class="text-lg font-bold text-slate-800">${folder}</h4>
+                                <span class="bg-slate-100 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded-full">${images.length} items</span>
+                            </div>
+                            <button onclick="CMSApp.deleteFolder('${folder}')" class="text-[10px] font-bold text-red-400 hover:text-red-600 uppercase tracking-widest hover:underline">Delete Folder</button>
+                        </div>
+                        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                            ${images.map(img => `
+                                <div class="group relative bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-lg transition-all aspect-square">
+                                    <img src="${img.url}" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-slate-900/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-[2px]">
+                                        <button onclick="CMSApp.deleteGalleryImage('${img.id}')" class="w-10 h-10 rounded-lg bg-red-500 text-white hover:bg-red-600 shadow-lg flex items-center justify-center">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                    <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent">
+                                        <p class="text-[9px] font-bold text-white truncate text-center">${img.title || 'Untitled'}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    `;
+        }).join('')}
+            </div>
+        `);
+    },
+
+    deleteFolder: async function (folderName) {
+        const images = this.state.galleryData.filter(i => i.category === folderName);
+        if (!images.length) return;
+
+        const result = await Swal.fire({
+            title: `Delete '${folderName}'?`,
+            text: `This will permanently delete ALL ${images.length} images in this folder from the database and storage.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            confirmButtonText: 'Yes, Destroy Everything'
+        });
+
+        if (result.isConfirmed) {
+            this.showToast(`Deleting ${images.length} files...`, 'info');
+            // Delete all sequentially (or batch if we refined logic, but sequential is safer for now)
+            for (const img of images) {
+                await this.deleteFile(img.id, img.url);
+            }
+            this.showToast('Folder Obliterated', 'success');
+        }
+    },
+
+    /**
+     * Unified deletion logic for both DB and Storage
+     */
+    deleteFile: async function (id, url) {
+        // 1. Extract file path from URL
+        // Example: https://.../storage/v1/object/public/gallery/filename.jpg
+        const pathPart = url.split('/').pop();
+        const filePath = decodeURIComponent(pathPart).trim();
+
+        console.log(`--- Initiating Full Deletion: ${filePath} ---`);
+
+        const result = await Swal.fire({
+            title: 'Expunge Media?',
+            text: 'This image will be permanently removed from the archive and storage',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            confirmButtonText: 'Yes, Delete Completely'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                this.showToast('Deleting from Storage...', 'info');
+
+                // 2. Delete from Supabase Storage
+                const { error: storageError } = await window.supabaseClient.storage
+                    .from(this.config.bucketName)
+                    .remove([filePath]);
+
+                if (storageError) {
+                    console.warn('Storage deletion failed or file not found:', storageError);
+                    // We continue anyway to clean up the DB record
+                }
+
+                // 3. Delete from Gallery Table
+                const { error: dbError } = await window.supabaseClient
+                    .from('gallery')
+                    .delete()
+                    .eq('id', id);
+
+                if (dbError) throw dbError;
+
+                // 4. Update local state and UI
+                await this.loadData();
+
+                if (this.state.currentSection === 'gallery') {
+                    this.renderGalleryManager();
+                }
+
+                if (!$('#image-manager-modal').hasClass('hidden')) {
+                    this.renderGalleryGrid();
+                }
+
+                this.showToast('Media Expunged Successfully', 'success');
+            } catch (err) {
+                console.error('Unified Delete Failed:', err);
+                this.showToast('Delete Failed', 'error');
+            }
+        }
+    },
+
+    deleteGalleryImage: async function (id) {
+        const img = this.state.galleryData.find(i => i.id === id);
+        if (!img) return;
+        await this.deleteFile(id, img.url);
+    },
+
+    // Media Vault
+    openImageManager: function () {
+        $('#image-manager-modal').removeClass('hidden');
+        this.state.mediaVaultFolder = 'root'; // Reset to root
+
+        // Refresh folder list in dropdown
+        const folders = [...new Set(this.state.galleryData.map(i => i.category))].sort();
+        const select = $('#upload-folder-select');
+        // Keep first two options (Default, New) and append others
+        select.find('option:gt(1)').remove();
+        folders.forEach(f => {
+            if (f !== 'Uploads') select.append(`<option value="${f}">${f}</option>`);
+        });
+
+        this.renderGalleryGrid();
+    },
+
+    renderGalleryGrid: function () {
+        const grid = $('#image-gallery');
+        grid.empty();
+
+        // Mode 1: Root View (Show Folders)
+        if (this.state.mediaVaultFolder === 'root') {
+            const folders = [...new Set(this.state.galleryData.map(i => i.category))].sort();
+
+            // "All" pseudo-folder or just list distinct folders as large clickable cards
+            folders.forEach(folder => {
+                const count = this.state.galleryData.filter(i => i.category === folder).length;
+                const firstImg = this.state.galleryData.find(i => i.category === folder)?.url || '';
+
+                grid.append(`
+                    <div onclick="CMSApp.state.mediaVaultFolder = '${folder}'; CMSApp.renderGalleryGrid();" 
+                         class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-white hover:shadow-lg transition-all aspect-square group">
+                        <div class="relative w-16 h-16 mb-4">
+                             <div class="absolute inset-0 bg-ikf-yellow/20 rounded-lg rotate-6 group-hover:rotate-12 transition-transform"></div>
+                             <div class="absolute inset-0 bg-ikf-blue/10 rounded-lg -rotate-3 group-hover:-rotate-6 transition-transform"></div>
+                             <div class="absolute inset-0 flex items-center justify-center text-ikf-blue">
+                                <i class="fas fa-folder text-4xl"></i>
+                             </div>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-center">${folder}</h4>
+                        <p class="text-[10px] font-black text-slate-400 uppercase mt-1">${count} Items</p>
+                    </div>
+                `);
             });
-        } catch (error) {
-            console.error('URL validation error:', error);
-            return false;
+            return;
+        }
+
+        // Mode 2: Folder View
+        const images = this.state.galleryData.filter(i => i.category === this.state.mediaVaultFolder);
+
+        // Add "Back" button
+        grid.append(`
+            <div onclick="CMSApp.state.mediaVaultFolder = 'root'; CMSApp.renderGalleryGrid();" 
+                 class="bg-slate-100 border border-dashed border-slate-300 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-200 transition-all aspect-square">
+                <i class="fas fa-arrow-left text-slate-400 text-2xl mb-2"></i>
+                <span class="text-[10px] font-bold text-slate-500 uppercase">Back to Folders</span>
+            </div>
+        `);
+
+        images.forEach(img => {
+            grid.append(`
+                <div class="bg-white border border-slate-100 rounded-lg overflow-hidden group relative aspect-square shadow-sm hover:shadow-md transition-all">
+                    <img src="${img.url}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
+                        <button class="w-full py-1.5 bg-white text-[10px] font-black uppercase rounded hover:bg-ikf-blue hover:text-white transition-all">Select</button>
+                        <button onclick="CMSApp.deleteFile('${img.id}', '${img.url}')" class="w-full py-1.5 bg-red-500 text-white text-[10px] font-black uppercase rounded hover:bg-red-600 transition-all">
+                            <i class="fas fa-trash-alt mr-1"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `);
+        });
+    },
+
+    closeImageManager: function () {
+        $('#image-manager-modal').addClass('hidden');
+    },
+
+    // Logic Utilities
+    updateValue: function (path, val) {
+        const parts = path.split('.');
+        const section = parts[0];
+        let obj = this.state.contentData[section];
+
+        for (let i = 1; i < parts.length - 1; i++) {
+            const part = parts[i];
+            if (part.includes('[')) {
+                const name = part.split('[')[0];
+                const index = parseInt(part.split('[')[1].replace(']', ''));
+                obj = obj[name][index];
+            } else {
+                obj = obj[part];
+            }
+        }
+
+        const last = parts[parts.length - 1];
+        if (last.includes('[')) {
+            const name = last.split('[')[0];
+            const index = parseInt(last.split('[')[1].replace(']', ''));
+            obj[name][index] = val;
+        } else {
+            obj[last] = val;
         }
     },
 
-    translateStorageError: function (error) {
-        const message = error.message || error.toString();
-
-        if (message.includes('bucket not found')) {
-            return 'Storage bucket not configured. Please create the "gallery" bucket in Supabase.';
-        } else if (message.includes('exceeded') || message.includes('quota')) {
-            return 'Storage quota exceeded. Please upgrade your plan or free up space.';
-        } else if (message.includes('permission') || message.includes('policy')) {
-            return 'Upload permission denied. Please check your bucket policies.';
-        } else if (message.includes('network') || message.includes('fetch')) {
-            return 'Network error during upload. Please check your connection.';
-        }
-
-        return message;
+    markDirty: function () {
+        this.state.hasUnsavedChanges = true;
+        $('#unsaved-indicator').removeClass('hidden');
+        $('#save-all-btn').attr('disabled', false);
     },
 
-    translateDatabaseError: function (error) {
-        const message = error.message || error.toString();
+    saveData: async function () {
+        if (this.state.isSyncing) return;
 
-        if (message.includes('violates row-level security policy')) {
-            return 'Permission denied. Please check your database RLS policies.';
-        } else if (message.includes('duplicate key')) {
-            return 'This record already exists in the database.';
-        } else if (message.includes('foreign key')) {
-            return 'Database relationship error. Please contact support.';
-        } else if (message.includes('network') || message.includes('fetch')) {
-            return 'Network error. Please check your connection and try again.';
+        const btn = $('#save-all-btn');
+        const spinner = $('#save-spinner');
+        const text = $('#save-text');
+
+        try {
+            this.state.isSyncing = true;
+            btn.attr('disabled', true);
+            spinner.removeClass('hidden');
+            text.text('Syncing Cloud...');
+
+            const { error } = await window.supabaseClient
+                .from('induction_content')
+                .update({
+                    data: this.state.contentData,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('slug', 'main');
+
+            if (error) {
+                console.error('Supabase Upsert Error:', error);
+                throw error;
+            }
+
+            this.state.hasUnsavedChanges = false;
+            this.state.lastSyncedData = JSON.parse(JSON.stringify(this.state.contentData));
+            $('#unsaved-indicator').addClass('hidden');
+            this.showToast('Global Synchronization Complete', 'success');
+        } catch (err) {
+            console.error('Detailed Sync failure:', err);
+            this.showToast(`Cloud Rejection: ${err.message || 'Sync Failed'}`, 'error');
+        } finally {
+            this.state.isSyncing = false;
+            spinner.addClass('hidden');
+            text.text('Synchronize Changes');
+            btn.attr('disabled', false);
         }
-
-        return message;
     },
+
+    restoreLastSync: function () {
+        Swal.fire({
+            title: 'Discard Changes?',
+            text: 'Rollback current modifications to last cloud state?',
+            icon: 'question',
+            showCancelButton: true
+        }).then(r => {
+            if (r.isConfirmed) {
+                this.state.contentData = JSON.parse(JSON.stringify(this.state.lastSyncedData));
+                this.state.hasUnsavedChanges = false;
+                $('#unsaved-indicator').addClass('hidden');
+                if (this.state.currentSection) this.renderEditor();
+                this.showToast('Local state restored', 'info');
+            }
+        });
+    },
+
+    escapeHtml: function (text) {
+        return text ? text.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;") : "";
+    },
+
+    showToast: function (msg, type) {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: type,
+            title: msg,
+            showConfirmButton: false,
+            timer: 3000
+        });
+    },
+
+
 };
 
-// Initialize on document ready
-$(document).ready(() => {
-    CMSApp.init();
-});
+// Attach to global window for external access
+window.CMSApp = CMSApp;
+
+// Initialize on Load
+if (typeof document !== 'undefined') {
+    $(document).ready(function () {
+        if (!window.CMSAppInitialized) {
+            window.CMSAppInitialized = true;
+            CMSApp.init();
+        }
+    });
+}

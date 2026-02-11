@@ -1,0 +1,716 @@
+[
+    {
+        "name": "Ashish Dalia",
+        "role": "CEO",
+        "dob": "03-May-1975",
+        "doj": "01-Jan-2000",
+        "email": "ashish@ikf.co.in"
+    },
+    {
+        "name": "Amol  Tankasale",
+        "role": "Technical Support Executive",
+        "dob": "06-Aug-1985",
+        "doj": "01-Jan-2008",
+        "email": "support@ikf.co.in"
+    },
+    {
+        "name": "Gunjan Bhansali",
+        "role": "Chief Operating Officer",
+        "dob": "20-Oct-1988",
+        "doj": "05-Nov-2014",
+        "email": "gunjan@ikf.co.in"
+    },
+    {
+        "name": "Sagar Chavan",
+        "role": "Design Team Lead",
+        "dob": "13-Jul-1987",
+        "doj": "25-May-2016",
+        "email": "sagar.chavan@ikf.co.in"
+    },
+    {
+        "name": "Ritu Dalia",
+        "role": "-",
+        "dob": "17-Nov-1979",
+        "doj": "09-Apr-2018",
+        "email": "ritu@ikf.co.in"
+    },
+    {
+        "name": "Neha Kakkad",
+        "role": "Head of Sales and Marketing",
+        "dob": "06-Jul-1990",
+        "doj": "31-Jan-2024",
+        "email": "neha.kakkad@ikf.co.in"
+    },
+    {
+        "name": "Suraj Sonnar",
+        "role": "Sr.Test Engineer",
+        "dob": "08-May-1992",
+        "doj": "17-Jun-2019",
+        "email": "suraj.sonnar@ikf.co.in"
+    },
+    {
+        "name": "Dhruvi Gandhi",
+        "role": "Sr.Social Media  Executive",
+        "dob": "23-Jul-2002",
+        "doj": "05-Apr-2021",
+        "email": "dhruvi.gandhi@ikf.co.in"
+    },
+    {
+        "name": "Pushkar Sangle",
+        "role": "Server Admin",
+        "dob": "20-Nov-1997",
+        "doj": "03-Apr-2022",
+        "email": "pushkar@ikf.co.in"
+    },
+    {
+        "name": "Girija Chondhe",
+        "role": "Sales - Intern",
+        "dob": "14-Mar-2003",
+        "doj": "20-Sep-2022",
+        "email": "girija.chondhe@ikf.co.in"
+    },
+    {
+        "name": "Krupali Masavkar Thorat",
+        "role": "Sr. Accountant",
+        "dob": "27-Oct-1996",
+        "doj": "17-Jul-2023",
+        "email": "krupali@ikf.co.in"
+    },
+    {
+        "name": "Amruta Mane",
+        "role": "Business Analyst",
+        "dob": "06-Oct-2000",
+        "doj": "01-Oct-2024",
+        "email": "Amruta.Mane@ikf.co.in"
+    },
+    {
+        "name": "Adarssh Bhagwat",
+        "role": "Account Manager- SEO and PPC",
+        "dob": "14-Feb-1998",
+        "doj": "05-Dec-2024",
+        "email": "adarssh.bhagwat@ikf.co.in"
+    },
+    {
+        "name": "Apoorva Gholap",
+        "role": "HR Executive",
+        "dob": "12-May-1998",
+        "doj": "07-Oct-2025",
+        "email": "apoorva.gholap@ikf.co.in"
+    },
+    {
+        "name": "Megha Ruparel",
+        "role": "Sr. HR Executive",
+        "dob": "24-Dec-2002",
+        "doj": "25-Nov-2025",
+        "email": "megha.ruparel@ikf.co.in"
+    },
+    {
+        "name": "Vivekananda Sai",
+        "role": "AI- Engineer",
+        "dob": "10-Mar-2003",
+        "doj": "05-Jan-2026",
+        "email": "vivek@ikf.in"
+    },
+    {
+        "name": "Vaibhav Mane",
+        "role": "Business Ananlayst-Consultant",
+        "dob": "25-Apr-1993",
+        "doj": "01-Aug-2020",
+        "email": "vaibhav.mane1@ikf.co.in"
+    },
+    {
+        "name": "Vishal Kale",
+        "role": "Team Lead - Web Design",
+        "dob": "24-May-1990",
+        "doj": "05-Oct-2020",
+        "email": "vishal.kale@ikf.co.in"
+    },
+    {
+        "name": "Sunil Chavan",
+        "role": "Team Lead - Application",
+        "dob": "02-Nov-1986",
+        "doj": "16-Sep-2021",
+        "email": "sunil.chavan@ikf.co.in"
+    },
+    {
+        "name": "Akshay Pisote",
+        "role": "PPC - Intern",
+        "dob": "02-Jun-2000",
+        "doj": "20-Sep-2022",
+        "email": "akshay.pisote@ikf.co.in"
+    },
+    {
+        "name": "Rohit Jagtap",
+        "role": "Graphic Designer",
+        "dob": "13-Jun-2000",
+        "doj": "04-Feb-2022",
+        "email": "rohit.jagtap@ikf.co.in"
+    },
+    {
+        "name": "Abhishek Kadam",
+        "role": "Senior UI /UX Designer",
+        "dob": "12-Aug-1990",
+        "doj": "23-Aug-2021",
+        "email": "abhishek.kadam@ikf.co.in"
+    },
+    {
+        "name": "Nitesh Hande",
+        "role": "Sr. Graphic Designer",
+        "dob": "17-Jul-1988",
+        "doj": "06-Jan-2025",
+        "email": "nitesh.hande@ikf.co.in"
+    },
+    {
+        "name": "Tanishka Masaliya",
+        "role": "Sales Executive",
+        "dob": "02-Mar-2002",
+        "doj": "23-Aug-2023",
+        "email": "tanishka.masaliya@ikf.co.in"
+    },
+    {
+        "name": "Shweta Patil",
+        "role": "Social Media Executive",
+        "dob": "21-Nov-2002",
+        "doj": "17-Jan-2024",
+        "email": "shweta.patil@ikf.co.in"
+    },
+    {
+        "name": "Amaan Bhombal",
+        "role": "Social Media Executive",
+        "dob": "26-Oct-2002",
+        "doj": "18-Dec-2023",
+        "email": "amaan.bhombal@ikf.co.in"
+    },
+    {
+        "name": "Pranav Yadav",
+        "role": "Media Production &amp; Content Creator",
+        "dob": "08-Jun-2000",
+        "doj": "06-Feb-2024",
+        "email": "pranav.yadav@ikf.co.in"
+    },
+    {
+        "name": "Nikhil Gurav",
+        "role": "Video Editor",
+        "dob": "03-Aug-1992",
+        "doj": "15-May-2024",
+        "email": "nikhil.gurav@ikf.co.in"
+    },
+    {
+        "name": "Varad Ghore",
+        "role": "Video Editor",
+        "dob": "12-Feb-2005",
+        "doj": "23-Oct-2024",
+        "email": "varad.Ghore@ikf.co.in"
+    },
+    {
+        "name": "Avisha Meshram",
+        "role": "Copywriter",
+        "dob": "20-Oct-2001",
+        "doj": "20-Aug-2025",
+        "email": "avisha.meshram@ikf.co.in"
+    },
+    {
+        "name": "Khushbu Mantri",
+        "role": "Social Media Intern",
+        "dob": "22-Jan-2004",
+        "doj": "04-Nov-2025",
+        "email": "ikfkhushbu@gmail.com"
+    },
+    {
+        "name": "Diya Jain",
+        "role": "Social Media Intern",
+        "dob": "25-Feb-2002",
+        "doj": "22-Dec-2025",
+        "email": "diyajain5491@gmail.com"
+    },
+    {
+        "name": "Rutwik Kamble",
+        "role": "Social Media Executive",
+        "dob": "15-Nov-1999",
+        "doj": "21-Jan-2026",
+        "email": "rutwik.kamble@ikf.co.in"
+    },
+    {
+        "name": "Amit Ranaware",
+        "role": "System Admin",
+        "dob": "11-Aug-1994",
+        "doj": "01-Nov-2023",
+        "email": "amit.ranaware@ikf.co.in"
+    },
+    {
+        "name": "Pooja Purushottam Jambagi",
+        "role": "Account Executive",
+        "dob": "04-Sep-2002",
+        "doj": "01-Jan-2025",
+        "email": "Pooja.Jambagi@ikf.co.in"
+    },
+    {
+        "name": "Ganesh Wagh",
+        "role": "SEO Analyst",
+        "dob": "07-Sep-1995",
+        "doj": "24-May-2022",
+        "email": "ganesh.wagh@ikf.co.in"
+    },
+    {
+        "name": "Dheeraj Chuttar",
+        "role": "SEO Analyst",
+        "dob": "13-May-1990",
+        "doj": "01-Feb-2023",
+        "email": "dheeraj.chuttar@ikf.co.in"
+    },
+    {
+        "name": "Ruchita Tambitkar",
+        "role": "SEO Executive",
+        "dob": "13-Feb-2000",
+        "doj": "05-Sep-2023",
+        "email": "ruchita.tambitkar@ikf.co.in"
+    },
+    {
+        "name": "Sayali Aniruddha Dhotre",
+        "role": "Sr.PPC Executive",
+        "dob": "01-Feb-1997",
+        "doj": "02-Jul-2024",
+        "email": "sayali.dhotre@ikf.co.in"
+    },
+    {
+        "name": "Sakshi Dhumal",
+        "role": "PPC- Intern",
+        "dob": "03-Nov-2004",
+        "doj": "12-Jan-2026",
+        "email": "sakshidhumal296@gmail.com"
+    },
+    {
+        "name": "Mayur Tarate",
+        "role": "AI - LLM INTERN",
+        "dob": "20-Sep-2004",
+        "doj": "24-Nov-2025",
+        "email": "mtarate2004@gmail.com"
+    },
+    {
+        "name": "Kunal Thakare",
+        "role": "AI - LLM Intern",
+        "dob": "24-Nov-2006",
+        "doj": "24-Nov-2025",
+        "email": "kunalavinashthakare3@gmail.com"
+    },
+    {
+        "name": "Samyak Bhaisare",
+        "role": "AI - LLM Intern",
+        "dob": "15-Apr-2004",
+        "doj": "24-Nov-2025",
+        "email": "samyakbhaisare99@gmail.com"
+    },
+    {
+        "name": "Samriddhi Gupta",
+        "role": "AI - LLM INTERN",
+        "dob": "11-Apr-2005",
+        "doj": "22-Dec-2025",
+        "email": "samriddhigupta426@gmail.com"
+    },
+    {
+        "name": "Kishor Mokashi",
+        "role": "UI Developer",
+        "dob": "16-Mar-1989",
+        "doj": "13-May-2016",
+        "email": "kishor.mokashi@ikf.co.in"
+    },
+    {
+        "name": "Aditya Kawankar",
+        "role": "Sr. UI Developer",
+        "dob": "02-Feb-1992",
+        "doj": "26-Feb-2018",
+        "email": "aditya.kawankar@ikf.co.in"
+    },
+    {
+        "name": "Pavan Gaikwad",
+        "role": "UI Developer",
+        "dob": "03-Jun-1998",
+        "doj": "09-Feb-2022",
+        "email": "pavan.gaikwad@ikf.co.in"
+    },
+    {
+        "name": "Laxman Kendre",
+        "role": "Software Engineer",
+        "dob": "25-Jun-1992",
+        "doj": "30-Aug-2021",
+        "email": "Laxman.kendre@ikf.co.in"
+    },
+    {
+        "name": "Saurabh Gunjkar",
+        "role": "UI Developer",
+        "dob": "30-Aug-1996",
+        "doj": "22-Mar-2022",
+        "email": "saurabh.gunjkar@ikf.co.in"
+    },
+    {
+        "name": "Pranay Gaynar",
+        "role": "Software Engineer",
+        "dob": "05-May-2001",
+        "doj": "09-Jan-2025",
+        "email": "pranay.gaynar@ikf.co.in"
+    },
+    {
+        "name": "Pawan Sharad Shimpi",
+        "role": "Software Engineer",
+        "dob": "21-Sep-2001",
+        "doj": "13-Feb-2025",
+        "email": "pawan.shimpi@ikf.co.in"
+    },
+    {
+        "name": "Ashish Dalia",
+        "role": "CEO",
+        "dob": "03-May-1975",
+        "doj": "01-Jan-2000",
+        "email": "ashish@ikf.co.in"
+    },
+    {
+        "name": "Amol  Tankasale",
+        "role": "Technical Support Executive",
+        "dob": "06-Aug-1985",
+        "doj": "01-Jan-2008",
+        "email": "support@ikf.co.in"
+    },
+    {
+        "name": "Gunjan Bhansali",
+        "role": "Chief Operating Officer",
+        "dob": "20-Oct-1988",
+        "doj": "05-Nov-2014",
+        "email": "gunjan@ikf.co.in"
+    },
+    {
+        "name": "Sagar Chavan",
+        "role": "Design Team Lead",
+        "dob": "13-Jul-1987",
+        "doj": "25-May-2016",
+        "email": "sagar.chavan@ikf.co.in"
+    },
+    {
+        "name": "Ritu Dalia",
+        "role": "-",
+        "dob": "17-Nov-1979",
+        "doj": "09-Apr-2018",
+        "email": "ritu@ikf.co.in"
+    },
+    {
+        "name": "Neha Kakkad",
+        "role": "Head of Sales and Marketing",
+        "dob": "06-Jul-1990",
+        "doj": "31-Jan-2024",
+        "email": "neha.kakkad@ikf.co.in"
+    },
+    {
+        "name": "Suraj Sonnar",
+        "role": "Sr.Test Engineer",
+        "dob": "08-May-1992",
+        "doj": "17-Jun-2019",
+        "email": "suraj.sonnar@ikf.co.in"
+    },
+    {
+        "name": "Dhruvi Gandhi",
+        "role": "Sr.Social Media  Executive",
+        "dob": "23-Jul-2002",
+        "doj": "05-Apr-2021",
+        "email": "dhruvi.gandhi@ikf.co.in"
+    },
+    {
+        "name": "Pushkar Sangle",
+        "role": "Server Admin",
+        "dob": "20-Nov-1997",
+        "doj": "03-Apr-2022",
+        "email": "pushkar@ikf.co.in"
+    },
+    {
+        "name": "Girija Chondhe",
+        "role": "Sales - Intern",
+        "dob": "14-Mar-2003",
+        "doj": "20-Sep-2022",
+        "email": "girija.chondhe@ikf.co.in"
+    },
+    {
+        "name": "Krupali Masavkar Thorat",
+        "role": "Sr. Accountant",
+        "dob": "27-Oct-1996",
+        "doj": "17-Jul-2023",
+        "email": "krupali@ikf.co.in"
+    },
+    {
+        "name": "Amruta Mane",
+        "role": "Business Analyst",
+        "dob": "06-Oct-2000",
+        "doj": "01-Oct-2024",
+        "email": "Amruta.Mane@ikf.co.in"
+    },
+    {
+        "name": "Adarssh Bhagwat",
+        "role": "Account Manager- SEO and PPC",
+        "dob": "14-Feb-1998",
+        "doj": "05-Dec-2024",
+        "email": "adarssh.bhagwat@ikf.co.in"
+    },
+    {
+        "name": "Apoorva Gholap",
+        "role": "HR Executive",
+        "dob": "12-May-1998",
+        "doj": "07-Oct-2025",
+        "email": "apoorva.gholap@ikf.co.in"
+    },
+    {
+        "name": "Megha Ruparel",
+        "role": "Sr. HR Executive",
+        "dob": "24-Dec-2002",
+        "doj": "25-Nov-2025",
+        "email": "megha.ruparel@ikf.co.in"
+    },
+    {
+        "name": "Vivekananda Sai",
+        "role": "AI- Engineer",
+        "dob": "10-Mar-2003",
+        "doj": "05-Jan-2026",
+        "email": "vivek@ikf.in"
+    },
+    {
+        "name": "Ganesh Wagh",
+        "role": "SEO Analyst",
+        "dob": "07-Sep-1995",
+        "doj": "24-May-2022",
+        "email": "ganesh.wagh@ikf.co.in"
+    },
+    {
+        "name": "Vaibhav Mane",
+        "role": "Business Ananlayst-Consultant",
+        "dob": "25-Apr-1993",
+        "doj": "01-Aug-2020",
+        "email": "vaibhav.mane1@ikf.co.in"
+    },
+    {
+        "name": "Vishal Kale",
+        "role": "Team Lead - Web Design",
+        "dob": "24-May-1990",
+        "doj": "05-Oct-2020",
+        "email": "vishal.kale@ikf.co.in"
+    },
+    {
+        "name": "Rohit Jagtap",
+        "role": "Graphic Designer",
+        "dob": "13-Jun-2000",
+        "doj": "04-Feb-2022",
+        "email": "rohit.jagtap@ikf.co.in"
+    },
+    {
+        "name": "Abhishek Kadam",
+        "role": "Senior UI /UX Designer",
+        "dob": "12-Aug-1990",
+        "doj": "23-Aug-2021",
+        "email": "abhishek.kadam@ikf.co.in"
+    },
+    {
+        "name": "Sunil Chavan",
+        "role": "Team Lead - Application",
+        "dob": "02-Nov-1986",
+        "doj": "16-Sep-2021",
+        "email": "sunil.chavan@ikf.co.in"
+    },
+    {
+        "name": "Akshay Pisote",
+        "role": "PPC - Intern",
+        "dob": "02-Jun-2000",
+        "doj": "20-Sep-2022",
+        "email": "akshay.pisote@ikf.co.in"
+    },
+    {
+        "name": "Dheeraj Chuttar",
+        "role": "SEO Analyst",
+        "dob": "13-May-1990",
+        "doj": "01-Feb-2023",
+        "email": "dheeraj.chuttar@ikf.co.in"
+    },
+    {
+        "name": "Shweta Patil",
+        "role": "Social Media Executive",
+        "dob": "21-Nov-2002",
+        "doj": "17-Jan-2024",
+        "email": "shweta.patil@ikf.co.in"
+    },
+    {
+        "name": "Tanishka Masaliya",
+        "role": "Sales Executive",
+        "dob": "02-Mar-2002",
+        "doj": "23-Aug-2023",
+        "email": "tanishka.masaliya@ikf.co.in"
+    },
+    {
+        "name": "Ruchita Tambitkar",
+        "role": "SEO Executive",
+        "dob": "13-Feb-2000",
+        "doj": "05-Sep-2023",
+        "email": "ruchita.tambitkar@ikf.co.in"
+    },
+    {
+        "name": "Amit Ranaware",
+        "role": "System Admin",
+        "dob": "11-Aug-1994",
+        "doj": "01-Nov-2023",
+        "email": "amit.ranaware@ikf.co.in"
+    },
+    {
+        "name": "Amaan Bhombal",
+        "role": "Social Media Executive",
+        "dob": "26-Oct-2002",
+        "doj": "18-Dec-2023",
+        "email": "amaan.bhombal@ikf.co.in"
+    },
+    {
+        "name": "Pranav Yadav",
+        "role": "Media Production &amp; Content Creator",
+        "dob": "08-Jun-2000",
+        "doj": "06-Feb-2024",
+        "email": "pranav.yadav@ikf.co.in"
+    },
+    {
+        "name": "Nikhil Gurav",
+        "role": "Video Editor",
+        "dob": "03-Aug-1992",
+        "doj": "15-May-2024",
+        "email": "nikhil.gurav@ikf.co.in"
+    },
+    {
+        "name": "Pooja Purushottam Jambagi",
+        "role": "Account Executive",
+        "dob": "04-Sep-2002",
+        "doj": "01-Jan-2025",
+        "email": "Pooja.Jambagi@ikf.co.in"
+    },
+    {
+        "name": "Sayali Aniruddha Dhotre",
+        "role": "Sr.PPC Executive",
+        "dob": "01-Feb-1997",
+        "doj": "02-Jul-2024",
+        "email": "sayali.dhotre@ikf.co.in"
+    },
+    {
+        "name": "Varad Ghore",
+        "role": "Video Editor",
+        "dob": "12-Feb-2005",
+        "doj": "23-Oct-2024",
+        "email": "varad.Ghore@ikf.co.in"
+    },
+    {
+        "name": "Nitesh Hande",
+        "role": "Sr. Graphic Designer",
+        "dob": "17-Jul-1988",
+        "doj": "06-Jan-2025",
+        "email": "nitesh.hande@ikf.co.in"
+    },
+    {
+        "name": "Avisha Meshram",
+        "role": "Copywriter",
+        "dob": "20-Oct-2001",
+        "doj": "20-Aug-2025",
+        "email": "avisha.meshram@ikf.co.in"
+    },
+    {
+        "name": "Khushbu Mantri",
+        "role": "Social Media Intern",
+        "dob": "22-Jan-2004",
+        "doj": "04-Nov-2025",
+        "email": "ikfkhushbu@gmail.com"
+    },
+    {
+        "name": "Mayur Tarate",
+        "role": "AI - LLM INTERN",
+        "dob": "20-Sep-2004",
+        "doj": "24-Nov-2025",
+        "email": "mtarate2004@gmail.com"
+    },
+    {
+        "name": "Kunal Thakare",
+        "role": "AI - LLM Intern",
+        "dob": "24-Nov-2006",
+        "doj": "24-Nov-2025",
+        "email": "kunalavinashthakare3@gmail.com"
+    },
+    {
+        "name": "Samyak Bhaisare",
+        "role": "AI - LLM Intern",
+        "dob": "15-Apr-2004",
+        "doj": "24-Nov-2025",
+        "email": "samyakbhaisare99@gmail.com"
+    },
+    {
+        "name": "Samriddhi Gupta",
+        "role": "AI - LLM INTERN",
+        "dob": "11-Apr-2005",
+        "doj": "22-Dec-2025",
+        "email": "samriddhigupta426@gmail.com"
+    },
+    {
+        "name": "Diya Jain",
+        "role": "Social Media Intern",
+        "dob": "25-Feb-2002",
+        "doj": "22-Dec-2025",
+        "email": "diyajain5491@gmail.com"
+    },
+    {
+        "name": "Sakshi Dhumal",
+        "role": "PPC- Intern",
+        "dob": "03-Nov-2004",
+        "doj": "12-Jan-2026",
+        "email": "sakshidhumal296@gmail.com"
+    },
+    {
+        "name": "Rutwik Kamble",
+        "role": "Social Media Executive",
+        "dob": "15-Nov-1999",
+        "doj": "21-Jan-2026",
+        "email": "rutwik.kamble@ikf.co.in"
+    },
+    {
+        "name": "Kishor Mokashi",
+        "role": "UI Developer",
+        "dob": "16-Mar-1989",
+        "doj": "13-May-2016",
+        "email": "kishor.mokashi@ikf.co.in"
+    },
+    {
+        "name": "Aditya Kawankar",
+        "role": "Sr. UI Developer",
+        "dob": "02-Feb-1992",
+        "doj": "26-Feb-2018",
+        "email": "aditya.kawankar@ikf.co.in"
+    },
+    {
+        "name": "Pavan Gaikwad",
+        "role": "UI Developer",
+        "dob": "03-Jun-1998",
+        "doj": "09-Feb-2022",
+        "email": "pavan.gaikwad@ikf.co.in"
+    },
+    {
+        "name": "Laxman Kendre",
+        "role": "Software Engineer",
+        "dob": "25-Jun-1992",
+        "doj": "30-Aug-2021",
+        "email": "Laxman.kendre@ikf.co.in"
+    },
+    {
+        "name": "Saurabh Gunjkar",
+        "role": "UI Developer",
+        "dob": "30-Aug-1996",
+        "doj": "22-Mar-2022",
+        "email": "saurabh.gunjkar@ikf.co.in"
+    },
+    {
+        "name": "Pranay Gaynar",
+        "role": "Software Engineer",
+        "dob": "05-May-2001",
+        "doj": "09-Jan-2025",
+        "email": "pranay.gaynar@ikf.co.in"
+    },
+    {
+        "name": "Pawan Sharad Shimpi",
+        "role": "Software Engineer",
+        "dob": "21-Sep-2001",
+        "doj": "13-Feb-2025",
+        "email": "pawan.shimpi@ikf.co.in"
+    }
+]

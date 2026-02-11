@@ -263,6 +263,10 @@
     border-color: rgba(14, 0, 87, 0.1);
 }
 
+.card-clean {
+    cursor: pointer;
+}
+
 /* Premium Card - Enhanced Version */
 .premium-card {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -271,6 +275,10 @@
 .premium-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 16px 32px -8px rgba(14, 0, 87, 0.15);
+}
+
+.premium-card {
+    cursor: pointer;
 }
 
 /* ========================================
@@ -306,6 +314,7 @@
 .nav-link {
     position: relative;
     transition: all 0.2s ease;
+    cursor: pointer;
 }
 
 .nav-link::before {
@@ -454,6 +463,27 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Custom Cursor Utilities */
+.cursor-grab {
+    cursor: grab !important;
+}
+
+.cursor-grabbing {
+    cursor: grabbing !important;
+}
+
+.cursor-pointer {
+    cursor: pointer !important;
+}
+
+.cursor-default {
+    cursor: default !important;
+}
+
+.cursor-zoom-in {
+    cursor: zoom-in !important;
+}
+
 /* ========================================
    RESPONSIVE UTILITIES
    ======================================== */
@@ -505,4 +535,21 @@
     .no-print {
         display: none !important;
     }
+}
+
+/* Hide Scrollbar Utility */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+/* 3D Utilities for Gallery */
+.perspective-1000 {
+    perspective: 1000px;
 }
