@@ -68,13 +68,6 @@ $(document).ready(async function () {
             window.startApp(initialHash);
         }
 
-        // 5. Global Search Mockup
-        $('#global-search').on('input', function () {
-            const query = $(this).val().toLowerCase();
-            if (query.length > 2) {
-                console.log('Searching for:', query);
-            }
-        });
 
         // 6. Mobile Sidebar Toggle
         $('#open-sidebar').on('click', function () {
