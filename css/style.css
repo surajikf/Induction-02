@@ -553,3 +553,87 @@
 .perspective-1000 {
     perspective: 1000px;
 }
+
+/* ========================================
+   SHORT SCREEN OPTIMIZATIONS (e.g., 600px height)
+   ======================================== */
+
+@media (max-height: 720px) {
+    /* Reduce Hero Spacing */
+    #hero-section .z-10 {
+        padding-top: 1.5rem !important;
+        padding-bottom: 1.5rem !important;
+    }
+
+    #hero-title {
+        font-size: clamp(2.5rem, 8vh, 4rem) !important;
+        margin-bottom: 1rem !important;
+        line-height: 1.1 !important;
+    }
+
+    #hero-subtitle {
+        margin-bottom: 1.5rem !important;
+        font-size: 0.95rem !important;
+        max-width: 500px !important;
+    }
+
+    #hero-section .inline-flex.items-center.gap-2.px-5.py-2.5 {
+        margin-bottom: 1rem !important;
+        padding: 0.4rem 1rem !important;
+    }
+
+    /* Reduce Header & Panel Spacing */
+    #main-header {
+        height: 3.5rem !important;
+    }
+
+    #content-panel {
+        padding: 1rem 1.75rem !important;
+    }
+
+    /* Navigation Spacing */
+    #sidebar-nav {
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+    }
+
+    .nav-link {
+        padding-top: 0.4rem !important;
+        padding-bottom: 0.4rem !important;
+    }
+
+    /* Directory & Grid Adjustments */
+    .employee-card {
+        padding: 0.75rem !important;
+    }
+
+    .employee-card .w-24.h-24 {
+        width: 3.5rem !important;
+        height: 3.5rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    /* Modal Adjustments for Short Screens */
+    #modal-content {
+        max-height: 96vh;
+        overflow-y: auto;
+    }
+
+    #leader-modal .md\:w-2\/5 {
+        padding: 1.5rem !important;
+    }
+
+    #leader-modal .md\:w-3\/5 {
+        padding: 1.75rem !important;
+    }
+
+    #modal-leader-image {
+        width: 6rem !important;
+        height: 6rem !important;
+    }
+
+    /* Philosophy V3 Adjustments */
+    .text-massive {
+        font-size: clamp(2rem, 12vh, 5rem) !important;
+    }
+}

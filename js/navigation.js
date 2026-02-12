@@ -621,7 +621,7 @@ window.AppNavigation = {
                 return `
                 <div class="max-w-7xl mx-auto py-8 fade-in">
                     <!-- Hero Header -->
-                    <div class="mb-16 flex flex-col md:flex-row items-end justify-between gap-8 border-b border-slate-100 pb-12">
+                    <div class="mb-8 lg:mb-16 flex flex-col md:flex-row items-end justify-between gap-8 border-b border-slate-100 pb-12">
                         <div class="max-w-3xl">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${introData.badge}</span>
                             <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">
