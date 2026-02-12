@@ -65,6 +65,7 @@ const CMSApp = {
             'social.bgLogoText': { title: 'Background Watermark', help: 'Large ghost text (e.g. HUB)', limit: 10 },
             'social.title': { title: 'Social Title', help: 'Supports HTML', limit: 80 },
             'social.liveStatus': { title: 'Live Update Note', help: 'Subtitle below main title', limit: 200 },
+            'social.followLabel': { title: 'Follow Button Label', help: 'e.g. Follow Us', limit: 30 },
             'social.updatesTitle': { title: 'Updates Heading', help: 'e.g. Latest Updates', limit: 50 },
             'social.youtubeTitle': { title: 'Youtube Heading', help: 'e.g. Latest Videos', limit: 50 },
             'social.featuredTitle': { title: 'Featured Heading', help: 'e.g. Featured Posts', limit: 50 },

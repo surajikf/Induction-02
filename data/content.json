@@ -103,13 +103,13 @@
       }
     ],
     "manifesto": {
-        "title": "Beyond Services, <br /> <span class=\"text-[#d9a417]\">We Build Legacies.</span>",
-        "para1": "We don’t just execute; we engineer growth. Our industrialized factory model ensures that every creative pixel and every line of code is optimized for maximum business impact.",
-        "para2": "Join the neural network of IKF. Here, curiosity is the primary currency, and mastery is the absolute standard. Welcome to the machine.",
-        "years": "25+",
-        "label1": "Years Legacy",
-        "partners": "1500+",
-        "label2": "Global Partners"
+      "title": "Beyond Services, <br /> <span class=\"text-[#d9a417]\">We Build Legacies.</span>",
+      "para1": "We don’t just execute; we engineer growth. Our industrialized factory model ensures that every creative pixel and every line of code is optimized for maximum business impact.",
+      "para2": "Join the neural network of IKF. Here, curiosity is the primary currency, and mastery is the absolute standard. Welcome to the machine.",
+      "years": "25+",
+      "label1": "Years Legacy",
+      "partners": "1500+",
+      "label2": "Global Partners"
     }
   },
   "mission": {
@@ -128,11 +128,31 @@
       "content": "To unlock the full growth potential of brands by pioneering new approaches and delivering high-impact digital solutions."
     },
     "values": [
-        { "icon": "fa-search", "title": "Transparent", "desc": "Openness in all we do." },
-        { "icon": "fa-heart", "title": "Respectful", "desc": "Respect begets respect." },
-        { "icon": "fa-lightbulb", "title": "Innovative", "desc": "Challenge the norm." },
-        { "icon": "fa-bolt", "title": "Inspired", "desc": "Inspired & Inspiring." },
-        { "icon": "fa-user-tie", "title": "Professional", "desc": "Excellence in delivery." }
+      {
+        "icon": "fa-search",
+        "title": "Transparent",
+        "desc": "Openness in all we do."
+      },
+      {
+        "icon": "fa-heart",
+        "title": "Respectful",
+        "desc": "Respect begets respect."
+      },
+      {
+        "icon": "fa-lightbulb",
+        "title": "Innovative",
+        "desc": "Challenge the norm."
+      },
+      {
+        "icon": "fa-bolt",
+        "title": "Inspired",
+        "desc": "Inspired & Inspiring."
+      },
+      {
+        "icon": "fa-user-tie",
+        "title": "Professional",
+        "desc": "Excellence in delivery."
+      }
     ]
   },
   "culture": {
@@ -205,10 +225,11 @@
       "title": "Join the <span class=\"text-[#d9a417]\">Ecosystem.</span>",
       "subtitle": "Our digital presence is where strategy meets transparency. Follow our journey, share our stories, and help us grow the global IKF network."
     },
+    "followLabel": "Follow Us",
     "platforms": [
       {
         "name": "LinkedIn",
-        "url": "https://www.linkedin.com/company/i-knowledge-factory-pvt.-ltd./",
+        "url": "https://www.linkedin.com/company/ikfdigital/",
         "stat": "25k+",
         "label": "Connections",
         "growth": "Top Talent Hub"
@@ -543,4 +564,4 @@
       }
     ]
   }
-}
+}

@@ -101,11 +101,6 @@ $(document).ready(async function () {
             const x = (window.innerWidth - e.pageX * 2) / 100;
             const y = (window.innerHeight - e.pageY * 2) / 100;
 
-            // Move sidebar floating icons
-            $('.hero-floating').each(function (index) {
-                const speed = $(this).data('speed') || 1;
-                $(this).css('transform', `translateX(${x * speed}px) translateY(${y * speed}px)`);
-            });
 
             // Move floating background icons with parallax effect
             $('#hero-section img[alt="LinkedIn"]').css('transform', `translate(${x * 1.5}px, ${y * 1.5}px)`);

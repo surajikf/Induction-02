@@ -537,14 +537,14 @@ window.AppNavigation = {
                 // Inject iframe if not present or empty
                 if ($container.is(':empty')) {
                     $container.html(`
-                < iframe
+                <iframe
             width = "100%"
             height = "100%"
             src = "https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&rel=0&modestbranding=1"
             frameborder = "0"
             allow = "autoplay; encrypted-media"
-            class="w-full h-full scale-125 pointer-events-none" >
-                        </iframe >
+            class="w-full h-full scale-125 pointer-events-none">
+                        </iframe>
                 `);
                 }
 
@@ -623,8 +623,8 @@ window.AppNavigation = {
                     <!-- Hero Header -->
                     <div class="mb-16 flex flex-col md:flex-row items-end justify-between gap-8 border-b border-slate-100 pb-12">
                         <div class="max-w-3xl">
-                            <span class="text-ikf-yellow font-bold uppercase tracking-[0.2em] text-xs mb-4 block">${introData.badge}</span>
-                            <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tight leading-tight mb-6">
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${introData.badge}</span>
+                            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">
                                 ${introData.title}
                             </h1>
                             <p class="text-slate-500 text-lg md:text-xl font-medium leading-relaxed max-w-2xl">
@@ -704,7 +704,7 @@ window.AppNavigation = {
                 <div class="max-w-7xl mx-auto py-6 fade-in">
                     <div class="mb-16 text-center">
                         <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${mData.badge}</span>
-                        <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">
+                        <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">
                             ${mData.title}
                         </h1>
                         <p class="text-slate-400 max-w-2xl mx-auto text-sm font-medium leading-relaxed">
@@ -774,9 +774,9 @@ window.AppNavigation = {
                     <div class="max-w-7xl mx-auto py-8 fade-in">
                         <!-- Header -->
                         <div class="mb-12 text-center">
-                            <span class="text-ikf-yellow font-bold uppercase tracking-[0.2em] text-xs mb-3 block">${this.getSafeValue('clients.badge', 'Trusted Partners')}</span>
-                            <h1 class="text-4xl md:text-5xl font-black text-[#0E0057] tracking-tight mb-4">
-                                ${this.getSafeValue('clients.title', 'Our <span class="text-[#d9a417]">Client</span> Showcase')}
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${this.getSafeValue('clients.badge', 'Trusted Partners')}</span>
+                            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">
+                                ${this.getSafeValue('clients.title', 'Our <span class="text-ikf-yellow">Client</span> Showcase')}
                             </h1>
                             <p class="text-slate-500 text-lg max-w-2xl mx-auto">
                                 ${this.getSafeValue('clients.subtitle', `Proudly serving ${totalClients || 1500}+ leading brands across ${totalCategories || 12}+ industries.`)}
@@ -833,122 +833,97 @@ window.AppNavigation = {
 
 
             case 'social':
-                const socData = this.contentData?.social || {
-                    badge: "Digital Pulse",
-                    bgLogoText: "HUB",
-                    title: "The <span class=\"text-[#d9a417]\">Social</span> Sphere",
-                    liveStatus: "Live Feed // Real-time connection established.",
-                    updatesTitle: "Latest Updates",
-                    youtubeTitle: "Latest Videos",
-                    featuredTitle: "Featured Posts",
+                const socData = {
+                    badge: this.getSafeValue('social.badge', 'Digital Pulse'),
+                    bgLogoText: this.getSafeValue('social.bgLogoText', 'HUB'),
+                    title: this.getSafeValue('social.title', 'The <span class="text-[#d9a417]">Social</span> Sphere'),
+                    liveStatus: this.getSafeValue('social.liveStatus', 'Live Feed // Real-time connection established.'),
+                    followLabel: this.getSafeValue('social.followLabel', 'Follow Us'),
                     cta: {
-                        title: "Join the Conversation",
-                        subtitle: "Follow us on social media to stay updated with the latest news, events, and behind-the-scenes action at IKF."
+                        title: this.getSafeValue('social.cta.title', 'Join the Ecosystem.'),
+                        subtitle: this.getSafeValue('social.cta.subtitle', 'Our digital presence is where strategy meets transparency. Follow our journey across the web.')
                     }
                 };
 
+                // Use theme-aware mapping for social links (either from Supabase or defaults)
+                const platforms = (this.socialLinks && this.socialLinks.length > 0)
+                    ? this.socialLinks.map(l => ({
+                        name: l.display_name || l.platform,
+                        url: l.profile_url,
+                        icon: `fab fa-${l.platform.toLowerCase() === 'linkedin' ? 'linkedin-in' : l.platform.toLowerCase() === 'facebook' ? 'facebook-f' : l.platform.toLowerCase()}`,
+                        color: l.platform.toLowerCase() === 'linkedin' ? '#0077b5' :
+                            l.platform.toLowerCase() === 'instagram' ? '#E1306C' :
+                                l.platform.toLowerCase() === 'youtube' ? '#FF0000' :
+                                    l.platform.toLowerCase() === 'facebook' ? '#1877F2' : '#0E0057'
+                    }))
+                    : [
+                        { name: "LinkedIn", url: "https://www.linkedin.com/company/ikfdigital/", icon: "fab fa-linkedin-in", color: "#0077b5" },
+                        { name: "Instagram", url: "https://www.instagram.com/ikfdigital/", icon: "fab fa-instagram", color: "#E1306C" },
+                        { name: "YouTube", url: "https://www.youtube.com/c/IKFDigital", icon: "fab fa-youtube", color: "#FF0000" },
+                        { name: "Facebook", url: "https://www.facebook.com/IKFDigital/", icon: "fab fa-facebook-f", color: "#1877F2" }
+                    ];
+
                 return `
-                    <div class="max-w-7xl mx-auto py-12 fade-in relative">
+                    <div class="max-w-7xl mx-auto py-12 px-6 fade-in relative min-h-[70vh] flex flex-col justify-center">
                          <!--Background Watermark-->
-                        <div class="absolute top-0 right-0 text-[200px] font-black text-slate-100 opacity-20 select-none pointer-events-none -z-10 leading-none overflow-hidden">
+                        <div class="absolute top-0 right-0 text-[160px] md:text-[200px] font-black text-slate-100 opacity-20 select-none pointer-events-none -z-10 leading-none overflow-hidden">
                             ${socData.bgLogoText}
                         </div>
 
-                        <div class="mb-16 relative">
-                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-[10px] font-black uppercase tracking-widest mb-6">
+                        <div class="mb-16 relative text-center">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-[10px] font-black uppercase tracking-widest mb-6 mx-auto">
                                 <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
                                 ${socData.badge}
                             </div>
-                            <h1 class="text-5xl md:text-7xl font-black text-[#0E0057] tracking-tighter mb-4">${socData.title}</h1>
-                            <p class="text-slate-500 font-mono text-sm border-l-2 border-ikf-yellow pl-4">
+                            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">${socData.title}</h1>
+                            <p class="text-slate-500 font-mono text-xs md:text-base max-w-2xl mx-auto">
                                 ${socData.liveStatus}
                             </p>
                         </div>
 
-                        <!--LinkedIn Feed Section-->
-                        <div class="mb-20">
-                            <div class="flex items-center justify-between mb-8">
-                                <h3 class="text-2xl font-black text-[#0E0057] flex items-center gap-3">
-                                    <i class="fab fa-linkedin text-[#0077b5]"></i> ${socData.updatesTitle}
-                                </h3>
-                                <a href="https://www.linkedin.com/company/ikf-industrial-kinetics-factory" target="_blank" class="text-xs font-bold text-slate-400 hover:text-[#0077b5] uppercase tracking-widest transition-colors">View All <i class="fas fa-arrow-right ml-1"></i></a>
-                            </div>
-                            
-                            <!-- Elfsight LinkedIn Feed Widget -->
-                            <div class="bg-white rounded-[2.5rem] p-4 shadow-sm border border-slate-100 min-h-[400px]">
-                                <script src="https://static.elfsight.com/platform/platform.js" async></script>
-                                <div class="elfsight-app-17d722de-16e8-4660-b6df-2016556d028e" data-elfsight-app-lazy></div>
-                            </div>
+                        <!-- Simplified Social Grid -->
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20 max-w-5xl mx-auto w-full">
+                            ${platforms.map(p => `
+                                <a href="${p.url}" target="_blank" 
+                                   class="group bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 flex flex-col items-center justify-center gap-6 overflow-hidden relative">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-slate-50 to-white opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                    <div class="w-20 h-20 rounded-[2rem] flex items-center justify-center text-3xl shadow-inner relative z-10 transition-all duration-500 group-hover:scale-110 group-hover:bg-slate-900 group-hover:text-white bg-slate-50 text-slate-400">
+                                        <i class="${p.icon || 'fas fa-share-alt'}"></i>
+                                    </div>
+                                    <div class="text-center relative z-10">
+                                        <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 mb-1 group-hover:text-ikf-yellow transition-colors">${socData.followLabel}</p>
+                                        <h3 class="text-xl font-black text-[#0E0057]">${p.name}</h3>
+                                    </div>
+                                    <!-- Hover Decoration -->
+                                    <div class="absolute -right-4 -bottom-4 text-7xl font-black opacity-[0.03] group-hover:opacity-[0.08] transition-opacity select-none pointer-events-none text-[#0E0057]">
+                                        ${p.name.charAt(0)}
+                                    </div>
+                                </a>
+                            `).join('')}
                         </div>
 
-                        <!--YouTube Feed Section-->
-                        <div class="mb-20">
-                            <div class="flex items-center justify-between mb-8">
-                                <h3 class="text-2xl font-black text-[#0E0057] flex items-center gap-3">
-                                    <i class="fab fa-youtube text-[#FF0000]"></i> ${socData.youtubeTitle}
-                                </h3>
-                                <a href="https://www.youtube.com/@IKF" target="_blank" class="text-xs font-bold text-slate-400 hover:text-[#FF0000] uppercase tracking-widest transition-colors">View Channel <i class="fas fa-arrow-right ml-1"></i></a>
-                            </div>
-
-                            <!-- Elfsight YouTube Gallery Widget -->
-                            <div class="bg-white rounded-[2.5rem] p-4 shadow-sm border border-slate-100 min-h-[400px]">
-                                <div class="elfsight-app-0444983a-44d2-43ce-9457-37207dc3390c" data-elfsight-app-lazy></div>
-                            </div>
-                        </div>
-
-                        <!--Instagram / Featured Grid-->
-                        <div class="mb-20">
-                             <div class="flex items-center justify-between mb-8">
-                                <h3 class="text-2xl font-black text-[#0E0057] flex items-center gap-3">
-                                    <i class="fab fa-instagram text-[#E1306C]"></i> ${socData.featuredTitle}
-                                </h3>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <!-- Placeholder for Instagram grid - could also be an Elfsight widget if available -->
-                                <div class="aspect-square bg-slate-100 rounded-2xl relative group overflow-hidden cursor-pointer">
-                                    <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
-                                        <i class="fab fa-instagram text-3xl"></i>
-                                    </div>
-                                </div>
-                                <div class="aspect-square bg-slate-100 rounded-2xl relative group overflow-hidden cursor-pointer">
-                                    <img src="https://images.unsplash.com/photo-1611262588024-d12430b9816e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
-                                        <i class="fab fa-instagram text-3xl"></i>
-                                    </div>
-                                </div>
-                                 <div class="aspect-square bg-slate-100 rounded-2xl relative group overflow-hidden cursor-pointer">
-                                    <img src="https://images.unsplash.com/photo-1585250003058-20892c222ba2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
-                                        <i class="fab fa-instagram text-3xl"></i>
-                                    </div>
-                                </div>
-                                 <div class="aspect-square bg-slate-100 rounded-2xl relative group overflow-hidden cursor-pointer">
-                                    <img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
-                                        <i class="fab fa-instagram text-3xl"></i>
-                                    </div>
+                        <!-- Unified CTA Card -->
+                        <div class="bg-[#0E0057] rounded-[4rem] p-12 md:p-16 text-center relative overflow-hidden group shadow-2xl">
+                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                            <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                            <div class="relative z-10">
+                                <h3 class="text-4xl font-black text-white mb-6 tracking-tighter">${socData.cta?.title || 'Join the Ecosystem.'}</h3>
+                                <p class="text-blue-100/70 max-w-2xl mx-auto mb-10 text-lg font-medium leading-relaxed">
+                                    ${socData.cta?.subtitle || 'Our digital presence is where strategy meets transparency.'}
+                                </p>
+                                <div class="flex justify-center flex-wrap gap-4">
+                                     ${platforms.map(p => `
+                                        <a href="${p.url}" target="_blank" 
+                                           class="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl text-white text-xs font-black uppercase tracking-widest hover:bg-white hover:text-[#0E0057] transition-all transform hover:scale-105">
+                                            ${p.name}
+                                        </a>
+                                     `).join('')}
                                 </div>
                             </div>
                         </div>
+                    </div>`;
 
-                        <!--CTA -->
-                <div class="bg-slate-900 rounded-[3rem] p-12 text-center relative overflow-hidden group">
-                    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                    <div class="relative z-10">
-                        <h3 class="text-3xl font-black text-white mb-4">${(socData.cta || {}).title || 'Join the Conversation'}</h3>
-                        <p class="text-slate-400 max-w-xl mx-auto mb-8 font-medium">
-                            ${(socData.cta || {}).subtitle || 'Follow us on social media to stay updated with the latest news, events, and behind-the-scenes action at IKF.'}
-                        </p>
-                        <div class="flex justify-center gap-4">
-                            <a href="#" class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-white hover:bg-[#0077b5] hover:text-white transition-all"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-white hover:bg-[#FF0000] hover:text-white transition-all"><i class="fab fa-youtube"></i></a>
-                            <a href="#" class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-white hover:bg-[#E1306C] hover:text-white transition-all"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                </div>
-                    </div>`; case 'directory':
+            case 'directory':
                 // Initialize employees if not already done
                 if (!this.employees || this.employees.length === 0) {
                     this.initEmployees();
@@ -972,8 +947,8 @@ window.AppNavigation = {
                             <div class="flex flex-col md:flex-row items-end justify-between gap-8 mb-10">
                                 <div>
                                     <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block animate-pulse">${dirData.badge}</span>
-                                    <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tighter leading-none mb-2">
-                                        ${(dirData.title || "The Collective.").replace('Collective.', '<span class="text-[#d9a417]">Collective.</span>')}
+                                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">
+                                        ${(dirData.title || "The Collective.").replace('Collective.', '<span class="text-ikf-yellow">Collective.</span>')}
                                     </h1>
                                     <p class="text-slate-400 font-medium max-w-xl text-sm">${dirData.description || dirData.subtitle || ""}</p>
                                 </div>
@@ -1031,10 +1006,10 @@ window.AppNavigation = {
                         </div>
 
                         <!--Dynamic Grid-->
-                <div id="directory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 px-4 sm:px-0">
-                    <!-- Content will be injected by renderDirectoryGrid() -->
-                </div>
-                    </div>`;
+                    <div id="directory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12 px-4 sm:px-0">
+                        <!-- Content will be injected by renderDirectoryGrid() -->
+                    </div>
+                    </div></div>`;
 
             case 'philosophy':
                 const pData = this.contentData?.philosophy || {
@@ -1053,11 +1028,9 @@ window.AppNavigation = {
                         <!--Header Section-->
                         <div class="mb-20 text-center lg:text-left relative">
                             <div class="absolute -top-10 -left-10 text-[120px] font-black text-slate-50 -z-10 select-none">IKF</div>
-                            <span class="bg-[#0E0057] text-white px-5 py-2 rounded-sm text-[10px] font-black uppercase tracking-[0.4em] mb-6 inline-block">
-                                ${pData.badge || 'Core Directives'}
-                            </span>
-                            <h1 class="text-5xl md:text-7xl font-black text-[#0E0057] leading-none tracking-tighter mb-6">
-                                ${this.getSafeValue('philosophy.title', 'The <span class="text-[#d9a417]">Philosophy</span>')}
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${pData.badge || 'Core Directives'}</span>
+                            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">
+                                ${this.getSafeValue('philosophy.title', 'The <span class="text-ikf-yellow">Philosophy</span>')}
                             </h1>
                             <p class="text-xl text-slate-400 font-medium max-w-2xl leading-relaxed">
                                 ${pData.subtitle || 'Engineering growth through master-level digital strategies and industrialized precision.'}
@@ -1101,36 +1074,36 @@ window.AppNavigation = {
                         </div>
 
                         <!--Formal Brand Manifesto-->
-                <div class="bg-[#0E0057] rounded-[4rem] p-12 md:p-20 text-white relative overflow-hidden group">
-                    <!-- Background Accent -->
-                    <div class="absolute top-0 right-0 w-1/2 h-full bg-[#d9a417]/5 -skew-x-12 translate-x-1/2"></div>
+                    <div class="bg-[#0E0057] rounded-[4rem] p-12 md:p-20 text-white relative overflow-hidden group">
+                        <!-- Background Accent -->
+                        <div class="absolute top-0 right-0 w-1/2 h-full bg-[#d9a417]/5 -skew-x-12 translate-x-1/2"></div>
 
-                    <div class="relative z-10 max-w-4xl">
-                        <h2 class="text-4xl md:text-6xl font-black mb-12 leading-tight tracking-tighter">
-                            ${this.getSafeValue('philosophy.manifesto.title', 'Beyond Services, <br /> <span class="text-[#d9a417]">We Build Legacies.</span>')}
-                        </h2>
+                        <div class="relative z-10 max-w-4xl">
+                            <h2 class="text-4xl md:text-6xl font-black mb-12 leading-tight tracking-tighter">
+                                ${this.getSafeValue('philosophy.manifesto.title', 'Beyond Services, <br /> <span class="text-[#d9a417]">We Build Legacies.</span>')}
+                            </h2>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-                            <p class="text-lg text-slate-300 font-medium leading-relaxed">
-                                ${this.getSafeValue('philosophy.manifesto.para1', "At IKF, our philosophy is the engine of our growth. For 25 years, we've refined digital tools through a human lens, ensuring every output is a blend of precision and heart.")}
-                            </p>
-                            <p class="text-lg text-slate-300 font-medium leading-relaxed">
-                                ${this.getSafeValue('philosophy.manifesto.para2', "We are obsessed with curiosity and mastered in digital wisdom, engineering competitive advantages for 1500+ global partners.")}
-                            </p>
-                        </div>
-
-                        <div class="flex flex-wrap gap-12 pt-12 border-t border-white/10">
-                            <div class="flex flex-col">
-                                <span class="text-5xl font-black text-[#d9a417] mb-2">${this.getSafeValue('philosophy.manifesto.years', '25+')}</span>
-                                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">${this.getSafeValue('philosophy.manifesto.label1', 'Years Legacy')}</span>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+                                <p class="text-lg text-slate-300 font-medium leading-relaxed">
+                                    ${this.getSafeValue('philosophy.manifesto.para1', "At IKF, our philosophy is the engine of our growth. For 25 years, we've refined digital tools through a human lens, ensuring every output is a blend of precision and heart.")}
+                                </p>
+                                <p class="text-lg text-slate-300 font-medium leading-relaxed">
+                                    ${this.getSafeValue('philosophy.manifesto.para2', "We are obsessed with curiosity and mastered in digital wisdom, engineering competitive advantages for 1500+ global partners.")}
+                                </p>
                             </div>
-                            <div class="flex flex-col">
-                                <span class="text-5xl font-black text-white mb-2">${this.getSafeValue('philosophy.manifesto.partners', '1500+')}</span>
-                                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">${this.getSafeValue('philosophy.manifesto.label2', 'Global Partners')}</span>
+
+                            <div class="flex flex-wrap gap-12 pt-12 border-t border-white/10">
+                                <div class="flex flex-col">
+                                    <span class="text-5xl font-black text-[#d9a417] mb-2">${this.getSafeValue('philosophy.manifesto.years', '25+')}</span>
+                                    <span class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">${this.getSafeValue('philosophy.manifesto.label1', 'Years Legacy')}</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-5xl font-black text-white mb-2">${this.getSafeValue('philosophy.manifesto.partners', '1500+')}</span>
+                                    <span class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">${this.getSafeValue('philosophy.manifesto.label2', 'Global Partners')}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                     </div>`;
 
             case 'mission':
@@ -1152,7 +1125,7 @@ window.AppNavigation = {
                     <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${missData.badge}</span>
-                            <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tight">${missData.title}</h1>
+                            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">${missData.title}</h1>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20">
@@ -1240,7 +1213,7 @@ window.AppNavigation = {
                     <div class="max-w-7xl mx-auto py-6 fade-in">
                         <div class="mb-16 text-center">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${cultData.badge}</span>
-                            <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tight">${cultData.title}</h1>
+                            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">${cultData.title}</h1>
                             <p class="text-slate-400 mt-4 max-w-2xl mx-auto text-sm font-medium">${cultData.subtitle}</p>
                         </div>
 
@@ -1258,57 +1231,57 @@ window.AppNavigation = {
                         </div>
 
                         <!--Main Culture Modules-->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 h-[600px] md:h-auto">
-                    <!-- Left: Smart Values -->
-                    <div class="md:col-span-2 space-y-6">
-                        <div class="bg-gradient-to-br from-ikf-blue to-slate-900 rounded-[3rem] p-10 md:p-14 text-white relative overflow-hidden group">
-                            <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-ikf-yellow/20 transition-colors duration-700"></div>
-                            <div class="relative z-10">
-                                <div class="flex items-center gap-4 mb-8">
-                                    <span class="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-mono border border-white/20">values.json</span>
-                                    <div class="h-[1px] flex-1 bg-white/10"></div>
-                                </div>
-                                <h3 class="text-3xl md:text-5xl font-black mb-6 leading-tight">${(cultData.mainMessage || cultData.mainValue || {}).title || ''}</h3>
-                                <p class="text-slate-300 max-w-lg text-sm leading-relaxed mb-8">${(cultData.mainMessage || cultData.mainValue || {}).description || ''}</p>
-                                <div class="flex gap-4">
-                                    <div class="flex -space-x-4">
-                                        <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-700"></div>
-                                        <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-600"></div>
-                                        <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-500 flex items-center justify-center text-[10px] font-bold">+</div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 h-[600px] md:h-auto">
+                        <!-- Left: Smart Values -->
+                        <div class="md:col-span-2 space-y-6">
+                            <div class="bg-gradient-to-br from-ikf-blue to-slate-900 rounded-[3rem] p-10 md:p-14 text-white relative overflow-hidden group">
+                                <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-ikf-yellow/20 transition-colors duration-700"></div>
+                                <div class="relative z-10">
+                                    <div class="flex items-center gap-4 mb-8">
+                                        <span class="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-mono border border-white/20">values.json</span>
+                                        <div class="h-[1px] flex-1 bg-white/10"></div>
                                     </div>
-                                    <div class="flex items-center gap-2 text-xs font-bold text-ikf-yellow">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>${this.getSafeValue('culture.collabStatus', 'Collaboration Mode: Active')}</span>
+                                    <h3 class="text-3xl md:text-5xl font-black mb-6 leading-tight">${(cultData.mainMessage || cultData.mainValue || {}).title || ''}</h3>
+                                    <p class="text-slate-300 max-w-lg text-sm leading-relaxed mb-8">${(cultData.mainMessage || cultData.mainValue || {}).description || ''}</p>
+                                    <div class="flex gap-4">
+                                        <div class="flex -space-x-4">
+                                            <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-700"></div>
+                                            <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-600"></div>
+                                            <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-500 flex items-center justify-center text-[10px] font-bold">+</div>
+                                        </div>
+                                        <div class="flex items-center gap-2 text-xs font-bold text-ikf-yellow">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>${this.getSafeValue('culture.collabStatus', 'Collaboration Mode: Active')}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="grid grid-cols-2 gap-6">
-                            ${(Array.isArray(cultData.values || cultData.secondaryValues) ? (cultData.values || cultData.secondaryValues) : []).map(val => `
+                            <div class="grid grid-cols-2 gap-6">
+                                ${(Array.isArray(cultData.values || cultData.secondaryValues) ? (cultData.values || cultData.secondaryValues) : []).map(val => `
                                             <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group">
                                                 <i class="fas ${val.icon || 'fa-star'} text-3xl text-${val.color || 'ikf-yellow'} mb-4 group-hover:scale-110 transition-transform block"></i>
                                                 <h4 class="font-black text-lg mb-2">${val.title || ''}</h4>
                                                 <p class="text-xs text-slate-400">${val.description || val.desc || ''}</p>
                                             </div>
                                         `).join('')}
-                        </div>
-                    </div>
-
-                    <!-- Right: Life Gallery (Smart Vertical) -->
-                    <div class="bg-slate-50 rounded-[3rem] p-4 flex flex-col gap-4 overflow-hidden relative border border-slate-100">
-                        <div class="absolute top-8 left-8 z-10 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-black shadow-sm">
-                            <i class="fas fa-camera text-ikf-blue mr-2"></i> ${(cultData.gallery || {}).title || 'Life @ IKF'}
-                        </div>
-                        <div class="flex-1 rounded-[2.5rem] bg-cover bg-center" style="background-image: url('${(cultData.gallery || {}).image || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}');"></div>
-                        <div class="h-40 rounded-[2.5rem] bg-ikf-yellow/10 flex items-center justify-center relative overflow-hidden group cursor-pointer">
-                            <div class="absolute inset-0 bg-ikf-yellow/80 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center">
-                                <span class="text-white font-black uppercase text-xs tracking-widest">${this.getSafeValue('culture.gallery.cta', 'View Gallery')}</span>
                             </div>
-                            <span class="text-ikf-blue/30 font-black text-xl rotate-12 group-hover:rotate-0 transition-transform">${(cultData.gallery || {}).tag || '#IKFLife'}</span>
+                        </div>
+
+                        <!-- Right: Life Gallery (Smart Vertical) -->
+                        <div class="bg-slate-50 rounded-[3rem] p-4 flex flex-col gap-4 overflow-hidden relative border border-slate-100">
+                            <div class="absolute top-8 left-8 z-10 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-black shadow-sm">
+                                <i class="fas fa-camera text-ikf-blue mr-2"></i> ${(cultData.gallery || {}).title || 'Life @ IKF'}
+                            </div>
+                            <div class="flex-1 rounded-[2.5rem] bg-cover bg-center" style="background-image: url('${(cultData.gallery || {}).image || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}');"></div>
+                            <div class="h-40 rounded-[2.5rem] bg-ikf-yellow/10 flex items-center justify-center relative overflow-hidden group cursor-pointer">
+                                <div class="absolute inset-0 bg-ikf-yellow/80 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center">
+                                    <span class="text-white font-black uppercase text-xs tracking-widest">${this.getSafeValue('culture.gallery.cta', 'View Gallery')}</span>
+                                </div>
+                                <span class="text-ikf-blue/30 font-black text-xl rotate-12 group-hover:rotate-0 transition-transform">${(cultData.gallery || {}).tag || '#IKFLife'}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
                     </div>`;
 
 
@@ -1338,10 +1311,8 @@ window.AppNavigation = {
                         <!--Header Section-->
                         <div class="mb-20 text-center lg:text-left relative">
                             <div class="absolute -top-10 -left-10 text-[120px] font-black text-slate-50 -z-10 select-none">IKF</div>
-                            <span class="bg-[#0E0057] text-white px-5 py-2 rounded-sm text-[10px] font-black uppercase tracking-[0.4em] mb-6 inline-block">
-                                ${refData.badge}
-                            </span>
-                            <h1 class="text-5xl md:text-7xl font-black text-[#0E0057] leading-none tracking-tighter mb-6">
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${refData.badge}</span>
+                            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">
                                 ${refData.title}
                             </h1>
                             <p class="text-xl text-slate-400 font-medium max-w-2xl leading-relaxed">
@@ -1418,16 +1389,17 @@ window.AppNavigation = {
                         </div>
 
                         <!--CTA Section-->
-                <div class="bg-slate-50 rounded-[4rem] p-12 md:p-20 text-center border-2 border-dashed border-slate-200">
-                    <div class="max-w-2xl mx-auto">
-                        <h2 class="text-3xl md:text-5xl font-black text-[#0E0057] mb-8 leading-tight">Ready to expand our intelligence network?</h2>
-                        <p class="text-slate-400 font-medium mb-12">Submit your candidate's details through our secure acquisition portal.</p>
-                        <a href="https://forms.gle/referral-example" target="_blank" class="inline-flex items-center gap-4 px-12 py-6 bg-[#0E0057] text-white font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-[#d9a417] transition-all shadow-xl shadow-blue-900/10 group">
-                            <i class="fas fa-paper-plane group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
-                            Initialize Submission
-                        </a>
+                    <div class="bg-slate-50 rounded-[4rem] p-12 md:p-20 text-center border-2 border-dashed border-slate-200">
+                        <div class="max-w-2xl mx-auto">
+                            <h2 class="text-3xl md:text-5xl font-black text-[#0E0057] mb-8 leading-tight">Ready to expand our intelligence network?</h2>
+                            <p class="text-slate-400 font-medium mb-12">Submit your candidate's details through our secure acquisition portal.</p>
+                            <a href="https://forms.gle/referral-example" target="_blank" class="inline-flex items-center gap-4 px-12 py-6 bg-[#0E0057] text-white font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-[#d9a417] transition-all shadow-xl shadow-blue-900/10 group">
+                                <i class="fas fa-paper-plane group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+                                Initialize Submission
+                            </a>
+                        </div>
                     </div>
-                </div>
+                    </div>
                     </div>`;
 
             case 'org_chart': {
@@ -1440,11 +1412,9 @@ window.AppNavigation = {
                         <!--Premium Header-->
                         <div class="mb-20 text-center lg:text-left relative">
                             <div class="absolute -top-10 -left-10 text-[120px] font-black text-slate-50 -z-10 select-none">STRUCTURE</div>
-                            <span class="bg-[#0E0057] text-white px-5 py-2 rounded-sm text-[10px] font-black uppercase tracking-[0.4em] mb-6 inline-block">
-                                ${orgData.badge || 'Organizational Architecture'}
-                            </span>
-                            <h1 class="text-5xl md:text-7xl font-black text-[#0E0057] leading-none tracking-tighter mb-6">
-                                ${orgData.title || 'How We\'re <span class="text-[#d9a417]">Organized</span>'}
+                            <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${orgData.badge || 'Organizational Architecture'}</span>
+                            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">
+                                ${orgData.title || 'How We\'re <span class="text-ikf-yellow">Organized</span>'}
                             </h1>
                             <p class="text-xl text-slate-400 font-medium max-w-2xl leading-relaxed">
                                 ${orgData.subtitle || 'A high-level view of our functional ecosystem and reporting hierarchies.'}
@@ -1498,9 +1468,9 @@ window.AppNavigation = {
                         </div>
 
                         <!--Legend / Footer-->
-                <div class="bg-slate-50 p-12 rounded-[4rem] text-center border-2 border-dashed border-slate-200">
-                    <p class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Ecosystem Version 25.0 // Synchronized</p>
-                </div>
+                    <div class="bg-slate-50 p-12 rounded-[4rem] text-center border-2 border-dashed border-slate-200">
+                        <p class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Ecosystem Version 25.0 // Synchronized</p>
+                    </div>
                     </div>`;
             }
 
@@ -1577,15 +1547,12 @@ window.AppNavigation = {
                 });
 
                 return `
-                <div class="max-w-7xl mx-auto py-8 fade-in">
+                    <div class="max-w-7xl mx-auto py-8 fade-in">
                         <!--Premium Header-->
                         <div class="mb-16 flex flex-col lg:flex-row items-end justify-between gap-10">
                             <div class="max-w-2xl">
-                                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ikf-yellow/10 border border-ikf-yellow/20 text-ikf-yellow text-[10px] font-black uppercase tracking-widest mb-6">
-                                    <i class="fas fa-crown"></i>
-                                    ${annivData.badge}
-                                </div>
-                                <h1 class="text-5xl md:text-7xl font-black text-[#0E0057] tracking-tight leading-none">
+                                <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${annivData.badge}</span>
+                                <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">
                                     ${annivData.title}
                                 </h1>
                                 <p class="text-slate-500 mt-6 text-lg font-medium max-w-xl">
@@ -1664,22 +1631,22 @@ window.AppNavigation = {
                         </div>
                         
                         <!--Terminal Footer-->
-                <div class="bg-slate-900 rounded-[3rem] p-10 md:p-14 text-center relative overflow-hidden flex flex-col items-center justify-center">
-                    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-                    <div class="relative z-10 w-full max-w-lg text-left">
-                        <div class="bg-slate-800 rounded-t-xl p-3 flex gap-2">
-                            <div class="w-2 h-2 rounded-full bg-red-500"></div>
-                            <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
-                            <div class="w-2 h-2 rounded-full bg-green-500"></div>
-                        </div>
-                        <div class="bg-black/50 backdrop-blur-md p-6 rounded-b-xl border-t border-white/5 font-mono text-xs text-slate-300 shadow-2xl">
-                            <p class="mb-2"><span class="text-green-400">➜</span> <span class="text-blue-400">~</span> system_check --anniversary</p>
-                            <p class="mb-2"><span class="text-green-400">✔</span> milestone_detection: <span class="text-ikf-yellow">active</span></p>
-                            <p class="mb-2"><span class="text-green-400">✔</span> current_view: <span class="text-ikf-yellow">${showAll ? 'historical_archive' : 'upcoming_milestones'}</span></p>
-                            <p class="text-slate-500 mt-4">// Digital legacies are built one day at a time.</p>
+                    <div class="bg-slate-900 rounded-[3rem] p-10 md:p-14 text-center relative overflow-hidden flex flex-col items-center justify-center">
+                        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+                        <div class="relative z-10 w-full max-w-lg text-left">
+                            <div class="bg-slate-800 rounded-t-xl p-3 flex gap-2">
+                                <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                                <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+                                <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                            </div>
+                            <div class="bg-black/50 backdrop-blur-md p-6 rounded-b-xl border-t border-white/5 font-mono text-xs text-slate-300 shadow-2xl">
+                                <p class="mb-2"><span class="text-green-400">➜</span> <span class="text-blue-400">~</span> system_check --anniversary</p>
+                                <p class="mb-2"><span class="text-green-400">✔</span> milestone_detection: <span class="text-ikf-yellow">active</span></p>
+                                <p class="mb-2"><span class="text-green-400">✔</span> current_view: <span class="text-ikf-yellow">${showAll ? 'historical_archive' : 'upcoming_milestones'}</span></p>
+                                <p class="text-slate-500 mt-4">// Digital legacies are built one day at a time.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
                     </div>`;
             }
 
@@ -1710,7 +1677,7 @@ window.AppNavigation = {
                                     role: emp.role,
                                     dept: emp.dept,
                                     image: emp.img,
-                                    date: `${bDate} ${['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'][bMonth]}`,
+                                    date: `${bDate} ${['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'][bMonth]} `,
                                     status: status,
                                     rawDate: bDate
                                 });
@@ -1728,16 +1695,13 @@ window.AppNavigation = {
                 const nextEventText = nextBday ? nextBday.date : 'SCANNING...';
 
                 return `
-                <div class="max-w-7xl mx-auto py-8 fade-in">
+                    <div class="max-w-7xl mx-auto py-8 fade-in">
                         <!--Creative Vibrant Header-->
                         <div class="mb-16 flex flex-col lg:flex-row items-center justify-between gap-12">
                             <div class="max-w-2xl text-center lg:text-left">
-                                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-pink-500/10 to-purple-500/10 border border-pink-500/20 text-pink-600 text-[10px] font-black uppercase tracking-widest mb-6">
-                                    <i class="fas fa-star-of-life animate-spin-slow"></i>
-                                    ${bdayData.badge || 'Solar Returns'}
-                                </div>
-                                <h1 class="text-5xl md:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">
-                                    ${bdayData.title || 'Party <span class="text-[#d9a417]">Protocol</span>'}
+                                <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${bdayData.badge || 'Solar Returns'}</span>
+                                <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">
+                                    ${bdayData.title || 'Party <span class="text-ikf-yellow">Protocol</span>'}
                                 </h1>
                                 <p class="text-slate-500 text-lg font-medium">
                                     Celebrating another rotation around the digital sun. Let's sync our energy and share the joy!
@@ -1812,7 +1776,7 @@ window.AppNavigation = {
                     <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${holidayData.badge || 'Global Calendar'}</span>
-                            <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tight">${holidayData.title || 'Holidays <span class="text-[#d9a417]">2025-26</span>'}</h1>
+                            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">${holidayData.title || 'Holidays <span class="text-ikf-yellow">2025-26</span>'}</h1>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20">
@@ -1854,7 +1818,7 @@ window.AppNavigation = {
                     <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${attendData.badge || 'Operation Hours'}</span>
-                            <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tight">${attendData.title || 'Sync & <span class="text-[#d9a417]">Flow</span>'}</h1>
+                            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">${attendData.title || 'Sync & <span class="text-ikf-yellow">Flow</span>'}</h1>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
@@ -1903,7 +1867,7 @@ window.AppNavigation = {
                     <div class="max-w-6xl mx-auto py-6 fade-in">
                         <div class="mb-16">
                             <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">${policyData.badge || 'Legal Framework'}</span>
-                            <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tight">${policyData.title || 'Operational <span class="text-[#d9a417]">Directives</span>'}</h1>
+                            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">${policyData.title || 'Operational <span class="text-ikf-yellow">Directives</span>'}</h1>
                         </div>
 
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
@@ -1949,8 +1913,8 @@ window.AppNavigation = {
                         <div class="mb-12 flex flex-col lg:flex-row items-end justify-between gap-6">
                             <div class="text-center lg:text-left">
                                 <span class="text-ikf-yellow font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">Visual Archive</span>
-                                <h1 class="text-4xl md:text-6xl font-black text-[#0E0057] tracking-tight mb-4">
-                                    IKF <span class="text-[#d9a417]">Gallery</span>
+                                <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-[#0E0057] tracking-tighter leading-none mb-6">
+                                    IKF <span class="text-ikf-yellow">Gallery</span>
                                 </h1>
                                 <p class="text-slate-400 font-medium max-w-xl text-sm">Capturing the moments that define our culture, from high-stakes formal events to our favorite celebrations.</p>
                             </div>
@@ -1967,9 +1931,9 @@ window.AppNavigation = {
                         </div>
 
                         <!--Gallery View Container-->
-                <div id="gallery-container" class="min-h-[400px]">
-                    ${this.renderGalleryFolders(gCategories)}
-                </div>
+                    <div id="gallery-container" class="min-h-[400px]">
+                        ${this.renderGalleryFolders(gCategories)}
+                    </div>
                     </div>`;
 
             default:
@@ -2004,7 +1968,7 @@ window.AppNavigation = {
     renderGalleryFolders: function (categories) {
         if (!categories || categories.length === 0) {
             return `
-                <div class="flex flex-col items-center justify-center py-20 bg-white rounded-[3rem] border border-slate-100 shadow-sm">
+                    <div class="flex flex-col items-center justify-center py-20 bg-white rounded-[3rem] border border-slate-100 shadow-sm">
                     <i class="fas fa-folder-open text-slate-100 text-8xl mb-6"></i>
                     <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">No capsules found in the archive</p>
                 </div>`;
@@ -2012,7 +1976,7 @@ window.AppNavigation = {
 
         return `
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 fade-in">
-                    ${categories.map(cat => {
+                        ${categories.map(cat => {
             const catImages = this.galleryData.filter(i => i.category === cat);
             const count = catImages.length;
             const previewImages = catImages.slice(0, 5); // Fetch 5 images
@@ -2055,7 +2019,7 @@ window.AppNavigation = {
                 `;
         }).join('')
             }
-            </div > `;
+            </div>`;
     },
 
     /**
@@ -2111,7 +2075,7 @@ window.AppNavigation = {
         if (!img) return;
 
         const modalHtml = `
-                <div id="gallery-lightbox" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/98 backdrop-blur-2xl fade-in" onclick="AppNavigation.closeLightbox()">
+                    <div id="gallery-lightbox" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/98 backdrop-blur-2xl fade-in" onclick="AppNavigation.closeLightbox()">
                 <!--Close Button-->
                 <button class="absolute top-8 right-8 w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-white hover:bg-red-500 hover:rotate-90 transition-all z-50">
                     <i class="fas fa-times text-xl"></i>
@@ -2128,17 +2092,17 @@ window.AppNavigation = {
                 </button>
 
                 <!--Image Container-->
-                <div class="max-w-6xl w-full h-full flex flex-col items-center justify-center relative scale-in" onclick="event.stopPropagation()">
-                    <img id="lightbox-main-img" src="${img.url}" class="max-w-full max-h-[75vh] rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10 object-contain" onerror="this.src='https://placehold.co/800x600?text=Image+Not+Found'">
+                    <div class="max-w-6xl w-full h-full flex flex-col items-center justify-center relative scale-in" onclick="event.stopPropagation()">
+                        <img id="lightbox-main-img" src="${img.url}" class="max-w-full max-h-[75vh] rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10 object-contain" onerror="this.src='https://placehold.co/800x600?text=Image+Not+Found'">
 
-                        <div class="mt-8 text-center">
-                            <p class="text-ikf-yellow font-black uppercase tracking-[0.4em] text-[10px] mb-2">${img.category}</p>
-                            <h3 class="text-white text-xl font-bold mb-4">${img.title || 'Visual Asset'}</h3>
-                            <div class="flex items-center justify-center gap-4">
-                                <span class="text-white/40 text-[10px] font-bold uppercase tracking-widest">${index + 1} / ${this.currentGalleryImages.length}</span>
+                            <div class="mt-8 text-center">
+                                <p class="text-ikf-yellow font-black uppercase tracking-[0.4em] text-[10px] mb-2">${img.category}</p>
+                                <h3 class="text-white text-xl font-bold mb-4">${img.title || 'Visual Asset'}</h3>
+                                <div class="flex items-center justify-center gap-4">
+                                    <span class="text-white/40 text-[10px] font-bold uppercase tracking-widest">${index + 1} / ${this.currentGalleryImages.length}</span>
+                                </div>
                             </div>
-                        </div>
-                </div>
+                    </div>
             </div>`;
 
         if ($('#gallery-lightbox').length) $('#gallery-lightbox').remove();
